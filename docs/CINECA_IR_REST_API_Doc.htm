@@ -1,0 +1,3376 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+
+    
+        <meta http-equiv="content-type" content="text/html; charset=windows-1252" /><title>CINECA IR 1.0.0.0 REST API documentation</title>
+        
+        <style type="text/css">
+            body {
+                font-family: sans-serif;
+                font-size: 0.85em;
+                margin: 2em 8em;
+            }
+            .methods {
+                background-color: #eef;
+                padding: 1em;
+            }
+            h1 {
+                font-size: 2.5em;
+            }
+            h2 {
+                border-bottom: 1px solid black;
+                margin-top: 1em;
+                margin-bottom: 0.5em;
+                font-size: 2em;
+            }
+            h3 {
+                color: orange;
+                font-size: 1.75em;
+                margin-top: 1.25em;
+                margin-bottom: 0em;
+            }
+            h4 {
+                margin: 0em;
+                padding: 0em;
+                border-bottom: 2px solid white;
+            }
+            h6 {
+                font-size: 1.1em;
+                color: #99a;
+                margin: 0.5em 0em 0.25em 0em;
+            }
+            dd {
+                margin-left: 1em;
+            }
+            tt {
+                font-size: 1.2em;
+            }
+            table {
+                margin-bottom: 0.5em;
+            }
+            th {
+                text-align: left;
+                font-weight: normal;
+                color: black;
+                border-bottom: 1px solid black;
+                padding: 3px 6px;
+            }
+            td {
+                padding: 3px 6px;
+                vertical-align: top;
+                background-color: f6f6ff;
+                font-size: 0.85em;
+            }
+            td p {
+                margin: 0px;
+            }
+            ul {
+                padding-left: 1.75em;
+            }
+            p + ul, p + ol, p + dl {
+                margin-top: 0em;
+            }
+            .optional {
+                font-weight: normal;
+                opacity: 0.75;
+            }
+            .code-tag {
+                color: #000091;
+                background-color: inherit;
+            }
+            .code-comment {
+                color: #808080;
+                background-color: inherit;
+            }
+            .code-xml .code-keyword {
+                color: inherit;
+                font-weight: bold;
+            }
+            .code-quote {
+                color: #009100;
+                background-color: inherit;
+            }
+        </style>
+        
+        <script type="text/javascript" src="https://raw.githubusercontent.com/douglascrockford/JSON-js/master/json2.js" ></script>
+        <script type="text/javascript">
+            /*
+             Developed by Robert Nyman, http://www.robertnyman.com
+             Code/licensing: http://code.google.com/p/getelementsbyclassname/
+             */
+            var getElementsByClassName = function(className, tag, elm) {
+                if (document.getElementsByClassName) {
+                    getElementsByClassName = function(className, tag, elm) {
+                        elm = elm || document;
+                        var elements = elm.getElementsByClassName(className),
+                                nodeName = (tag) ? new RegExp("\\b" + tag + "\\b", "i") : null,
+                                returnElements = [],
+                                current;
+                        for (var i = 0, il = elements.length; i < il; i += 1) {
+                            current = elements[i];
+                            if (!nodeName || nodeName.test(current.nodeName)) {
+                                returnElements.push(current);
+                            }
+                        }
+                        return returnElements;
+                    };
+                }
+                else if (document.evaluate) {
+                    getElementsByClassName = function(className, tag, elm) {
+                        tag = tag || "*";
+                        elm = elm || document;
+                        var classes = className.split(" "),
+                                classesToCheck = "",
+                                xhtmlNamespace = "http://www.w3.org/1999/xhtml",
+                                namespaceResolver = (document.documentElement.namespaceURI === xhtmlNamespace) ? xhtmlNamespace : null,
+                                returnElements = [],
+                                elements,
+                                node;
+                        for (var j = 0, jl = classes.length; j < jl; j += 1) {
+                            classesToCheck += "[contains(concat(' ', @class, ' '), ' " + classes[j] + " ')]";
+                        }
+                        try {
+                            elements = document.evaluate(".//" + tag + classesToCheck, elm, namespaceResolver, 0, null);
+                        }
+                        catch (e) {
+                            elements = document.evaluate(".//" + tag + classesToCheck, elm, null, 0, null);
+                        }
+                        while ((node = elements.iterateNext())) {
+                            returnElements.push(node);
+                        }
+                        return returnElements;
+                    };
+                }
+                else {
+                    getElementsByClassName = function(className, tag, elm) {
+                        tag = tag || "*";
+                        elm = elm || document;
+                        var classes = className.split(" "),
+                                classesToCheck = [],
+                                elements = (tag === "*" && elm.all) ? elm.all : elm.getElementsByTagName(tag),
+                                current,
+                                returnElements = [],
+                                match;
+                        for (var k = 0, kl = classes.length; k < kl; k += 1) {
+                            classesToCheck.push(new RegExp("(^|\\s)" + classes[k] + "(\\s|$)"));
+                        }
+                        for (var l = 0, ll = elements.length; l < ll; l += 1) {
+                            current = elements[l];
+                            match = false;
+                            for (var m = 0, ml = classesToCheck.length; m < ml; m += 1) {
+                                match = classesToCheck[m].test(current.className);
+                                if (!match) {
+                                    break;
+                                }
+                            }
+                            if (match) {
+                                returnElements.push(current);
+                            }
+                        }
+                        return returnElements;
+                    };
+                }
+                return getElementsByClassName(className, tag, elm);
+            };
+
+            function toggle(id) {
+                var el = document.getElementById(id);
+                el.style.display = (el.style.display != 'none' ? 'none' : '');
+                document.getElementById("link-" + id).innerHTML = (el.style.display == 'none' ? 'expand' : 'collapse');
+            }
+
+            function hideAll() {
+                var examples = getElementsByClassName("toggle", "div");
+                for (var i = 0; i < examples.length; i++) {
+                    toggle(examples[i].id);
+                }
+            }
+
+            function format(codeElem) {
+                try {
+                    var obj = JSON.parse(codeElem.innerHTML);
+                    codeElem.innerHTML = JSON.stringify(obj, null, 4);
+                }
+                catch (e)
+                {
+                    // err
+                }
+            }
+
+            function formatAll() {
+                var jsonCodes = document.getElementsByTagName("code");
+                for (var i = 0; i < jsonCodes.length; i++) {
+                    format(jsonCodes[i]);
+                }
+            }
+        </script></head><body onload="hideAll();formatAll();">
+		<div><img src="http://www.cineca.it/sites/default/files/styles/pp_116x82/public/cineca/news/images/CINECA_logo_0.png"><h1>IRIS IR 1.0.0.0 REST API documentation</h1></div>
+
+        <p> This is the reference document for the REST API and resources
+            provided by Cineca IRIS IR. The REST APIs are developers who want to
+            integrate IR with other applications.
+        </p>
+
+        <h2 id="gettingstarted">Getting started</h2>
+
+        <p> Because the REST API is based on open standards, you can use any
+            web development language to access the API.</p>
+
+        <p>If you are using Java, however, the easiest way to get started using
+            the IRIS IR REST API is obtain the REST IR IRIS JAVA CLIENT and use it as a
+            library within your own application.<br />
+        </p>
+
+        <h2><a name="IRRESTAPIdiscussionpoints-StructureoftheRESTURIs">Structure
+                of the REST URIs</a></h2>
+
+        <p><a name="IRRESTAPIdiscussionpoints-StructureoftheRESTURIs"> IR's REST APIs provide access to resources (data entities) via URI
+                paths. To use a REST API, your application will make an HTTP request
+                and parse the response. The IR REST API uses </a><a href="http://en.wikipedia.org/wiki/JSON">JSON</a> (and future <a href="http://it.wikipedia.org/wiki/XML">XML</a>) as its communication
+            format, and the standard HTTP methods like <code>GET</code>, <code>PUT</code>,
+            <code>POST</code> and <code>DELETE</code> (see API descriptions below
+            for which methods are available for each resource). URIs for IR's REST
+            API resource have the following structure:
+        </p>
+
+        <pre>http://host:port/context/rest/api-version/resource-name<br /></pre>
+
+        <p> The current API version is <code>1</code>.</p>
+
+        <p>As an example, if you wanted to retrieve the JSON representation of
+            item 328235, you would
+            access:<span style="text-decoration: underline;"></span>
+        </p>
+
+        <pre><span class="external-link">https://unidemo.iris.cineca.it:443/rest/api/v1/items/328325<br /></span></pre>
+
+        <h2 id="expansion">Expansion in the REST APIs</h2>
+
+        <p> In order to minimise network traffic and server CPU usage, the IR
+        REST API sometimes uses a technique called expansion. When a REST
+        resource uses expansion then parts of that resource will not be
+        included in the JSON response unless explicitly requested. The way to
+        request those fragments to be included is by using the <code>expand</code>
+        query parameter.
+        </p>
+
+        <p> You can use the <code>expand</code> query parameter to specify a
+        comma-separated list of entities that you want expanded, identifying
+        each of them by name. For example, appending <code>?expand=metadata,history</code>
+        to an item's URI requests the inclusion of the item metadata and item
+        history in the response. Continuing with our example above, we would
+        use the following URL to get that information for item 328325:
+        </p>
+
+        <pre><span class="external-link">https://unidemo.iris.cineca.it:443/rest/api/v1/items/328325?expand=metadata,history</span></pre>
+
+        <p> To discover the identifiers for each entity, look at the <code>expand</code>
+            property in the parent object. In the JSON example below, the resource
+            declares widgets as being expandable.
+        </p>
+
+        <div class="methods">
+            <pre><code>
+{"id": 328325,<br /> "self": "/rest/api/v1/items/328325",<br /> .....<br /> "expand":[<br />	"metadata",<br />	"bitstreams",<br />	"history",<br />	"all"]<br />}<br />            </code></pre>
+        </div>
+
+        <h2 id="authentication">Authentication</h2>
+
+        <p> Authentication for
+            REST API is <b>HTTP
+                Basic with using SSL.</b></p>
+        <p>Each request is necessary give username and password in header request that will use for http basic authentication.</p>
+        <p>For application purpose any authenticated user can operate with
+            specific profile or scope and can act as another IRIS user. To do this
+            in each request&nbsp; is possible set a specific HEADER TAG:</p>
+        <div class="methods">
+            <pre><code><span style="font-weight: bold;">TAG HEADER</span>		TAG VALUE<br /><br /><span style="font-weight: bold;">scope</span>			&lt;ROLE_USER|ROLE_ADMIN&gt;<br /><br /><span style="font-weight: bold;">on-behalf-of</span>		&lt;username&gt;<br /><br /><span style="font-weight: bold;">on-behalf-of-scope</span>	&lt;ROLE_USER|ROLE_ADMIN&gt;<br /><br /></code></pre>
+        </div>
+        <p>If none scope is set the <span style="font-weight: bold;">default</span> is ROLE_USER.</p>
+        <p>Tag on-behalf-of is necessary only for "login as" feature. Tag on-behalf-of-scope, if not set, is ROLE_USER (<span style="font-weight: bold;">default</span>).</p>
+
+        <h2>Index</h2>
+
+        <p> This documents the current REST API provided by IRIS IR. </p> 
+        
+        <div>[<a onclick="hideAll(); return false;" href="#"><em><span id="link-hideall"></span>Toggle all</em></a>] </div>
+        <div>[<a onclick="formatAll(); return false;" href="#"><em><span id="link-formatall"></span>Format all</em></a>] </div>
+
+        <ul>
+            <li>
+                <a href="#items">Items</a>
+                <ul>
+                    <div id="api/v1/items">&nbsp;
+                        <li><a href="#ditems">https://unidemo.iris.cineca.it:443/rest/api/v1/items</a>[<a href="#ditemsget">GET</a>]
+                            <ul>
+                                <div id="api/v1/items/{itemid}">
+                                    <li><a href="#ditemsid">https://unidemo.iris.cineca.it:443/rest/api/v1/items/{itemid}</a>[<a href="#ditemsidget">GET</a>] </li>
+									<li><a href="#ditemsid">https://unidemo.iris.cineca.it:443/rest/api/v1/items/{namingAuthority}/{localName}</a>[<a href="#ditemsidget">GET</a>]</li>
+                                    <div id="api/v1/items/{itemid}/metadata">
+                                        <li><a href="#ditemsmeta">https://unidemo.iris.cineca.it:443/rest/api/v1/items/{itemid}/metadata</a>[<a href="#ditemsmetaget">GET</a>] </li>
+										<li><a href="#ditemsmeta">https://unidemo.iris.cineca.it:443/rest/api/v1/items/{namingAuthority}/{localName}/metadata</a>[<a href="#ditemsmetaget">GET</a>] </li>
+                                    </div>
+                                    <div id="api/v1/items/{itemid}/metadata/{metadataKey}">
+                                        <li><a href="#ditemsmetak">https://unidemo.iris.cineca.it:443/rest/api/v1/items/{itemid}/{metadataKey}</a>[<a href="#ditemsmetakget">GET</a>] </li>
+										<li><a href="#ditemsmetak">https://unidemo.iris.cineca.it:443/rest/api/v1/items/{namingAuthority}/{localName}/{metadataKey}</a>[<a href="#ditemsmetakget">GET</a>] </li>
+                                    </div>
+                                    <div id="api/v1/items/{itemid}/bitstreams">
+                                        <li><a href="#ditemsmetabs">https://unidemo.iris.cineca.it:443/rest/api/v1/items/{itemid}/bitstreams</a>[<a href="#ditemsmetabsget">GET</a>] </li>
+										<li><a href="#ditemsmetabs">https://unidemo.iris.cineca.it:443/rest/api/v1/items/{namingAuthority}/{localName}/bitstreams</a>[<a href="#ditemsmetabsget">GET</a>] </li>
+                                    </div>
+                                    <div id="api/v1/items/{itemid}/histories">
+                                        <li><a href="#ditemshist">https://unidemo.iris.cineca.it:443/rest/api/v1/items/{itemid}/histories</a>[<a href="#ditemshistget">GET</a>] </li>
+										<li><a href="#ditemshist">https://unidemo.iris.cineca.it:443/rest/api/v1/items/{namingAuthority}/{localName}/histories</a>[<a href="#ditemshistget">GET</a>] </li>
+                                    </div>									
+                                </div>                                     
+                                <div id="api/v1/items/search">
+                                    <li><a href="#ditemssearch">https://unidemo.iris.cineca.it:443/rest/api/v1/items/search</a>[<a href="#ditemssearchpost">POST</a>] </li>
+                                </div>
+                            </ul>
+                        </li>
+                    </div>
+                </ul>
+            </li>&nbsp;
+            <li>
+                <a href="#collections">Collections</a>
+                <ul>
+                    <div id="api/v1/collections">&nbsp;
+                        <li><a href="#dcols">https://unidemo.iris.cineca.it:443/rest/api/v1/collections</a>[<a href="#dcolsget">GET</a>]
+                            <ul>
+                                <div id="api/v1/collections/{collectionid}">
+                                    <li><a href="#dcolsid">https://unidemo.iris.cineca.it:443/rest/api/v1/collections/{collectionid}</a>[<a href="#dcolsidget">GET</a>] </li>
+                                    <div id="api/v1/collections/{collectionid}/items">
+                                        <li><a href="#dcolsitems">https://unidemo.iris.cineca.it:443/rest/api/v1/collections/{collectionid}/items</a>[<a href="#dcolsitemsget">GET</a>] </li>
+                                    </div>
+                                    
+                                </div>
+                            </ul>
+                        </li>
+                    </div>
+                </ul>
+            </li>&nbsp;
+            <li>
+                <a href="#communities">Communities</a>
+                <ul>
+                    <div id="api/v1/communities">&nbsp;
+                        <li><a href="#dcoms">https://unidemo.iris.cineca.it:443/rest/api/v1/communities</a>[<a href="#dcomsget">GET</a>]
+                            <ul>
+                                <div id="api/v1/items/{communityid}">
+                                    <li><a href="#dcomsid">https://unidemo.iris.cineca.it:443/rest/api/v1/communities/{communityid}</a>[<a href="#dcomsidget">GET</a>] </li>
+                                    <div id="api/v1/items/{communityid}/collections">
+                                        <li><a href="#dcomscols">https://unidemo.iris.cineca.it:443/rest/api/v1/communities/{communityid}/collections</a>[<a href="#dcomscolsget">GET</a>] </li>
+                                    </div>
+                                    <div id="api/v1/items/{communityid}/communities">
+                                        <li><a href="#dcomscoms">https://unidemo.iris.cineca.it:443/rest/api/v1/communities/{communityid}/communities</a>[<a href="#dcomscomsget">GET</a>] </li>
+                                    </div>                                     
+                                </div>
+                            </ul>
+                        </li>
+                    </div>
+                </ul>
+            </li>&nbsp;
+            <li>
+                <a href="#bitstreams">Bitstreams</a>
+                <ul>
+                    <div id="api/v1/bitstreams">&nbsp;
+                        <li><a href="#dbits">https://unidemo.iris.cineca.it:443/rest/api/v1/bitstreams</a>[<a href="#dbitsget">GET</a>]
+                            <ul>
+                                <div id="api/v1/items/{communityid}">
+                                    <li><a href="#dbitsid">https://unidemo.iris.cineca.it:443/rest/api/v1/bitstreams/{bitstreamid}</a>[<a href="#dbitsget">GET</a>] </li>
+                                    <div id="api/v1/items/{communityid}/collections">
+                                        <li><a href="#dbitsatts">https://unidemo.iris.cineca.it:443/rest/api/v1/bitstreams/{bitstreamid}/attachment</a>[<a href="#dbitsattsget">GET</a>] </li>
+                                    </div>                                    
+                                </div>
+                            </ul>
+                        </li>
+                    </div>
+                </ul>
+            </li>&nbsp;         
+            <li>
+                <a href="#inputforms">Inputforms</a>
+                <ul>
+                    <div id="api/v1/inputforms">&nbsp;
+                       
+                                <div id="api/v1/inputforms/{inputformid}">
+                                    <li><a href="#dinpsid">https://unidemo.iris.cineca.it:443/rest/api/v1/inputforms/{inputformid}</a>[<a href="#dinpsidget">GET</a>] </li>
+                                    <div id="api/v1/items/{inputformid}/forms">
+                                        <li><a href="#dinpsfrm">https://unidemo.iris.cineca.it:443/rest/api/v1/inputforms/{inputformid}/form</a>[<a href="#dinpsfrmget">GET</a>] </li>
+                                    </div>       
+                                    <div id="api/v1/items/{inputformid}/valuepairs">
+                                        <li><a href="#dinpsvp">https://unidemo.iris.cineca.it:443/rest/api/v1/inputforms/{inputformid}/valuepairs</a>[<a href="#dinpsvpget">GET</a>] </li>
+                                    </div>                                       
+                                </div>
+                           
+                    </div>
+                </ul>
+            </li>&nbsp;  
+            <li>
+                <a href="#ance">Ance</a>
+                <ul>
+                    <div id="api/v1/ance">&nbsp;
+                        
+                                <div id="api/v1/ance/{crisid}">
+                                    <li><a href="#danceid">https://unidemo.iris.cineca.it:443/rest/api/v1/ance/{crisid}</a>[<a href="#danceidget">GET</a>] </li>                                    
+                                </div>
+                                <div id="api/v1/ance/search">
+                                    <li><a href="#dancesearch">https://unidemo.iris.cineca.it:443/rest/api/v1/ance/search</a>[<a href="#dancesearchpost">POST</a>] </li>
+                                </div>                                
+                           
+                    </div>
+                </ul>
+            </li>&nbsp;      
+			<li>
+                <a href="#persons">Persons</a>
+				<ul>
+                    <div id="rm/restservices/api/v1/persons">&nbsp;
+                        
+                                <div id="rm/restservices/api/v1/persons/crisid/{crisid}">
+                                    <li><a href="#dpersonscrisid">https://unidemo.iris.cineca.it:443/rm/restservices/api/v1/persons/crisid/{crisid}</a>[<a href="#dpersonscrisidget">GET</a>] </li>                                    
+                                </div>
+                                <div id="rm/restservices/api/v1/persons/{id}">
+                                    <li><a href="#dpersonsid">https://unidemo.iris.cineca.it:443/rm/restservices/api/v1/persons/{id}</a>[<a href="#dpersonsidget">GET</a>] </li>
+                                </div>                                
+                          
+                    </div>
+                </ul>
+            </li>&nbsp; 
+        </ul>
+
+        <h2 id="items">Items</h2>
+			<div>
+				<p><em>Items JSON rappresentation explained:</em></p>
+				<ul>
+					<li>
+						<div>Item field list [<a onclick="toggle('ditemsexp'); return false;" href="#"><em><span id="link-ditemsexp">expand</span></em></a>] </div>
+						<div style="display: none;" class="toggle" id="ditemsexp">
+							</br>
+							<table>
+							  <tbody>
+								<tr>
+								  <th>field name</th>
+								  <th>description</th>
+								  <th>REST object</th>
+								</tr>
+								<tr>
+								  <td><p><strong>"id"</strong></p></td>
+								  <td><p><em>Item Internal ID</em></p></td>
+								  <td><p>"item"</p></td>
+								</tr>
+								<tr>
+								  <td><p><strong>"handle"</strong></p></td>
+								  <td><p><em>Handle persistent identifier</em></p></td>
+								  <td><p>"item"</p></td>
+								</tr>								
+								<tr>
+								  <td><p><strong>"lastModified"</strong></p></td>
+								  <td><p><em>Last modification date (track changes to bitstreams as well, not to linked entities: people, orgunit, collection, etc.)</em></p></td>
+								  <td><p>"item"</p></td>
+								</tr>
+								<tr>
+								  <td><p><strong>"withdrawn"</strong></p></td>
+								  <td><p><em>True if the item has been logically deleted</em></p></td>
+								  <td><p>"item"</p></td>
+								</tr>	
+								<tr>
+								  <td><p><strong>"archived"</strong></p></td>
+								  <td><p><em>True if the item has been completed by the submitter</em></p></td>
+								  <td><p>"item"</p></td>
+								</tr>	
+								<tr>
+								  <td><p><strong>"snapshot"</strong></p></td>
+								  <td><p><em>True if the item is a snapshot taken by the histories system before a change event affect the underline item</em></p></td>
+								  <td><p>"item"</p></td>
+								</tr>	
+								<tr>
+								  <td><p><strong>"inWorkspace"</strong></p></td>
+								  <td><p><em>True if the item is in workspace (bozza)</em></p></td>
+								  <td><p>"item"</p></td>
+								</tr>
+								<tr>
+								  <td><p><strong>"inWorkFlow"</strong></p></td>
+								  <td><p><em>True if the item is under workflow process</em></p></td>
+								  <td><p>"item"</p></td>
+								</tr>
+								<tr>
+								  <td><p><strong>"inReopened"</strong></p></td>
+								  <td><p><em>True if the item is reopened</em></p></td>
+								  <td><p>"item"</p></td>
+								</tr>								
+								<tr>
+								  <td><p><strong>"workFlowValidationRule"</strong></p></td>
+								  <td><p><em>Workflow state (step reached, if any)</em></p></td>
+								  <td><p>"item"</p></td>
+								</tr>
+								<tr>
+								  <td><p><strong>"simpleItemStatus"</strong></p></td>
+								  <td><p><em>Item status (UNKNOWN = -1, WORKSPACE = 0, WORKFLOW = 1, DEFINITIVO = 2, WITHDRAWN = 3)</em></p></td>
+								  <td><p>"item"</p></td>
+								</tr>								
+								<tr>
+								  <td><p><strong>"earlyDraft"</strong></p></td>
+								  <td><p><em>True if the item has not been completed by the submitter</em></p></td>
+								  <td><p>"item"</p></td>
+								</tr>
+								<tr>
+								  <td><p><strong>"workFlowValidationStatus"</strong></p></td>
+								  <td><p><em>Product status: draft, completed (workflow inactive), in workflow (step 1, 2 or 3), validated, rejected</em></p></td>
+								  <td><p>"item"</p></td>
+								</tr>
+								<tr>
+								  <td><p><strong>"identifierToDisseminate"</strong></p></td>
+								  <td><p><em>ItemID of the version to use for dissemination (public portal, reporting)</em></p></td>
+								  <td><p>"item"</p></td>
+								</tr>
+								<tr>
+								  <td><p><strong>"inputFormId"</strong></p></td>
+								  <td><p><em>ID of the inputform profile used to create/edit last time the item</em></p></td>
+								  <td><p>"item"</p></td>
+								</tr>
+								<tr>
+								  <td><p><strong>"lookupValues"</strong></p></td>
+								  <td><p><em>Short-cut values avaible in item metadata field (useful for not lookup detail)</em></p></td>
+								  <td><p>"item"</p></td>
+								</tr>	
+								<tr>
+								  <td><p><strong>"submitterID"</strong></p></td>
+								  <td><p><em>Submitter id</em></p></td>
+								  <td><p>"item"</p></td>
+								</tr>
+								<tr>
+								  <td><p><strong>"submitterNetID"</strong></p></td>
+								  <td><p><em>Submitter id (eperson)</em></p></td>
+								  <td><p>"item"</p></td>
+								</tr>
+								<tr>
+								  <td><p><strong>"collectionHandle"</strong></p></td>
+								  <td><p><em>Primary collection handle</em></p></td>
+								  <td><p>"item"</p></td>
+								</tr>
+								<tr>
+								  <td><p><strong>"name"</strong></p></td>
+								  <td><p><em>Not used</em></p></td>
+								  <td><p>"item"</p></td>
+								</tr>	
+								<tr>
+								  <td><p><strong>"type"</strong></p></td>
+								  <td><p><em>IRIS resource type</em></p></td>
+								  <td><p>"item"</p></td>
+								</tr>
+								<tr>
+								  <td><p><strong>"self"</strong></p></td>
+								  <td><p><em>Item REST discoverable URI</em></p></td>
+								  <td><p>"item"</p></td>
+								</tr>
+								<tr>
+								  <td><p><strong>"expand"</strong></p></td>
+								  <td><p><em>Expand options list</em></p></td>
+								  <td><p>"item"</p></td>
+								</tr>								
+								<tr>
+								  <td><p><strong>"submitter"</strong></p></td>
+								  <td><p><em>Details about the submitter (IR Account)</em></p></td>
+								  <td><p>"item"</p></td>
+								</tr>
+								<tr>
+								  <td><p><strong>"id"</strong></p></td>
+								  <td><p><em>Submitter id</em></p></td>
+								  <td><p>"submitter"</p></td>
+								</tr>
+								<tr>
+								  <td><p><strong>"lastName"</strong></p></td>
+								  <td><p><em>Submiter last name</em></p></td>
+								  <td><p>"submitter"</p></td>
+								</tr>
+								<tr>
+								  <td><p><strong>"firstName"</strong></p></td>
+								  <td><p><em>Submitter first name</em></p></td>
+								  <td><p>"submitter"</p></td>
+								</tr>
+								<tr>
+								  <td><p><strong>"netid"</strong></p></td>
+								  <td><p><em>Submitter id (eperson)</em></p></td>
+								  <td><p>"submitter"</p></td>
+								</tr>
+								<tr>
+								  <td><p><strong>"email"</strong></p></td>
+								  <td><p><em>Submitter email</em></p></td>
+								  <td><p>"submitter"</p></td>
+								</tr>
+								<tr>
+								  <td><p><strong>"owner"</strong></p></td>
+								  <td><p><em>Details about the owner (IR Account)</em></p></td>
+								  <td><p>"item"</p></td>
+								</tr>								
+								<tr>
+								  <td><p><strong>"id"</strong></p></td>
+								  <td><p><em>Owner id</em></p></td>
+								  <td><p>"owner"</p></td>
+								</tr>
+								<tr>
+								  <td><p><strong>"lastName"</strong></p></td>
+								  <td><p><em>Owner last name</em></p></td>
+								  <td><p>"owner"</p></td>
+								</tr>
+								<tr>
+								  <td><p><strong>"firstName"</strong></p></td>
+								  <td><p><em>Owner first name</em></p></td>
+								  <td><p>"owner"</p></td>
+								</tr>
+								<tr>
+								  <td><p><strong>"netid"</strong></p></td>
+								  <td><p><em>Owner id (eperson)</em></p></td>
+								  <td><p>"owner"</p></td>
+								</tr>
+								<tr>
+								  <td><p><strong>"email"</strong></p></td>
+								  <td><p><em>Owner email</em></p></td>
+								  <td><p>"owner"</p></td>
+								</tr>
+								<tr>
+								  <td><p><strong>"collection"</strong></p></td>
+								  <td><p><em>Item's primary collection</em></p></td>
+								  <td><p>"item"</p></td>
+								</tr>							
+								<tr>
+								  <td><p><strong>"name"</strong></p></td>
+								  <td><p><em>Collection name</em></p></td>
+								  <td><p>"collection"</p></td>
+								</tr>
+								<tr>
+								  <td><p><strong>"id"</strong></p></td>
+								  <td><p><em>Collection id</em></p></td>
+								  <td><p>"collection"</p></td>
+								</tr>
+								<tr>
+								  <td><p><strong>"type"</strong></p></td>
+								  <td><p><em>Iris resource type</em></p></td>
+								  <td><p>"collection"</p></td>
+								</tr>
+								<tr>
+								  <td><p><strong>"handle"</strong></p></td>
+								  <td><p><em>Collection handle</em></p></td>
+								  <td><p>"collection"</p></td>
+								</tr>
+							  </tbody>
+							</table>
+						</div>
+					</li>
+				</ul>
+			</div>
+
+        <div class="item">
+            <h3 id="ditems">rest/api/v1/items</h3>
+            <h6>Methods</h6>
+            <div class="methods">
+                <div class="method">
+                    <h4 id="ditemsget">GET&nbsp; </h4>
+                    <h6>rest/api/v1/items<span class="optional">?expand</span><span class="optional">&amp;limit</span><span class="optional">&amp;offset</span></h6>
+                    <p>Returns a list of IRIS IR items.</p>
+                    <h6>request query parameters</h6>
+                    <table>
+                      <tbody>
+                        <tr>
+                          <th>parameter</th>
+                          <th>value</th>
+                          <th>description</th>
+                        </tr>
+                        <tr>
+                          <td>
+                          <p><strong>expand</strong></p>
+                          </td>
+                          <td>
+                          <p><em><a href="http://www.w3.org/TR/xmlschema-2/#string">string</a></em></p>
+                          </td>
+                          <td>
+                          <p>a String containing acceptable expand list (separated by comma). See response for values</p>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                          <p><strong>limit</strong></p>
+                          </td>
+                          <td>
+                          <p><em><a href="http://www.w3.org/TR/xmlschema-2/#int">int</a></em></p>
+                          </td>
+                          <td>
+                            <p>a hint as to the the maximum number of items to return in each call. Note that the IRIS server reserves the right to impose a maxResults limit that is lower than the value that a client provides, dues to lack or resources or any other condition. When this happens, your results will be truncated.</p>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <p><strong>offset</strong></p>
+                          </td>
+                          <td>
+                            <p><em><a href="http://www.w3.org/TR/xmlschema-2/#int">int</a></em></p>
+                          </td>
+                          <td>
+                            <p>the index of the first item to return (0-based). must be 0 or any positive value</p>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <p><em>available response representations:</em></p>
+                    <ul>
+                        <li>
+                            <div>200 - application/json [<a onclick="toggle('ditemsdet'); return false;" href="#"><em><span id="link-ditemsdet">expand</span></em></a>] </div>
+                            <div style="display: none;" class="toggle" id="ditemsdet">
+                                <p /><h6>Example</h6>
+                                <pre><code>
+{
+    "next": "offset=20&limit=10",
+    "prev": "offset=10&limit=10",
+    "restResourseDTOList": [
+        {
+            "id": 1,
+            "owner": {
+                "id": -1,
+                "lastName": null,
+                "firstName": null,
+                "netid": null,
+                "email": null
+            },
+            "lastModified": 1300185331000,
+            "collection": {
+                "name": "01.a Pubblicazione su Rivista",
+                "id": 58,
+                "type": 3,
+                "handle": "123456789/1"
+            },
+			"lookupValues":{
+				"summary":"2014",
+				"spage":"13",
+				"contextidab":null,
+				"contextdept":"|734|1210|",
+				"isbn":"9788878709706",
+				......
+			}
+            "submitterID": 574,
+            "submitterNetID": "19838",
+            "identifierToDisseminate": -1,
+            "workFlowValidationStatus": -1,
+            "simpleItemStatus": 0,
+            "workFlowValidationRule": -1,
+            "collectionHandle": "123456789/1",
+            "inputFormId": 1,
+            "withdrawn": false,
+            "archived": false,
+            "snapshot": false,
+            "inWorkFlow": false,
+            "inWorkspace": true,
+            "earlyDraft": true,
+            "submitter": {
+                "id": 574,
+                "lastName": "PAI NOTA",
+                "firstName": "AN MAIA",
+                "netid": "19838",
+                "email": "user@email.it"
+            },
+			"reopened": false,
+            "name": "",
+            "type": "items",
+            "self": "/rest/api/v1/items/1",
+            "expand": [
+                "metadata",
+                "bitstreams",
+                "history",
+                "all"
+            ]
+        },
+        { … },
+        { … },
+        { … },
+        { … },
+        { … },
+        { … },
+        { … },
+        { … },
+        { … }
+    ]
+}
+                                </code></pre>
+                                <p />
+                                <p>Returned item lists according query parameter if the currently authenticated user has permission to view it. Contains a partial representation of the item.</p>
+                                <div class="representation" />
+                            </div>
+                        </li>
+                        <li>
+                            <div>401 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('ditemsdet401'); return false;" href="#"><em><span id="link-ditemsdet401">expand</span></em></a>] </abbr></div>
+                            <div style="display: none;" class="toggle" id="ditemsdet401">
+                                <p>Returned if the currently authenticated user does not have permission to view any item in the list.</p>
+                                <p/><h6>Example</h6>
+                                <pre><code>
+{
+    "message": "Unauthorized attempt to access ....",
+    "code": "UNAUTHORIZED"
+}
+                                </code></pre>
+                            </div>
+                        </li>                      
+                        <li>
+                            <div>500 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('ditemsdet500'); return false;" href="#"><em><span id="link-ditemsdet500">expand</span></em></a>] </abbr></div>
+                            <div style="display: none;" class="toggle" id="ditemsdet500">
+                                <p>Returned if was any server error type.</p>
+                                <p/><h6>Example</h6>
+                                <pre><code>
+{
+    "message": ".....",
+    "code": "...."
+}
+                                </code></pre>                                
+                            </div>
+                        </li>                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+            
+        <div class="item">
+            <h3 id="ditemsid">rest/api/v1/items/{itemid} </br> rest/api/v1/items/{namingAuthority}/{localName}</h3>
+            <h6>Methods</h6>
+            <div class="methods">
+                <div class="method">
+                    <h4 id="ditemsidget">GET&nbsp; </h4>
+                    <h6>rest/api/v1/items/{itemid}<span class="optional">?expand</span></h6>
+					<h6>rest/api/v1/items/namingAuthority}/{localName}<span class="optional">?expand</span></h6>
+                    <p>Returns a IRIS IR item.</p>
+                    <h6>request query parameters</h6>
+                    <table>
+                      <tbody>
+                        <tr>
+                          <th>parameter</th>
+                          <th>value</th>
+                          <th>description</th>
+                        </tr>
+                        <tr>
+                          <td>
+                          <p><strong>expand</strong></p>
+                          </td>
+                          <td>
+                          <p><em><a href="http://www.w3.org/TR/xmlschema-2/#string">string</a></em></p>
+                          </td>
+                          <td>
+                          <p>a String containing acceptable expand list (separated by comma). See response for values</p>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <p><em>available response representations:</em></p>
+                    <ul>
+                        <li>
+                            <div>200 - application/json [<a onclick="toggle('ditemsiddet'); return false;" href="#"><em><span id="link-ditemsiddet">expand</span></em></a>] </div>
+                            <div style="display: none;" class="toggle" id="ditemsiddet">
+                                <p /><h6>Example</h6>
+                                <pre><code>   
+    {
+        "id": 1,
+        "owner": {
+            "id": -1,
+            "lastName": null,
+            "firstName": null,
+            "netid": null,
+            "email": null
+        },
+        "lastModified": 1300185331000,
+        "collection": {
+            "name": "01.a Pubblicazione su Rivista",
+            "id": 58,
+            "type": 3,
+            "handle": "123456789/1"
+        },
+		"lookupValues":{
+			"summary":"2014",
+			"spage":"13",
+			"contextidab":null,
+			"contextdept":"|734|1210|",
+			"isbn":"9788878709706",
+			......
+		}		
+        "submitterID": 574,
+        "submitterNetID": "19838",
+        "identifierToDisseminate": -1,
+        "workFlowValidationStatus": -1,
+        "simpleItemStatus": 0,
+        "workFlowValidationRule": -1,
+        "collectionHandle": "123456789/1",
+        "inputFormId": 1,
+        "withdrawn": false,
+        "archived": false,
+        "snapshot": false,
+        "inWorkFlow": false,
+        "inWorkspace": true,
+        "earlyDraft": true,
+        "submitter": {
+            "id": 574,
+            "lastName": "PAI NOIO",
+            "firstName": "ANA MIA",
+            "netid": "19838",
+            "email": "user@email.com"
+        },
+		"reopened": false,
+        "name": "",
+        "type": "items",
+        "self": "/rest/api/v1/items/1",
+        "expand": [
+            "metadata",
+            "bitstreams",
+            "history",
+            "all"
+        ]
+    }
+                                </code></pre>
+                                <p />
+                                <p>Returned item if the currently authenticated user has permission to view it. Contains a partial representation of the item.</p>
+                                <div class="representation" />
+                            </div>
+                        </li>
+                        <li>
+                            <div>401 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('ditemsiddet401'); return false;" href="#"><em><span id="link-ditemsiddet401">expand</span></em></a>] </abbr></div>
+                            <div style="display: none;" class="toggle" id="ditemsiddet401">
+                                <p>Returned if the currently authenticated user does not have permission to view it.</p>
+                                <p/><h6>Example</h6>
+                                <pre><code>
+{
+    "message": "Unauthorized attempt to access ....",
+    "code": "UNAUTHORIZED"
+}
+                                </code></pre>
+                            </div>
+                        </li>    
+                        <li>
+                            <div>404 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('ditemsiddet404'); return false;" href="#"><em><span id="link-ditemsiddet404">expand</span></em></a>] </abbr></div>
+                            <div style="display: none;" class="toggle" id="ditemsiddet404">
+                                <p>Returned if item does not exist.</p>
+                                <p/><h6>Example</h6>
+                                <pre><code>
+{
+    "message": "...",
+    "code": "..."
+}
+                                </code></pre>
+                            </div>
+                        </li>                         
+                        <li>
+                            <div>500 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('ditemsiddet500'); return false;" href="#"><em><span id="link-ditemsiddet500">expand</span></em></a>] </abbr></div>
+                            <div style="display: none;" class="toggle" id="ditemsiddet500">
+                                <p>Returned if was any server error type.</p>
+                                <p/><h6>Example</h6>
+                                <pre><code>
+{
+    "message": ".....",
+    "code": "...."
+}
+                                </code></pre>                                
+                            </div>
+                        </li>                        
+                    </ul>
+                </div>
+            </div>
+        </div>            
+
+        <div class="item">
+            <h3 id="ditemsmeta">rest/api/v1/items/{itemid}/metadata </br> rest/api/v1/items/{namingAuthority}/{localName}/metadata</h3>
+            <h6>Methods</h6>
+            <div class="methods">
+                <div class="method">
+                    <h4 id="ditemsmetaget">GET&nbsp; </h4>
+                    <h6>rest/api/v1/items/{itemid}/metadata</h6>
+					<h6>rest/api/v1/items/{namingAuthority}/{localName}/metadata</h6>
+                    <p>Returns a IRIS IR metadata item. (Hashmap key- values list)</p>
+                    <h6>request query parameters: none</h6>
+                    <p><em>available response representations:</em></p>
+                    <ul>
+                        <li>
+                            <div>200 - application/json [<a onclick="toggle('ditemsmetadet'); return false;" href="#"><em><span id="link-ditemsmetadet">expand</span></em></a>] </div>
+                            <div style="display: none;" class="toggle" id="ditemsmetadet">
+                                <p /><h6>Example</h6>
+                                <pre><code>   
+{
+    "dc.cilea.codiceupload": [
+    {
+        "value": "20201",
+        "authority": null,
+        "place": 1
+    }
+    ],
+    "dc.date.available": [
+    {
+        "value": "2015-03-04T11:58:25Z",
+        "authority": null,
+        "place": 1
+    }
+    ],
+    "dc.identifier.uri": [
+    {
+        "value": "http://hdl.handle.net/1234/608551",
+        "authority": null,
+        "place": 1
+    }
+    ],
+    "dc.description.allpeople": [
+    {
+        "value": "Bar, Caro; Mart, Salvat; Salvat, Mari Cristi; Scara Mugno, Gabrie; Sch, Lua",
+        "authority": null,
+        "place": 1
+    }
+    ],
+    "dc.title": [
+    {
+        "value": "Thermomechanical stress–strain numerical modelling of deglaciation since the Last Glacial Maximum in the Adamello Group (Rhaetian Alps, Italy)",
+        "authority": null,
+        "place": 1
+    }
+    ],
+    "dc.description.provenance": [
+    {
+        "value": "Submitted by Cineca, Administrator (1) on 2015-03-04T11:58:25Z\ No. of bitstreams: 1\ test.pdf: 15 bytes, checksum: 1040a164c0a51587bd008e21254748c8 (MD5)",
+        "authority": null,
+        "place": 1
+    },
+    {
+        "value": "Made available in DSpace on 2015-03-04T11:58:25Z (GMT). No. of bitstreams: 1\ test.pdf: 15 bytes, checksum: 1040a164c0a51587bd008e21254748c8 (MD5)\ Previous issue date: 2014",
+        "authority": null,
+        "place": 2
+    }
+    ]
+}
+                                </code></pre>
+                                <p />
+                                <p>Returned item if the currently authenticated user has permission to view it. Contains a partial representation of the item.</p>
+                                <div class="representation" />
+                            </div>
+                        </li>
+                        <li>
+                            <div>401 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('ditemsmetadet401'); return false;" href="#"><em><span id="link-ditemsmetadet401">expand</span></em></a>] </abbr></div>
+                            <div style="display: none;" class="toggle" id="ditemsmetadet401">
+                                <p>Returned if the currently authenticated user does not have permission to view it.</p>
+                                <p/><h6>Example</h6>
+                                <pre><code>
+{
+    "message": "Unauthorized attempt to access ....",
+    "code": "UNAUTHORIZED"
+}
+                                </code></pre>
+                            </div>
+                        </li>    
+                        <li>
+                            <div>404 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('ditemsmetadet404'); return false;" href="#"><em><span id="link-ditemsmetadet404">expand</span></em></a>] </abbr></div>
+                            <div style="display: none;" class="toggle" id="ditemsmetadet404">
+                                <p>Returned if item does not exist.</p>
+                                <p/><h6>Example</h6>
+                                <pre><code>
+{
+    "message": "...",
+    "code": "..."
+}
+                                </code></pre>
+                            </div>
+                        </li>                         
+                        <li>
+                            <div>500 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('ditemsmetadet500'); return false;" href="#"><em><span id="link-ditemsmetadet500">expand</span></em></a>] </abbr></div>
+                            <div style="display: none;" class="toggle" id="ditemsmetadet500">
+                                <p>Returned if was any server error type.</p>
+                                <p/><h6>Example</h6>
+                                <pre><code>
+{
+    "message": ".....",
+    "code": "...."
+}
+                                </code></pre>                                
+                            </div>
+                        </li>                        
+                    </ul>
+                </div>
+            </div>
+        </div>            
+
+        <div class="item">
+            <h3 id="ditemsmetak">rest/api/v1/items/{itemid}/metadata/{metadataKey} </br> rest/api/v1/items/{namingAuthority}/{localName}/metadata/{metadataKey}</h3>
+            <h6>Methods</h6>
+            <div class="methods">
+                <div class="method">
+                    <h4 id="ditemsmetakget">GET&nbsp; </h4>
+                    <h6>rest/api/v1/items/{itemid}/metadata/{metadataKey}/</h6>
+					<h6>rest/api/v1/items/{namingAuthority}/{localName}/metadata/{metadataKey}/</h6>
+                    <p>Returns a IRIS IR specific metadata key (list of value) for specified item.</p>
+                    <h6>request query parameters: none</h6>
+                    <p><em>available response representations:</em></p>
+                    <ul>
+                        <li>
+                            <div>200 - application/json [<a onclick="toggle('ditemsmetakdet'); return false;" href="#"><em><span id="link-ditemsmetakdet">expand</span></em></a>] </div>
+                            <div style="display: none;" class="toggle" id="ditemsmetakdet">
+                                <p /><h6>Example</h6>
+                                <pre><code>   
+[
+	{
+		"value": "BAR, Caro",
+		"authority": "rp40500",
+		"place": 1
+	},
+	{
+		"value": "MAR, Salre",
+		"authority": "rp45698",
+		"place": 2
+	},
+	{
+		"value": "SALV, Mara Crina",
+		"authority": "rp02287",
+		"place": 3
+	},
+	{
+		"value": "SCAR MUZZA, Gabele",
+		"authority": "rp89532",
+		"place": 4
+	},
+	{
+		"value": "SCHI, LUA",
+		"authority": "rp27544",
+		"place": 5
+	}
+]
+                                </code></pre>
+                                <p />
+                                <p>Returned item if the currently authenticated user has permission to view it. Contains a partial representation of the item.</p>
+                                <div class="representation" />
+                            </div>
+                        </li>
+                        <li>
+                            <div>401 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('ditemsmetakdet401'); return false;" href="#"><em><span id="link-ditemsmetakdet401">expand</span></em></a>] </abbr></div>
+                            <div style="display: none;" class="toggle" id="ditemsmetakdet401">
+                                <p>Returned if the currently authenticated user does not have permission to view it.</p>
+                                <p/><h6>Example</h6>
+                                <pre><code>
+{
+    "message": "Unauthorized attempt to access ....",
+    "code": "UNAUTHORIZED"
+}
+                                </code></pre>
+                            </div>
+                        </li>    
+                        <li>
+                            <div>404 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('ditemsmetakdet404'); return false;" href="#"><em><span id="link-ditemsmetakdet404">expand</span></em></a>] </abbr></div>
+                            <div style="display: none;" class="toggle" id="ditemsmetakdet404">
+                                <p>Returned if item does not exist.</p>
+                                <p/><h6>Example</h6>
+                                <pre><code>
+{
+    "message": "...",
+    "code": "..."
+}
+                                </code></pre>
+                            </div>
+                        </li>                         
+                        <li>
+                            <div>500 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('ditemsmetakdet500'); return false;" href="#"><em><span id="link-ditemsmetakdet500">expand</span></em></a>] </abbr></div>
+                            <div style="display: none;" class="toggle" id="ditemsmetakdet500">
+                                <p>Returned if was any server error type.</p>
+                                <p/><h6>Example</h6>
+                                <pre><code>
+{
+    "message": ".....",
+    "code": "...."
+}
+                                </code></pre>                                
+                            </div>
+                        </li>                        
+                    </ul>
+                </div>
+            </div>
+        </div>            
+            
+        <div class="item">
+            <h3 id="ditemsmetabs">rest/api/v1/items/{itemid}/bitstreams </br> rest/api/v1/items/{namingAuthority}/{localName}/bitstreams</h3>
+            <h6>Methods</h6>
+            <div class="methods">
+                <div class="method">
+                    <h4 id="ditemsmetabsget">GET&nbsp; </h4>
+                    <h6>rest/api/v1/items/{itemid}/bitstreams</h6>
+					<h6>rest/api/v1/items/{namingAuthority}/{localName}/bitstreams</h6>
+                    <p>Returns a IRIS IR specific bitstreams item.</p>
+                    <h6>request query parameters: none</h6>
+                    <p><em>available response representations:</em></p>
+                    <ul>
+                        <li>
+                            <div>200 - application/json [<a onclick="toggle('ditemsmetabsdet'); return false;" href="#"><em><span id="link-ditemsmetabsdet">expand</span></em></a>] </div>
+                            <div style="display: none;" class="toggle" id="ditemsmetabsdet">
+                                <p /><h6>Example</h6>
+                                <pre><code>   
+[
+    {
+        "format": "Adobe PDF",
+        "mimeType": "application/pdf",
+        "retrieveLink": "/bitstreams/59721/attachment",
+        "bundleName": "ORIGINAL",
+        "sizeBytes": 15,
+        "checkSum": {
+            "value": "1040a164c0a51587bd008e21254748c8",
+            "checkSumAlgorith": "MD5"
+        },
+        "sequenceId": 1,
+        "name": "test.pdf",
+        "type": "bitstream",
+        "id": 59721,
+        "expand": [
+            "parent",
+            "licenseType",
+            "all"
+        ],
+        "self": "/rest/api/v1/bitstream/59721"
+    },
+    {
+        "format": "License",
+        "mimeType": "text/plain; charset=utf-8",
+        "retrieveLink": "/bitstreams/59725/attachment",
+        "bundleName": "LICENSE",
+        "sizeBytes": 0,
+        "checkSum": {
+            "value": "d41d8cd98f00b204e9800998ecf8427e",
+            "checkSumAlgorith": "MD5"
+        },
+        "sequenceId": 2,
+        "name": "license.txt",
+        "type": "bitstream",
+        "id": 59725,
+        "expand": [
+            "parent",
+            "licenseType",
+            "all"
+        ],
+        "self": "/rest/api/v1/bitstream/59725"
+    }
+]
+                                </code></pre>
+                                <p />
+                                <p>Returned item if the currently authenticated user has permission to view it. Contains a partial representation of the item.</p>
+                                <div class="representation" />
+                            </div>
+                        </li>
+                        <li>
+                            <div>401 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('ditemsmetabsdet401'); return false;" href="#"><em><span id="link-ditemsmetabsdet401">expand</span></em></a>] </abbr></div>
+                            <div style="display: none;" class="toggle" id="ditemsmetabsdet401">
+                                <p>Returned if the currently authenticated user does not have permission to view it.</p>
+                                <p/><h6>Example</h6>
+                                <pre><code>
+{
+    "message": "Unauthorized attempt to access ....",
+    "code": "UNAUTHORIZED"
+}
+                                </code></pre>
+                            </div>
+                        </li>    
+                        <li>
+                            <div>404 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('ditemsmetabsdet404'); return false;" href="#"><em><span id="link-ditemsmetabsdet404">expand</span></em></a>] </abbr></div>
+                            <div style="display: none;" class="toggle" id="ditemsmetabsdet404">
+                                <p>Returned if item does not exist.</p>
+                                <p/><h6>Example</h6>
+                                <pre><code>
+{
+    "message": "...",
+    "code": "..."
+}
+                                </code></pre>
+                            </div>
+                        </li>                         
+                        <li>
+                            <div>500 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('ditemsmetabsdet500'); return false;" href="#"><em><span id="link-ditemsmetabsdet500">expand</span></em></a>] </abbr></div>
+                            <div style="display: none;" class="toggle" id="ditemsmetabsdet500">
+                                <p>Returned if was any server error type.</p>
+                                <p/><h6>Example</h6>
+                                <pre><code>
+{
+    "message": ".....",
+    "code": "...."
+}
+                                </code></pre>                                
+                            </div>
+                        </li>                        
+                    </ul>
+                </div>
+            </div>
+        </div>       
+		
+        <div class="item">
+            <h3 id="ditemshist">rest/api/v1/items/{itemid}/histories </br> rest/api/v1/items/{namingAuthority}/{localName}/histories</h3>
+            <h6>Methods</h6>
+            <div class="methods">
+                <div class="method">
+                    <h4 id="ditemshistget">GET&nbsp; </h4>
+                    <h6>rest/api/v1/items/{itemid}/histories</h6>
+					<h6>rest/api/v1/items/{namingAuthority}/{localName}/histories</h6>
+                    <p>Returns a IRIS IR specific bitstreams item.</p>
+                    <h6>request query parameters: none</h6>
+                    <p><em>available response representations:</em></p>
+                    <ul>
+                        <li>
+                            <div>200 - application/json [<a onclick="toggle('ditemshistdet'); return false;" href="#"><em><span id="link-ditemshistdet">expand</span></em></a>] </div>
+                            <div style="display: none;" class="toggle" id="ditemshistdet">
+                                <p /><h6>Example</h6>
+                                <pre><code>   
+[
+    {
+		"date": 1430931044533,
+		"eventType": "item_sync",
+		"jsonDetails": "{\"eventType\":\"ITEM_SYNC\",\"snapshotID\":-1}",
+		"userString": "SURNAME, name <email>",
+		"extraInfo": null
+    },
+    {...}
+]
+                                </code></pre>
+                                <p />
+                                <p>Returned item histories if the currently authenticated user has permission to view it. Contains a full representation of the item histories.</p>
+                                <div class="representation" />
+                            </div>
+                        </li>
+                        <li>
+                            <div>401 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('ditemshistdet401'); return false;" href="#"><em><span id="link-ditemshistdet401">expand</span></em></a>] </abbr></div>
+                            <div style="display: none;" class="toggle" id="ditemshistdet401">
+                                <p>Returned if the currently authenticated user does not have permission to view it.</p>
+                                <p/><h6>Example</h6>
+                                <pre><code>
+{
+    "message": "Unauthorized attempt to access ....",
+    "code": "UNAUTHORIZED"
+}
+                                </code></pre>
+                            </div>
+                        </li>    
+                        <li>
+                            <div>404 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('ditemshistdet404'); return false;" href="#"><em><span id="link-ditemshistdet404">expand</span></em></a>] </abbr></div>
+                            <div style="display: none;" class="toggle" id="ditemshistdet404">
+                                <p>Returned if item does not exist.</p>
+                                <p/><h6>Example</h6>
+                                <pre><code>
+{
+    "message": "...",
+    "code": "..."
+}
+                                </code></pre>
+                            </div>
+                        </li>                         
+                        <li>
+                            <div>500 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('ditemshistdet500'); return false;" href="#"><em><span id="link-ditemshistdet500">expand</span></em></a>] </abbr></div>
+                            <div style="display: none;" class="toggle" id="ditemshistdet500">
+                                <p>Returned if was any server error type.</p>
+                                <p/><h6>Example</h6>
+                                <pre><code>
+{
+    "message": ".....",
+    "code": "...."
+}
+                                </code></pre>                                
+                            </div>
+                        </li>                        
+                    </ul>
+                </div>
+            </div>
+        </div>       
+
+        <div class="item">
+            <h3 id="ditemssearch">rest/api/v1/items/search</h3>
+            <h6>Methods</h6>
+            <div class="methods">
+                <div class="method">
+                    <h4 id="ditemssearchpost">POST&nbsp;</h4>
+                    <p>Search item by JSON search DTO</p>
+                   
+                    <ul>
+                        <li>
+                            <div>application/json<abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('ditemssearchreq'); return false;" href="#"><em><span id="link-ditemssearchreq">expand</span></em></a>] </abbr></div>
+                            <div style="display: none;" class="toggle" id="ditemssearchreq">
+                                <p>
+                                </p><h6>Example</h6>
+                                <pre><code>
+{
+    "offset": 2,
+    "limit": 2,
+    "expand": "all",
+    "searchColsCriteria": [
+    {
+        "value": "21/04/2015",
+        "operation": ">",
+        "column": "last_modified"
+    }
+    ],
+    "sortingColsCriteria": [
+    {
+        "column": "last_modified",
+        "asc": true
+    }
+    ]
+}
+                                </code></pre>
+                                <p></p>
+                            </div>
+                        </li>
+                    </ul>
+                    <p><em>available response representations:</em></p>
+                    <ul>
+                        <li>
+                            <div>200 - application/json [<a onclick="toggle('ditemssearchdet'); return false;" href="#"><em><span id="link-ditemssearchdet">expand</span></em></a>] </div>
+                            <div style="display: none;" class="toggle" id="ditemssearchdet">
+                                <p>
+                                </p><h6>Example</h6>
+                                <pre><code>
+{
+    "next": "offset=4&limit=2",
+    "prev": "offset=0&limit=2",
+    "restResourseDTOList": [
+        {
+            "id": 1,
+            "owner": {
+                "id": -1,
+                "lastName": null,
+                "firstName": null,
+                "netid": null,
+                "email": null
+            },
+            "lastModified": 1300185331000,
+            "collection": {
+                "name": "01.a Pubblicazione su Rivista",
+                "id": 58,
+                "type": 3,
+                "handle": "123456789/1"
+            },
+			"lookupValues":{
+				"summary":"2014",
+				"spage":"13",
+				"contextidab":null,
+				"contextdept":"|734|1210|",
+				"isbn":"9788878709706",
+				......
+			}			
+            "submitterID": 574,
+            "submitterNetID": "19838",
+            "identifierToDisseminate": -1,
+            "workFlowValidationStatus": -1,
+            "simpleItemStatus": 0,
+            "workFlowValidationRule": -1,
+            "collectionHandle": "123456789/1",
+            "inputFormId": 1,
+            "withdrawn": false,
+            "archived": false,
+            "snapshot": false,
+            "inWorkFlow": false,
+            "inWorkspace": true,
+            "earlyDraft": true,
+            "submitter": {
+                "id": 574,
+                "lastName": "PAI NOTA",
+                "firstName": "AN MAIA",
+                "netid": "19838",
+                "email": "user@email.it"
+            },
+			"reopened": false,
+            "name": "",
+            "type": "items",
+            "self": "/rest/api/v1/items/1",
+            "expand": [
+                "metadata",
+                "bitstreams",
+                "history",
+                "all"
+            ]
+        },
+        { … }
+    ]
+}
+                                </code></pre>
+                                <p />
+                                <p>Returned item lists according query parameter if the currently authenticated user has permission to view it. Contains a partial representation of the item.</p>
+                                <div class="representation" />
+                            </div>
+                        </li>
+                        <li>
+                            <div>401 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('ditemssearchdet401'); return false;" href="#"><em><span id="link-ditemssearchdet401">expand</span></em></a>] </abbr></div>
+                            <div style="display: none;" class="toggle" id="ditemssearchdet401">
+                                <p>Returned if the currently authenticated user does not have permission to view any item in the list.</p>
+                                <p/><h6>Example</h6>
+                                <pre><code>
+{
+    "message": "Unauthorized attempt to access ....",
+    "code": "UNAUTHORIZED"
+}
+                                </code></pre>
+                            </div>
+                        </li>                      
+                        <li>
+                            <div>500 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('ditemssearchdet500'); return false;" href="#"><em><span id="link-ditemssearchdet500">expand</span></em></a>] </abbr></div>
+                            <div style="display: none;" class="toggle" id="ditemssearchdet500">
+                                <p>Returned if was any server error type.</p>
+                                <p/><h6>Example</h6>
+                                <pre><code>
+{
+    "message": ".....",
+    "code": "...."
+}
+                                </code></pre>                                
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>      
+            
+        <h2 id="collections">Collections</h2>
+
+        <div class="collection">
+            <h3 id="dcols">rest/api/v1/collections</h3>
+            <h6>Methods</h6>
+            <div class="methods">
+                <div class="method">
+                    <h4 id="dcolsget">GET&nbsp; </h4>
+                    <h6>rest/api/v1/collections<span class="optional">?expand</span><span class="optional">&amp;limit</span><span class="optional">&amp;offset</span></h6>
+                    <p>Returns a list of IRIS IR collections.</p>
+                    <h6>request query parameters</h6>
+                    <table>
+                      <tbody>
+                        <tr>
+                          <th>parameter</th>
+                          <th>value</th>
+                          <th>description</th>
+                        </tr>
+                        <tr>
+                          <td>
+                          <p><strong>expand</strong></p>
+                          </td>
+                          <td>
+                          <p><em><a href="http://www.w3.org/TR/xmlschema-2/#string">string</a></em></p>
+                          </td>
+                          <td>
+                          <p>a String containing acceptable expand list (separated by comma). See response for values</p>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                          <p><strong>limit</strong></p>
+                          </td>
+                          <td>
+                          <p><em><a href="http://www.w3.org/TR/xmlschema-2/#int">int</a></em></p>
+                          </td>
+                          <td>
+                            <p>a hint as to the the maximum number of collections to return in each call. Note that the IRIS server reserves the right to impose a maxResults limit that is lower than the value that a client provides, dues to lack or resources or any other condition. When this happens, your results will be truncated.</p>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <p><strong>offset</strong></p>
+                          </td>
+                          <td>
+                            <p><em><a href="http://www.w3.org/TR/xmlschema-2/#int">int</a></em></p>
+                          </td>
+                          <td>
+                            <p>the index of the first collection to return (0-based). must be 0 or any positive value</p>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <p><em>available response representations:</em></p>
+                    <ul>
+                        <li>
+                            <div>200 - application/json [<a onclick="toggle('dcolsdet'); return false;" href="#"><em><span id="link-dcolsdet">expand</span></em></a>] </div>
+                            <div style="display: none;" class="toggle" id="dcolsdet">
+                                <p /><h6>Example</h6>
+                                <pre><code>
+{
+	"next": "offset=20&limit=10",
+	"prev": "offset=0&limit=10",
+	"restResourseDTOList": [
+	{
+		"parentCommunities": [ ],
+		"copyrightText": "",
+		"introductoryText": "",
+		"sidebarText": "",
+		"shortDescription": "",
+		"name": "Senza titolo",
+		"handle": "1234/608672",
+		"type": "collection",
+		"id": 121,
+		"expand": [
+			"parentCommunityList",
+			"license",
+			"logo",
+			"countItems",
+			"all"
+		],
+		"self": "/rest/api/v1/collection/121"
+	},
+	{ … },
+	{ … },
+	{ … },
+	{ … },
+	{ … },
+	{ … },
+	{ … },
+	{ … },
+	{ … }
+	]
+}
+                                </code></pre>
+                                <p />
+                                <p>Returned collections lists according query parameter if the currently authenticated user has permission to view it. Contains a partial representation of the collection.</p>
+                                <div class="representation" />
+                            </div>
+                        </li>
+                        <li>
+                            <div>401 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('dcolsdet401'); return false;" href="#"><em><span id="link-dcolsdet401">expand</span></em></a>] </abbr></div>
+                            <div style="display: none;" class="toggle" id="dcolsdet401">
+                                <p>Returned if the currently authenticated user does not have permission to view any collections in the list.</p>
+                                <p/><h6>Example</h6>
+                                <pre><code>
+{
+    "message": "Unauthorized attempt to access ....",
+    "code": "UNAUTHORIZED"
+}
+                                </code></pre>
+                            </div>
+                        </li>                      
+                        <li>
+                            <div>500 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('dcolsdet500'); return false;" href="#"><em><span id="link-dcolsdet500">expand</span></em></a>] </abbr></div>
+                            <div style="display: none;" class="toggle" id="dcolsdet500">
+                                <p>Returned if was any server error type.</p>
+                                <p/><h6>Example</h6>
+                                <pre><code>
+{
+    "message": ".....",
+    "code": "...."
+}
+                                </code></pre>                                
+                            </div>
+                        </li>                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+            
+        <div class="collections">
+            <h3 id="dcolsid">rest/api/v1/collections/{colletionid}</h3>
+            <h6>Methods</h6>
+            <div class="methods">
+                <div class="method">
+                    <h4 id="dcolsidget">GET&nbsp; </h4>
+                    <h6>rest/api/v1/collections/{colletionid}<span class="optional">?expand</span></h6>
+                    <p>Returns a IRIS IR collection.</p>
+                    <h6>request query parameters</h6>
+                    <table>
+                      <tbody>
+                        <tr>
+                          <th>parameter</th>
+                          <th>value</th>
+                          <th>description</th>
+                        </tr>
+                        <tr>
+                          <td>
+                          <p><strong>expand</strong></p>
+                          </td>
+                          <td>
+                          <p><em><a href="http://www.w3.org/TR/xmlschema-2/#string">string</a></em></p>
+                          </td>
+                          <td>
+                          <p>a String containing acceptable expand list (separated by comma). See response for values</p>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <p><em>available response representations:</em></p>
+                    <ul>
+                        <li>
+                            <div>200 - application/json [<a onclick="toggle('dcolsiddet'); return false;" href="#"><em><span id="link-dcolsiddet">expand</span></em></a>] </div>
+                            <div style="display: none;" class="toggle" id="dcolsiddet">
+                                <p /><h6>Example</h6>
+                                <pre><code>   
+{
+	"parentCommunities": [ ],
+	"copyrightText": "",
+	"introductoryText": "",
+	"sidebarText": "",
+	"shortDescription": "",
+	"name": "Senza titolo",
+	"handle": "1234/608672",
+	"type": "collection",
+	"id": 121,
+	"expand": [
+		"parentCommunityList",
+		"license",
+		"logo",
+		"countItems",
+		"all"
+	],
+	"self": "/rest/api/v1/collection/121"
+}
+                                </code></pre>
+                                <p />
+                                <p>Returned collection if the currently authenticated user has permission to view it. Contains a partial representation of the collection.</p>
+                                <div class="representation" />
+                            </div>
+                        </li>
+                        <li>
+                            <div>401 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('dcolsiddet401'); return false;" href="#"><em><span id="link-dcolsiddet401">expand</span></em></a>] </abbr></div>
+                            <div style="display: none;" class="toggle" id="dcolsiddet401">
+                                <p>Returned if the currently authenticated user does not have permission to view it.</p>
+                                <p/><h6>Example</h6>
+                                <pre><code>
+{
+    "message": "Unauthorized attempt to access ....",
+    "code": "UNAUTHORIZED"
+}
+                                </code></pre>
+                            </div>
+                        </li>    
+                        <li>
+                            <div>404 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('dcolsiddet404'); return false;" href="#"><em><span id="link-dcolsiddet404">expand</span></em></a>] </abbr></div>
+                            <div style="display: none;" class="toggle" id="dcolsiddet404">
+                                <p>Returned if item does not exist.</p>
+                                <p/><h6>Example</h6>
+                                <pre><code>
+{
+    "message": "...",
+    "code": "..."
+}
+                                </code></pre>
+                            </div>
+                        </li>                         
+                        <li>
+                            <div>500 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('dcolsiddet500'); return false;" href="#"><em><span id="link-dcolsiddet500">expand</span></em></a>] </abbr></div>
+                            <div style="display: none;" class="toggle" id="dcolsiddet500">
+                                <p>Returned if was any server error type.</p>
+                                <p/><h6>Example</h6>
+                                <pre><code>
+{
+    "message": ".....",
+    "code": "...."
+}
+                                </code></pre>                                
+                            </div>
+                        </li>                        
+                    </ul>
+                </div>
+            </div>
+        </div>            
+
+        <div class="collection">
+            <h3 id="dcolsitems">rest/api/v1/collections/{colletionid}/items</h3>
+            <h6>Methods</h6>
+            <div class="methods">
+                <div class="method">
+                    <h4 id="dcolsitemsget">GET&nbsp; </h4>
+                    <h6>rest/api/v1/collections/{colletionid}/items<span class="optional">?expand</span><span class="optional">&amp;limit</span><span class="optional">&amp;offset</span></h6>
+                    <p>Returns a IRIS IR collection items</p>
+                    <h6>request query parameters</h6>
+                    <table>
+                      <tbody>
+                        <tr>
+                          <th>parameter</th>
+                          <th>value</th>
+                          <th>description</th>
+                        </tr>
+                        <tr>
+                          <td>
+                          <p><strong>expand</strong></p>
+                          </td>
+                          <td>
+                          <p><em><a href="http://www.w3.org/TR/xmlschema-2/#string">string</a></em></p>
+                          </td>
+                          <td>
+                          <p>a String containing acceptable expand list (separated by comma). See response for values</p>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                          <p><strong>limit</strong></p>
+                          </td>
+                          <td>
+                          <p><em><a href="http://www.w3.org/TR/xmlschema-2/#int">int</a></em></p>
+                          </td>
+                          <td>
+                            <p>a hint as to the the maximum number of collections to return in each call. Note that the IRIS server reserves the right to impose a maxResults limit that is lower than the value that a client provides, dues to lack or resources or any other condition. When this happens, your results will be truncated.</p>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <p><strong>offset</strong></p>
+                          </td>
+                          <td>
+                            <p><em><a href="http://www.w3.org/TR/xmlschema-2/#int">int</a></em></p>
+                          </td>
+                          <td>
+                            <p>the index of the first collection to return (0-based). must be 0 or any positive value</p>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+					<p><em>available response representations:</em></p>
+                    <ul>
+                        <li>
+                            <div>200 - application/json [<a onclick="toggle('ditemsmetadet'); return false;" href="#"><em><span id="link-ditemsmetadet">expand</span></em></a>] </div>
+                            <div style="display: none;" class="toggle" id="ditemsmetadet">
+                                <p /><h6>Example</h6>
+                                <pre><code>   
+{
+	"next": "offset=20&limit=10",
+	"prev": "offset=0&limit=10",
+	"restResourseDTOList": [
+	{
+		"lastModified": 1361979065000,
+		"id": 58866,
+		"owner": {
+			"id": -1,
+			"netid": null,
+			"email": null,
+			"lastName": null,
+			"firstName": null
+		},
+		"inputFormId": 3,
+		"withdrawn": false,
+		"submitterID": 22,
+		"collection": {
+		"name": "01.c Nota a sentenza",
+			"id": 60,
+			"type": 3,
+			"handle": "123456789/3"
+		},
+		"lookupValues":{
+			"summary":"2014",
+			"spage":"13",
+			"contextidab":null,
+			"contextdept":"|734|1210|",
+			"isbn":"9788878709706",
+			......
+		}		
+		"identifierToDisseminate": -1,
+		"workFlowValidationStatus": -1,
+		"simpleItemStatus": 0,
+		"workFlowValidationRule": -1,
+		"collectionHandle": "123456789/3",
+		"earlyDraft": true,
+		"inWorkspace": true,
+		"inWorkFlow": false,
+		"archived": false,
+		"snapshot": false,
+		"submitter": {
+			"id": 22,
+			"netid": null,
+			"email": "batch-job@cilea.it",
+			"lastName": "Default",
+			"firstName": "Utente"
+		},
+		"reopened": false,
+		"name": "",
+		"type": "items",
+		"expand": [
+			"metadata",
+			"bitstreams",
+			"history",
+			"all"
+		],
+		"self": "/rest/api/v1/items/58866"
+	},
+	{ … },
+	{ … },
+	{ … },
+	{ … },
+	{ … },
+	{ … },
+	{ … },
+	{ … },
+	{ … }
+	]
+}
+                                </code></pre>
+                            </div>
+                        </li>                         
+                        <li>
+                            <div>500 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('ditemsmetadet500'); return false;" href="#"><em><span id="link-ditemsmetadet500">expand</span></em></a>] </abbr></div>
+                            <div style="display: none;" class="toggle" id="ditemsmetadet500">
+                                <p>Returned if was any server error type.</p>
+                                <p/><h6>Example</h6>
+                                <pre><code>
+{
+    "message": ".....",
+    "code": "...."
+}
+                                </code></pre>                                
+                            </div>
+                        </li>                        
+                    </ul>
+                </div>
+            </div>
+        </div>            
+
+        <h2 id="communities">Communities</h2>
+
+        <div class="community">
+            <h3 id="dcoms">rest/api/v1/communities</h3>
+            <h6>Methods</h6>
+            <div class="methods">
+                <div class="method">
+                    <h4 id="dcomsget">GET&nbsp; </h4>
+                    <h6>rest/api/v1/communities<span class="optional">?expand</span><span class="optional">&amp;limit</span><span class="optional">&amp;offset</span></h6>
+                    <p>Returns a list of IRIS IR communities.</p>
+                    <h6>request query parameters</h6>
+                    <table>
+                      <tbody>
+                        <tr>
+                          <th>parameter</th>
+                          <th>value</th>
+                          <th>description</th>
+                        </tr>
+                        <tr>
+                          <td>
+                          <p><strong>expand</strong></p>
+                          </td>
+                          <td>
+                          <p><em><a href="http://www.w3.org/TR/xmlschema-2/#string">string</a></em></p>
+                          </td>
+                          <td>
+                          <p>a String containing acceptable expand list (separated by comma). See response for values</p>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                          <p><strong>limit</strong></p>
+                          </td>
+                          <td>
+                          <p><em><a href="http://www.w3.org/TR/xmlschema-2/#int">int</a></em></p>
+                          </td>
+                          <td>
+                            <p>a hint as to the the maximum number of communities to return in each call. Note that the IRIS server reserves the right to impose a maxResults limit that is lower than the value that a client provides, dues to lack or resources or any other condition. When this happens, your results will be truncated.</p>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <p><strong>offset</strong></p>
+                          </td>
+                          <td>
+                            <p><em><a href="http://www.w3.org/TR/xmlschema-2/#int">int</a></em></p>
+                          </td>
+                          <td>
+                            <p>the index of the first collection to return (0-based). must be 0 or any positive value</p>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <p><em>available response representations:</em></p>
+                    <ul>
+                        <li>
+                            <div>200 - application/json [<a onclick="toggle('dcomsdet'); return false;" href="#"><em><span id="link-dcomsdet">expand</span></em></a>] </div>
+                            <div style="display: none;" class="toggle" id="dcomsdet">
+                                <p /><h6>Example</h6>
+                                <pre><code>
+{
+	"next": "offset=20&limit=10",
+	"prev": "offset=0&limit=10",
+	"restResourseDTOList": [
+	{
+		"copyrightText": "",
+		"introductoryText": "",
+		"sidebarText": "",
+		"shortDescription": "",
+		"collections": [ ],
+		"subcommunities": [ ],
+		"name": "Catalogo Ricerca",
+		"handle": "123456789/58",
+		"type": "community",
+		"id": 16,
+		"expand": [
+			"parentCommunity",
+			"collections",
+			"logo",
+			"all"
+		],
+		"self": "/rest/api/v1/community/16"
+	},
+	{ … },
+	{ … },
+	{ … },
+	{ … },
+	{ … },
+	{ … },
+	{ … },
+	{ … },
+	{ … }
+	]
+}                                </code></pre>
+                                <p />
+                                <p>Returned communities lists according query parameter if the currently authenticated user has permission to view it. Contains a partial representation of the community.</p>
+                                <div class="representation" />
+                            </div>
+                        </li>
+                        <li>
+                            <div>401 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('dcomsdet401'); return false;" href="#"><em><span id="link-dcomsdet401">expand</span></em></a>] </abbr></div>
+                            <div style="display: none;" class="toggle" id="dcomsdet401">
+                                <p>Returned if the currently authenticated user does not have permission to view any collections in the list.</p>
+                                <p/><h6>Example</h6>
+                                <pre><code>
+{
+    "message": "Unauthorized attempt to access ....",
+    "code": "UNAUTHORIZED"
+}
+                                </code></pre>
+                            </div>
+                        </li>                      
+                        <li>
+                            <div>500 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('dcomsdet500'); return false;" href="#"><em><span id="link-dcomsdet500">expand</span></em></a>] </abbr></div>
+                            <div style="display: none;" class="toggle" id="dcomsdet500">
+                                <p>Returned if was any server error type.</p>
+                                <p/><h6>Example</h6>
+                                <pre><code>
+{
+    "message": ".....",
+    "code": "...."
+}
+                                </code></pre>                                
+                            </div>
+                        </li>                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+            
+        <div class="communities">
+            <h3 id="dcolsid">rest/api/v1/communities/{communityid}</h3>
+            <h6>Methods</h6>
+            <div class="methods">
+                <div class="method">
+                    <h4 id="dcolsidget">GET&nbsp; </h4>
+                    <h6>rest/api/v1/communities/{communityid}<span class="optional">?expand</span></h6>
+                    <p>Returns a IRIS IR collection.</p>
+                    <h6>request query parameters</h6>
+                    <table>
+                      <tbody>
+                        <tr>
+                          <th>parameter</th>
+                          <th>value</th>
+                          <th>description</th>
+                        </tr>
+                        <tr>
+                          <td>
+                          <p><strong>expand</strong></p>
+                          </td>
+                          <td>
+                          <p><em><a href="http://www.w3.org/TR/xmlschema-2/#string">string</a></em></p>
+                          </td>
+                          <td>
+                          <p>a String containing acceptable expand list (separated by comma). See response for values</p>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <p><em>available response representations:</em></p>
+                    <ul>
+                        <li>
+                            <div>200 - application/json [<a onclick="toggle('dcomsiddet'); return false;" href="#"><em><span id="link-dcomsiddet">expand</span></em></a>] </div>
+                            <div style="display: none;" class="toggle" id="dcomsiddet">
+                                <p /><h6>Example</h6>
+                                <pre><code>   
+{
+	"copyrightText": "",
+	"introductoryText": "",
+	"sidebarText": "",
+	"shortDescription": "",
+	"collections": [ ],
+	"subcommunities": [ ],
+	"name": "Catalogo Ricerca UNIROMA1",
+	"handle": "123456789/58",
+	"type": "community",
+	"id": 16,
+	"expand": [
+		"parentCommunity",
+		"collections",
+		"logo",
+		"all"
+	],
+	"self": "/rest/api/v1/community/16"
+}
+                                </code></pre>
+                                <p />
+                                <p>Returned collection if the currently authenticated user has permission to view it. Contains a partial representation of the collection.</p>
+                                <div class="representation" />
+                            </div>
+                        </li>
+                        <li>
+                            <div>401 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('dcomsiddet401'); return false;" href="#"><em><span id="link-dcomsiddet401">expand</span></em></a>] </abbr></div>
+                            <div style="display: none;" class="toggle" id="dcomsiddet401">
+                                <p>Returned if the currently authenticated user does not have permission to view it.</p>
+                                <p/><h6>Example</h6>
+                                <pre><code>
+{
+    "message": "Unauthorized attempt to access ....",
+    "code": "UNAUTHORIZED"
+}
+                                </code></pre>
+                            </div>
+                        </li>    
+                        <li>
+                            <div>404 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('dcomsiddet404'); return false;" href="#"><em><span id="link-dcomsiddet404">expand</span></em></a>] </abbr></div>
+                            <div style="display: none;" class="toggle" id="dcomsiddet404">
+                                <p>Returned if item does not exist.</p>
+                                <p/><h6>Example</h6>
+                                <pre><code>
+{
+    "message": "...",
+    "code": "..."
+}
+                                </code></pre>
+                            </div>
+                        </li>                         
+                        <li>
+                            <div>500 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('dcomsiddet500'); return false;" href="#"><em><span id="link-dcomsiddet500">expand</span></em></a>] </abbr></div>
+                            <div style="display: none;" class="toggle" id="dcomsiddet500">
+                                <p>Returned if was any server error type.</p>
+                                <p/><h6>Example</h6>
+                                <pre><code>
+{
+    "message": ".....",
+    "code": "...."
+}
+                                </code></pre>                                
+                            </div>
+                        </li>                        
+                    </ul>
+                </div>
+            </div>
+        </div>            
+
+        <div class="community">
+            <h3 id="dcomscols">rest/api/v1/communities/{communityid}/collections</h3>
+            <h6>Methods</h6>
+            <div class="methods">
+                <div class="method">
+                    <h4 id="dcomscolsget">GET&nbsp; </h4>
+                    <h6>rest/api/v1/communities/{communityid}/collections<span class="optional">?expand</span></h6>
+                    <p>Returns a IRIS IR collection communities</p>
+                    <h6>request query parameters</h6>
+                    <table>
+                      <tbody>
+						<tr>
+                          <th>parameter</th>
+                          <th>value</th>
+                          <th>description</th>
+                        </tr>
+                        <tr>
+                          <td>
+                          <p><strong>expand</strong></p>
+                          </td>
+                          <td>
+                          <p><em><a href="http://www.w3.org/TR/xmlschema-2/#string">string</a></em></p>
+                          </td>
+                          <td>
+                          <p>a String containing acceptable expand list (separated by comma). See response for values</p>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+					<p><em>available response representations:</em></p>
+                    <ul>
+                        <li>
+                            <div>200 - application/json [<a onclick="toggle('dcomscolsdet'); return false;" href="#"><em><span id="link-dcomscolsdet">expand</span></em></a>] </div>
+                            <div style="display: none;" class="toggle" id="dcomscolsdet">
+                                <p /><h6>Example</h6>
+                                <pre><code>   
+[
+	{
+	"parentCommunities": [ ],
+	"copyrightText": "",
+	"introductoryText": "",
+	"sidebarText": "",
+	"shortDescription": "",
+	"name": "02.a Capitolo, Articolo o Contributo",
+	"handle": "123456789/6",
+	"type": "collection",
+	"id": 63,
+	"expand": [
+		"parentCommunityList",
+		"license",
+		"logo",
+		"countItems",
+	"all"
+	],
+	"self": "/rest/api/v1/collection/63"
+	},
+	{ … },
+	{ … },
+	{ … },
+	{ … }
+]
+                                </code></pre>
+                            </div>
+                        </li>                         
+                        <li>
+                            <div>500 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('dcomscolsdet500'); return false;" href="#"><em><span id="link-dcomscolsdet500">expand</span></em></a>] </abbr></div>
+                            <div style="display: none;" class="toggle" id="dcomscolsdet500">
+                                <p>Returned if was any server error type.</p>
+                                <p/><h6>Example</h6>
+                                <pre><code>
+{
+    "message": ".....",
+    "code": "...."
+}
+                                </code></pre>                                
+                            </div>
+                        </li>                        
+                    </ul>
+                </div>
+            </div>
+        </div>         
+
+        <div class="community">
+            <h3 id="dcomscoms">rest/api/v1/communities/{communityid}/communities</h3>
+            <h6>Methods</h6>
+            <div class="methods">
+                <div class="method">
+                    <h4 id="dcomscomsget">GET&nbsp; </h4>
+                    <h6>rest/api/v1/communities/{communityid}/communities<span class="optional">?expand</span></h6>
+                    <p>Returns a IRIS IR communities of a given community</p>
+                    <h6>request query parameters</h6>
+                    <table>
+                      <tbody>
+                        <tr>
+                          <th>parameter</th>
+                          <th>value</th>
+                          <th>description</th>
+                        </tr>
+                        <tr>
+                          <td>
+                          <p><strong>expand</strong></p>
+                          </td>
+                          <td>
+                          <p><em><a href="http://www.w3.org/TR/xmlschema-2/#string">string</a></em></p>
+                          </td>
+                          <td>
+                          <p>a String containing acceptable expand list (separated by comma). See response for values</p>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                          <p><strong>limit</strong></p>
+                          </td>
+                          <td>
+                          <p><em><a href="http://www.w3.org/TR/xmlschema-2/#int">int</a></em></p>
+                          </td>
+                          <td>
+                            <p>a hint as to the the maximum number of sub communities to return in each call. Note that the IRIS server reserves the right to impose a maxResults limit that is lower than the value that a client provides, dues to lack or resources or any other condition. When this happens, your results will be truncated.</p>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <p><strong>offset</strong></p>
+                          </td>
+                          <td>
+                            <p><em><a href="http://www.w3.org/TR/xmlschema-2/#int">int</a></em></p>
+                          </td>
+                          <td>
+                            <p>the index of the first collection to return (0-based). must be 0 or any positive value</p>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+
+					<p><em>available response representations:</em></p>
+                    <ul>
+                        <li>
+                            <div>200 - application/json [<a onclick="toggle('dcomscomsdet'); return false;" href="#"><em><span id="link-dcomscomsdet">expand</span></em></a>] </div>
+                            <div style="display: none;" class="toggle" id="dcomscomsdet">
+                                <p /><h6>Example</h6>
+                                <pre><code>   
+{
+	"next": "offset=20&limit=10",
+	"prev": "offset=0&limit=10",
+	"restResourseDTOList": [
+	{
+		"copyrightText": "",
+		"introductoryText": "",
+		"sidebarText": "",
+		"shortDescription": "",
+		"collections": [ ],
+		"subcommunities": [ ],
+		"name": "Catalogo Ricerca",
+		"handle": "123456789/58",
+		"type": "community",
+		"id": 16,
+		"expand": [
+			"parentCommunity",
+			"collections",
+			"logo",
+			"all"
+		],
+		"self": "/rest/api/v1/community/16"
+	},
+	{ … },
+	{ … },
+	{ … },
+	{ … },
+	{ … },
+	{ … },
+	{ … },
+	{ … },
+	{ … }
+	]
+}  
+                                </code></pre>
+                            </div>
+                        </li>                         
+                        <li>
+                            <div>500 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('dcomscomsdet500'); return false;" href="#"><em><span id="link-dcomscomsdet500">expand</span></em></a>] </abbr></div>
+                            <div style="display: none;" class="toggle" id="dcomscomsdet500">
+                                <p>Returned if was any server error type.</p>
+                                <p/><h6>Example</h6>
+                                <pre><code>
+{
+    "message": ".....",
+    "code": "...."
+}
+                                </code></pre>                                
+                            </div>
+                        </li>                        
+                    </ul>
+                </div>
+            </div>
+        </div>            		
+            
+        <h2 id="bitstreams">Bitstreams</h2>
+
+        <div class="bitstreams">
+            <h3 id="dbits">rest/api/v1/bitstreams</h3>
+            <h6>Methods</h6>
+            <div class="methods">
+                <div class="method">
+                    <h4 id="dbitsget">GET&nbsp; </h4>
+                    <h6>rest/api/v1/collections<span class="optional">?expand</span><span class="optional">&amp;limit</span><span class="optional">&amp;offset</span></h6>
+                    <p>Returns a list of IRIS IR bitstreams.</p>
+                    <h6>request query parameters</h6>
+                    <table>
+                      <tbody>
+                        <tr>
+                          <th>parameter</th>
+                          <th>value</th>
+                          <th>description</th>
+                        </tr>
+                        <tr>
+                          <td>
+                          <p><strong>expand</strong></p>
+                          </td>
+                          <td>
+                          <p><em><a href="http://www.w3.org/TR/xmlschema-2/#string">string</a></em></p>
+                          </td>
+                          <td>
+                          <p>a String containing acceptable expand list (separated by comma). See response for values</p>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                          <p><strong>limit</strong></p>
+                          </td>
+                          <td>
+                          <p><em><a href="http://www.w3.org/TR/xmlschema-2/#int">int</a></em></p>
+                          </td>
+                          <td>
+                            <p>a hint as to the the maximum number of bitstreams to return in each call. Note that the IRIS server reserves the right to impose a maxResults limit that is lower than the value that a client provides, dues to lack or resources or any other condition. When this happens, your results will be truncated.</p>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <p><strong>offset</strong></p>
+                          </td>
+                          <td>
+                            <p><em><a href="http://www.w3.org/TR/xmlschema-2/#int">int</a></em></p>
+                          </td>
+                          <td>
+                            <p>the index of the first collection to return (0-based). must be 0 or any positive value</p>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <p><em>available response representations:</em></p>
+                    <ul>
+                        <li>
+                            <div>200 - application/json [<a onclick="toggle('dbitsdet'); return false;" href="#"><em><span id="link-dbitsdet">expand</span></em></a>] </div>
+                            <div style="display: none;" class="toggle" id="dbitsdet">
+                                <p /><h6>Example</h6>
+                                <pre><code>
+{
+	"next": "offset=20&limit=10",
+	"priv": "offset=0&limit=10",
+	"restResourseDTOList": [
+	{
+		"format": "Microsoft Word",
+		"description": "Documento in Pre-print",
+		"mimeType": "application/msword",
+		"bundleName": "ORIGINAL",
+		"checkSum": {
+			"value": "49e989543a837b4acda692875b4704f7",
+			"checkSumAlgorith": "MD5"
+		},
+		"sizeBytes": 33792,
+		"sequenceId": 1,
+		"retrieveLink": "/bitstreams/33155/attachment",
+		"name": "?? ??? ??? ???????.doc",
+		"type": "bitstream",
+		"id": 33155,
+		"expand": [
+			"parent",
+			"licenseType",
+			"all"
+		],
+		"self": "/rest/api/v1/bitstream/33155"
+	},
+	{ … },
+	{ … },
+	{ … },
+	{ … },
+	{ … },
+	{ … },
+	{ … },
+	{ … },
+	{ … }
+	]
+}
+                                </code></pre>
+                                <p />
+                                <p>Returned bitstreams lists according query parameter if the currently authenticated user has permission to view it. Contains a partial representation of the bitstream.</p>
+                                <div class="representation" />
+                            </div>
+                        </li>
+                        <li>
+                            <div>401 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('dbitsdet401'); return false;" href="#"><em><span id="link-dbitsdet401">expand</span></em></a>] </abbr></div>
+                            <div style="display: none;" class="toggle" id="dbitsdet401">
+                                <p>Returned if the currently authenticated user does not have permission to view any collections in the list.</p>
+                                <p/><h6>Example</h6>
+                                <pre><code>
+{
+    "message": "Unauthorized attempt to access ....",
+    "code": "UNAUTHORIZED"
+}
+                                </code></pre>
+                            </div>
+                        </li>                      
+                        <li>
+                            <div>500 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('dbitsdet500'); return false;" href="#"><em><span id="link-dbitsdet500">expand</span></em></a>] </abbr></div>
+                            <div style="display: none;" class="toggle" id="dbitsdet500">
+                                <p>Returned if was any server error type.</p>
+                                <p/><h6>Example</h6>
+                                <pre><code>
+{
+    "message": ".....",
+    "code": "...."
+}
+                                </code></pre>                                
+                            </div>
+                        </li>                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+            
+        <div class="bitstreams">
+            <h3 id="dbitsid">rest/api/v1/bitstreams/{bitstreamid}</h3>
+            <h6>Methods</h6>
+            <div class="methods">
+                <div class="method">
+                    <h4 id="dbitsidget">GET&nbsp; </h4>
+                    <h6>rest/api/v1/bitstreams/{bitstreamid}<span class="optional">?expand</span></h6>
+                    <p>Returns a IRIS IR bitstream.</p>
+                    <h6>request query parameters</h6>
+                    <table>
+                      <tbody>
+                        <tr>
+                          <th>parameter</th>
+                          <th>value</th>
+                          <th>description</th>
+                        </tr>
+                        <tr>
+                          <td>
+                          <p><strong>expand</strong></p>
+                          </td>
+                          <td>
+                          <p><em><a href="http://www.w3.org/TR/xmlschema-2/#string">string</a></em></p>
+                          </td>
+                          <td>
+                          <p>a String containing acceptable expand list (separated by comma). See response for values</p>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <p><em>available response representations:</em></p>
+                    <ul>
+                        <li>
+                            <div>200 - application/json [<a onclick="toggle('dbitsiddet'); return false;" href="#"><em><span id="link-dbitsiddet">expand</span></em></a>] </div>
+                            <div style="display: none;" class="toggle" id="dbitsiddet">
+                                <p /><h6>Example</h6>
+                                <pre><code>   
+{
+	"format": "Microsoft Word XML",
+	"mimeType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+	"bundleName": "ORIGINAL",
+	"checkSum": {
+		"value": "483f576cad8cf323b8e9a592b828ed70",
+		"checkSumAlgorith": "MD5"
+	},
+	"sizeBytes": 165769,
+	"sequenceId": 1,
+	"retrieveLink": "/bitstreams/60046/attachment",
+	"name": "1.+Desktop+prodotti.docx",
+	"type": "bitstream",
+	"id": 60046,
+	"expand": [
+		"parent",
+		"licenseType",
+		"all"
+	],
+	"self": "/rest/api/v1/bitstream/60046"
+}                                </code></pre>
+                                <p />
+                                <p>Returned collection if the currently authenticated user has permission to view it. Contains a partial representation of the collection.</p>
+                                <div class="representation" />
+                            </div>
+                        </li>
+                        <li>
+                            <div>401 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('dbitsiddet401'); return false;" href="#"><em><span id="link-dbitsiddet401">expand</span></em></a>] </abbr></div>
+                            <div style="display: none;" class="toggle" id="dbitsiddet401">
+                                <p>Returned if the currently authenticated user does not have permission to view it.</p>
+                                <p/><h6>Example</h6>
+                                <pre><code>
+{
+    "message": "Unauthorized attempt to access ....",
+    "code": "UNAUTHORIZED"
+}
+                                </code></pre>
+                            </div>
+                        </li>    
+                        <li>
+                            <div>404 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('dbitsiddet404'); return false;" href="#"><em><span id="link-dbitsiddet404">expand</span></em></a>] </abbr></div>
+                            <div style="display: none;" class="toggle" id="dbitsiddet404">
+                                <p>Returned if item does not exist.</p>
+                                <p/><h6>Example</h6>
+                                <pre><code>
+{
+    "message": "...",
+    "code": "..."
+}
+                                </code></pre>
+                            </div>
+                        </li>                         
+                        <li>
+                            <div>500 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('dbitsiddet500'); return false;" href="#"><em><span id="link-dbitsiddet500">expand</span></em></a>] </abbr></div>
+                            <div style="display: none;" class="toggle" id="dbitsiddet500">
+                                <p>Returned if was any server error type.</p>
+                                <p/><h6>Example</h6>
+                                <pre><code>
+{
+    "message": ".....",
+    "code": "...."
+}
+                                </code></pre>                                
+                            </div>
+                        </li>                        
+                    </ul>
+                </div>
+            </div>
+        </div>            
+
+        <div class="bitstreams">
+            <h3 id="dbitsatts">rest/api/v1/bitstreams/{bitstreamid}/attachment</h3>
+            <h6>Methods</h6>
+            <div class="methods">
+                <div class="method">
+                    <h4 id="dbitsattsget">GET&nbsp; </h4>
+                    <h6>rest/api/v1/bitstreams/{bitstreamid}/attachment</h6>
+                    <p>Returns a IRIS IR bitstream attachment</p>
+                    <h6>request query parameters: none</h6>
+                    <p><em>available response representations:</em></p>
+                    <ul>
+                        <li>
+                            <div>200 - application/mimetype</div>
+                        </li>   
+                      <li>
+                            <div>401 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('dbitsattsdet401'); return false;" href="#"><em><span id="link-dbitsattsdet401">expand</span></em></a>] </abbr></div>
+                            <div style="display: none;" class="toggle" id="dbitsattsdet401">
+                                <p>Returned if the currently authenticated user does not have permission to view it.</p>
+                                <p/><h6>Example</h6>
+                                <pre><code>
+{
+    "message": "Unauthorized attempt to access ....",
+    "code": "UNAUTHORIZED"
+}
+                                </code></pre>
+                            </div>
+                        </li>    
+                        <li>
+                            <div>404 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('dbitsattsdet404'); return false;" href="#"><em><span id="link-dbitsiddet404">expand</span></em></a>] </abbr></div>
+                            <div style="display: none;" class="toggle" id="dbitsattsdet404">
+                                <p>Returned if item does not exist.</p>
+                                <p/><h6>Example</h6>
+                                <pre><code>
+{
+    "message": "...",
+    "code": "..."
+}
+                                </code></pre>
+                            </div>
+                        </li>  						
+                        <li>
+                            <div>500 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('dbitsattsdet500'); return false;" href="#"><em><span id="link-dbitsattsdet500">expand</span></em></a>] </abbr></div>
+                            <div style="display: none;" class="toggle" id="dbitsattsdet500">
+                                <p>Returned if was any server error type.</p>
+                                <p/><h6>Example</h6>
+                                <pre><code>
+{
+    "message": ".....",
+    "code": "...."
+}
+                                </code></pre>                                
+                            </div>
+                        </li>                        
+                    </ul>
+                </div>
+            </div>
+        </div>            
+
+        <h2 id="inputforms">Inputforms</h2>
+           
+        <div class="inputforms">
+            <h3 id="dinpsid">rest/api/v1/inputforms/{inputformid}</h3>
+            <h6>Methods</h6>
+            <div class="methods">
+                <div class="method">
+                    <h4 id="dinpsidget">GET&nbsp; </h4>
+                    <h6>rest/api/v1/inputforms/{inputformid}<span class="optional">?expand</span></h6>
+                    <p>Returns a IRIS IR inputform.</p>
+                    <h6>request query parameters</h6>
+                    <table>
+                      <tbody>
+                        <tr>
+                          <th>parameter</th>
+                          <th>value</th>
+                          <th>description</th>
+                        </tr>
+                        <tr>
+                          <td>
+                          <p><strong>expand</strong></p>
+                          </td>
+                          <td>
+                          <p><em><a href="http://www.w3.org/TR/xmlschema-2/#string">string</a></em></p>
+                          </td>
+                          <td>
+                          <p>a String containing acceptable expand list (separated by comma). See response for values</p>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <p><em>available response representations:</em></p>
+                    <ul>
+                        <li>
+                            <div>200 - application/json [<a onclick="toggle('dinpsiddet'); return false;" href="#"><em><span id="link-dinpsiddet">expand</span></em></a>] </div>
+                            <div style="display: none;" class="toggle" id="dinpsiddet">
+                                <p /><h6>Example</h6>
+                                <pre><code>  
+{
+	"formName": "01.a Pubblicazione su Rivista",
+	"valuePairs": [
+	{
+		"name": "24_relation_medium",
+		"valuePairs": [
+		{
+			"value": "(seleziona...)",
+			"key": ""
+		},
+		{
+			"value": "CD-ROM",
+			"key": "CD-ROM"
+		},
+		{
+			"value": "ELETTRONICO",
+			"key": "ELETTRONICO"
+		},
+		{
+			"value": "STAMPA",
+			"key": "STAMPA"
+		}
+		]
+	},
+	{ … },
+	{ … },
+	{ … },
+	{ … },
+	{ … },
+	{ … },
+	{ … }
+	],
+	"numberPages": 3,
+	"rows": [
+	{
+		"required": false,
+		"pageNumber": 1,
+		"repeatable": false,
+		"hint": "Selezionare \"in corso di stampa\" se l'articolo è stato accettato dalla rivista, ma non ancora pubblicato. In questo modo il responsabile del dato potrà riaprirlo in qualsiasi momento.",
+		"inputType": "year",
+		"warning": "Campo obbligatorio",
+		"dcSchema": "dc",
+		"dcElement": "date",
+		"label": "Anno",
+		"dcQualifier": "issued",
+		"typeBind": [ ],
+		"noupdate": false,
+		"rowNumber": 1,
+		"id": 0,
+		"expand": [ ],
+		"self": "/rest/api/v1/inputforms/form/1"
+	},
+	{ … },
+	{ … }
+	],
+	"id": 0,
+	"expand": [ ],
+	"self": "/rest/api/v1/inputforms/1"
+}								
+								</code></pre>
+                                <p />
+                                <p>Returned inputform if the currently authenticated user has permission to view it. Contains a partial representation of the inputform.</p>
+                                <div class="representation" />
+                            </div>
+                        </li>
+                        <li>
+                            <div>401 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('dinpsiddet401'); return false;" href="#"><em><span id="link-dinpsiddet401">expand</span></em></a>] </abbr></div>
+                            <div style="display: none;" class="toggle" id="dinpsiddet401">
+                                <p>Returned if the currently authenticated user does not have permission to view it.</p>
+                                <p/><h6>Example</h6>
+                                <pre><code>
+{
+    "message": "Unauthorized attempt to access ....",
+    "code": "UNAUTHORIZED"
+}
+                                </code></pre>
+                            </div>
+                        </li>    
+                        <li>
+                            <div>404 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('dinpsiddet404'); return false;" href="#"><em><span id="link-dinpsiddet404">expand</span></em></a>] </abbr></div>
+                            <div style="display: none;" class="toggle" id="dinpsiddet404">
+                                <p>Returned if item does not exist.</p>
+                                <p/><h6>Example</h6>
+                                <pre><code>
+{
+    "message": "...",
+    "code": "..."
+}
+                                </code></pre>
+                            </div>
+                        </li>                         
+                        <li>
+                            <div>500 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('dinpsiddet500'); return false;" href="#"><em><span id="link-dinpsiddet500">expand</span></em></a>] </abbr></div>
+                            <div style="display: none;" class="toggle" id="dinpsiddet500">
+                                <p>Returned if was any server error type.</p>
+                                <p/><h6>Example</h6>
+                                <pre><code>
+{
+    "message": ".....",
+    "code": "...."
+}
+                                </code></pre>                                
+                            </div>
+                        </li>                        
+                    </ul>
+                </div>
+            </div>
+        </div>            
+
+        <div class="inputforms">
+            <h3 id="dinpsfrm">rest/api/v1/inputforms/{inputformid}/form</h3>
+            <h6>Methods</h6>
+            <div class="methods">
+                <div class="method">
+                    <h4 id="dinpsfrmget">GET&nbsp; </h4>
+                    <h6>rest/api/v1/inputforms/{inputformid}/form</h6>
+                    <p>Returns a IRIS IR inputform rows.</p>
+                    <h6>request query parameters: none</h6>
+                    <p><em>available response representations:</em></p>
+                    <ul>
+                        <li>
+                            <div>200 - application/json [<a onclick="toggle('dinpsfrmdet'); return false;" href="#"><em><span id="link-dinpsfrmdet">expand</span></em></a>] </div>
+                            <div style="display: none;" class="toggle" id="dinpsfrmdet">
+                                <p /><h6>Example</h6>
+                                <pre><code>  
+[
+	{
+		"required": false,
+		"pageNumber": 1,
+		"repeatable": false,
+		"hint": "Selezionare \"in corso di stampa\" se l'articolo è stato accettato dalla rivista, ma non ancora pubblicato. In questo modo il responsabile del dato potrà riaprirlo in qualsiasi momento.",
+		"inputType": "year",
+		"warning": "Campo obbligatorio",
+		"dcSchema": "dc",
+		"dcElement": "date",
+		"label": "Anno",
+		"dcQualifier": "issued",
+		"typeBind": [ ],
+		"noupdate": false,
+		"rowNumber": 1,
+		"id": 0,
+		"expand": [ ],
+		"self": "/rest/api/v1/inputforms/form/1"
+	},
+	{ … },
+	{ … }
+]						
+								</code></pre>
+                                <p />
+                                <p>Returned inputform if the currently authenticated user has permission to view it. Contains a full representation of the inputform rows.</p>
+                                <div class="representation" />
+                            </div>
+                        </li>
+                        <li>
+                            <div>401 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('dinpsfrmdet401'); return false;" href="#"><em><span id="link-dinpsfrmdet401">expand</span></em></a>] </abbr></div>
+                            <div style="display: none;" class="toggle" id="dinpsfrmdet401">
+                                <p>Returned if the currently authenticated user does not have permission to view it.</p>
+                                <p/><h6>Example</h6>
+                                <pre><code>
+{
+    "message": "Unauthorized attempt to access ....",
+    "code": "UNAUTHORIZED"
+}
+                                </code></pre>
+                            </div>
+                        </li>    
+                        <li>
+                            <div>404 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('dinpsfrmdet404'); return false;" href="#"><em><span id="link-dinpsfrmdet404">expand</span></em></a>] </abbr></div>
+                            <div style="display: none;" class="toggle" id="dinpsfrmdet404">
+                                <p>Returned if item does not exist.</p>
+                                <p/><h6>Example</h6>
+                                <pre><code>
+{
+    "message": "...",
+    "code": "..."
+}
+                                </code></pre>
+                            </div>
+                        </li>                         
+                        <li>
+                            <div>500 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('dinpsfrmdet500'); return false;" href="#"><em><span id="link-dinpsfrmdet500">expand</span></em></a>] </abbr></div>
+                            <div style="display: none;" class="toggle" id="dinpsfrmdet500">
+                                <p>Returned if was any server error type.</p>
+                                <p/><h6>Example</h6>
+                                <pre><code>
+{
+    "message": ".....",
+    "code": "...."
+}
+                                </code></pre>                                
+                            </div>
+                        </li>                        
+                    </ul>
+                </div>
+            </div>
+        </div>            
+		
+        <div class="inputforms">
+            <h3 id="dinpsvp">rest/api/v1/inputforms/{inputformid}/valuepairs</h3>
+            <h6>Methods</h6>
+            <div class="methods">
+                <div class="method">
+                    <h4 id="dinpsvpget">GET&nbsp; </h4>
+                    <h6>rest/api/v1/inputforms/{inputformid}/valuepairs</h6>
+                    <p>Returns a IRIS IR inputform value pairs.</p>
+                    <h6>request query parameters: none</h6>
+                    <p><em>available response representations:</em></p>
+                    <ul>
+                        <li>
+                            <div>200 - application/json [<a onclick="toggle('dinpsvpdet'); return false;" href="#"><em><span id="link-dinpsvpdet">expand</span></em></a>] </div>
+                            <div style="display: none;" class="toggle" id="dinpsvpdet">
+                                <p /><h6>Example</h6>
+                                <pre><code>  
+[
+    {
+    "name": "24_relation_medium",
+    "valuePairs": [
+    {
+        "value": "(seleziona...)",
+        "key": ""
+    },
+    {
+        "value": "CD-ROM",
+        "key": "CD-ROM"
+    },
+    {
+        "value": "ELETTRONICO",
+        "key": "ELETTRONICO"
+    },  
+    {
+        "value": "STAMPA",
+        "key": "STAMPA"
+    }
+    ]
+    },
+    { … },
+    { … },
+    { … }
+]			</code></pre>
+                                <p />
+                                <p>Returned inputform if the currently authenticated user has permission to view it. Contains a full representation of the inputform value pairs.</p>
+                                <div class="representation" />
+                            </div>
+                        </li>
+                        <li>
+                            <div>401 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('dinpsvpdet401'); return false;" href="#"><em><span id="link-dinpsvpdet401">expand</span></em></a>] </abbr></div>
+                            <div style="display: none;" class="toggle" id="dinpsvpdet401">
+                                <p>Returned if the currently authenticated user does not have permission to view it.</p>
+                                <p/><h6>Example</h6>
+                                <pre><code>
+{
+    "message": "Unauthorized attempt to access ....",
+    "code": "UNAUTHORIZED"
+}
+                                </code></pre>
+                            </div>
+                        </li>    
+                        <li>
+                            <div>404 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('dinpsvpdet404'); return false;" href="#"><em><span id="link-dinpsvpdet404">expand</span></em></a>] </abbr></div>
+                            <div style="display: none;" class="toggle" id="dinpsvpdet404">
+                                <p>Returned if item does not exist.</p>
+                                <p/><h6>Example</h6>
+                                <pre><code>
+{
+    "message": "...",
+    "code": "..."
+}
+                                </code></pre>
+                            </div>
+                        </li>                         
+                        <li>
+                            <div>500 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('dinpsvpdet500'); return false;" href="#"><em><span id="link-dinpsvpdet500">expand</span></em></a>] </abbr></div>
+                            <div style="display: none;" class="toggle" id="dinpsvpdet500">
+                                <p>Returned if was any server error type.</p>
+                                <p/><h6>Example</h6>
+                                <pre><code>
+{
+    "message": ".....",
+    "code": "...."
+}
+                                </code></pre>                                
+                            </div>
+                        </li>                        
+                    </ul>
+                </div>
+            </div>
+        </div>            
+		
+        <h2 id="ance">Ance</h2>
+		
+	<div class="ance">
+            <h3 id="danceid">rest/api/v1/ance/{crisid}</h3>
+            <h6>Methods</h6>
+            <div class="methods">
+                <div class="method">
+                    <h4 id="danceidget">GET&nbsp; </h4>
+                    <h6>rest/api/v1/ance/{crisid}</h6>
+                    <p>Returns a IRIS IR ance series/journal.</p>
+                    <h6>request query parameters: no</h6>
+                    <p><em>available response representations:</em></p>
+                    <ul>
+                        <li>
+                            <div>200 - application/json [<a onclick="toggle('danceiddet'); return false;" href="#"><em><span id="link-danceiddet">expand</span></em></a>] </div>
+                            <div style="display: none;" class="toggle" id="danceiddet">
+                                <p /><h6>Example</h6>
+                                <pre><code>   
+{
+	"casaEditrice": "cairo: Hindawi Publishing Corporation",
+	"codice": "E196800",
+	"natura": null,
+	"validoAl": null,
+	"validoDal": "2008",
+	"dateSent": null,
+	"titoli": {
+		"titolo": [
+		{
+			"value": "INTERNATIONAL JOURNAL OF GEOPHYSICS",
+			"type": null
+		}
+		]
+	},
+	"issn": "1687-885X",
+	"paese": null,
+	"submitter": null,
+	"eissn": null,
+	"lingua": null,
+	"codiceCRIS": "journal25345"
+}
+                                </code></pre>
+                                <p />
+                                <p>Returned ance j/s if the currently authenticated user has permission to view it. Contains a full representation of the ance j/s.</p>
+                                <div class="representation" />
+                            </div>
+                        </li>
+                        <li>
+                            <div>401 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('danceiddet401'); return false;" href="#"><em><span id="link-danceiddet401">expand</span></em></a>] </abbr></div>
+                            <div style="display: none;" class="toggle" id="danceiddet401">
+                                <p>Returned if the currently authenticated user does not have permission to view it.</p>
+                                <p/><h6>Example</h6>
+                                <pre><code>
+{
+    "message": "Unauthorized attempt to access ....",
+    "code": "UNAUTHORIZED"
+}
+                                </code></pre>
+                            </div>
+                        </li>    
+                        <li>
+                            <div>404 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('danceiddet404'); return false;" href="#"><em><span id="link-danceiddet404">expand</span></em></a>] </abbr></div>
+                            <div style="display: none;" class="toggle" id="danceiddet404">
+                                <p>Returned if item does not exist.</p>
+                                <p/><h6>Example</h6>
+                                <pre><code>
+{
+    "message": "...",
+    "code": "..."
+}
+                                </code></pre>
+                            </div>
+                        </li>                         
+                        <li>
+                            <div>500 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('danceiddet500'); return false;" href="#"><em><span id="link-danceiddet500">expand</span></em></a>] </abbr></div>
+                            <div style="display: none;" class="toggle" id="danceiddet500">
+                                <p>Returned if was any server error type.</p>
+                                <p/><h6>Example</h6>
+                                <pre><code>
+{
+    "message": ".....",
+    "code": "...."
+}
+                                </code></pre>                                
+                            </div>
+                        </li>                        
+                    </ul>
+                </div>
+            </div>
+        </div>            
+
+		<div class="ance">
+            <h3 id="dancesearch">rest/api/v1/ance/search</h3>
+            <h6>Methods</h6>
+            <div class="methods">
+                <div class="method">
+                    <h4 id="dancesearchpost">POST&nbsp;</h4>
+                    <p>Search ance j/s by JSON ance search DTO</p>
+                   
+                    <ul>
+                        <li>
+                            <div>application/json<abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('dancesearchreq'); return false;" href="#"><em><span id="link-dancesearchreq">expand</span></em></a>] </abbr></div>
+                            <div style="display: none;" class="toggle" id="dancesearchreq">
+                                <p></p><h6>Example</h6>
+                                <pre><code>
+{
+	"crisId":"journal25345"
+}														
+                               </code></pre>
+                               <p></p>
+                                <p></p><h6>Example</h6>
+                                <pre><code>
+{
+	"anceId":"E196800"
+}														
+                               </code></pre>
+                               <p></p>							   
+                            </div>
+                        </li>
+                    </ul>
+                    <p><em>available response representations:</em></p>
+                    <ul>
+                        <li>
+                            <div>200 - application/json [<a onclick="toggle('dancesearchdet'); return false;" href="#"><em><span id="link-dancesearchdet">expand</span></em></a>] </div>
+                            <div style="display: none;" class="toggle" id="dancesearchdet">
+                                <p>
+                                </p><h6>Example</h6>
+                                <pre><code>
+{
+	"casaEditrice": "cairo: Hindawi Publishing Corporation",
+	"codice": "E196800",
+	"natura": null,
+	"validoAl": null,
+	"validoDal": "2008",
+	"dateSent": null,
+	"titoli": {
+		"titolo": [
+		{
+			"value": "INTERNATIONAL JOURNAL OF GEOPHYSICS",
+			"type": null
+		}
+		]
+	},
+	"issn": "1687-885X",
+	"paese": null,
+	"submitter": null,
+	"eissn": null,
+	"lingua": null,
+	"codiceCRIS": "journal25345"
+}
+                                </code></pre>
+                                <p />
+                                <p>Returned item lists according query parameter if the currently authenticated user has permission to view it. Contains a partial representation of the item.</p>
+                                <div class="representation" />
+                            </div>
+                        </li>
+                        <li>
+                            <div>401 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('dancesearchdet401'); return false;" href="#"><em><span id="link-dancesearchdet401">expand</span></em></a>] </abbr></div>
+                            <div style="display: none;" class="toggle" id="dancesearchdet401">
+                                <p>Returned if the currently authenticated user does not have permission to view any item in the list.</p>
+                                <p/><h6>Example</h6>
+                                <pre><code>
+{
+    "message": "Unauthorized attempt to access ....",
+    "code": "UNAUTHORIZED"
+}
+                                </code></pre>
+                            </div>
+                        </li>                      
+                        <li>
+                            <div>500 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('dancesearchdet500'); return false;" href="#"><em><span id="link-dancesearchdet500">expand</span></em></a>] </abbr></div>
+                            <div style="display: none;" class="toggle" id="dancesearchdet500">
+                                <p>Returned if was any server error type.</p>
+                                <p/><h6>Example</h6>
+                                <pre><code>
+{
+    "message": ".....",
+    "code": "...."
+}
+                                </code></pre>                                
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>     
+		
+		
+    <h2 id="persons">Persons</h2>
+		
+	<div class="persons">
+            <h3 id="dpersonscrisid">rm/restservices/api/v1/persons/crisid/{crisid}</h3>
+            <h6>Methods</h6>
+            <div class="methods">
+                <div class="method">
+                    <h4 id="dpersonscrisidget">GET&nbsp; </h4>
+                    <h6>rm/restservices/api/v1/persons/crisid/{crisid}</h6>
+                    <p>Returns a IRIS RM person.</p>
+                    <h6>request query parameters: no</h6>
+                    <p><em>available response representations:</em></p>
+                    <ul>
+                        <li>
+                            <div>200 - application/json [<a onclick="toggle('dpersonscrisiddet'); return false;" href="#"><em><span id="link-dpersonscrisiddet">expand</span></em></a>] </div>
+                            <div style="display: none;" class="toggle" id="dpersonscrisiddet">
+                                <p /><h6>Example</h6>
+                                <pre><code>   
+{
+   "type" : "person",
+   "uniqueIdentifier" : "f1dbaf09-1524-49f5-a656-12db9be939a1",
+   "uuid" : "f1dbaf09-1524-49f5-a656-12db9be939a1",
+   "id" : 11803,
+   "crisId" : "rp11042",
+   "firstName" : "MAURO",
+   "lastName" : "DI DONATO",
+   "addressSet" : [ {
+      "temporary" : false,
+      "id" : 53709,
+      "discriminator" : "residenza",
+      "description" : "VIA SENECA, 73",
+      "postalCode" : "00136",
+      "country" : {
+         "uniqueIdentifier" : "4537870a-89e3-452a-9389-bfcbb773359c",
+         "uuid" : "4537870a-89e3-452a-9389-bfcbb773359c",
+         "displayValue" : "Italia"
+      },
+      "place" : {
+         "uniqueIdentifier" : "79a7a5df-e06f-4ba6-9ce4-2dadf1559cd5",
+         "uuid" : "79a7a5df-e06f-4ba6-9ce4-2dadf1559cd5",
+         "displayValue" : "Roma"
+      },
+      "displayValue" : "Via Seneca, 73 - 00136 Roma - Italia"
+   } ],
+   "contactSet" : [ {
+      "temporary" : false,
+      "id" : 16464,
+      "discriminator" : "mail",
+      "description" : "maurodidonato@libero.it",
+      "principal" : true
+   }, {
+      "temporary" : false,
+      "id" : 16465,
+      "discriminator" : "phone",
+      "description" : "3476135567",
+      "principal" : true
+   } ],
+   "personElementSet" : [ {
+      "temporary" : false,
+      "discriminator" : "codiceFiscale",
+      "gaDictionaryMap" : [ ],
+      "organizationUnitMap" : [ ],
+      "personMap" : [ ],
+      "stringMap" : [ {
+         "key" : "description",
+         "value" : "DDNMRA67A23H501Y"
+      } ],
+      "booleanMap" : [ ],
+      "integerMap" : [ ],
+      "numberMap" : [ ],
+      "dateMap" : [ {
+         "key" : "startDate",
+         "value" : "1967-01-23T00:00:00"
+      } ],
+      "clobMap" : [ ]
+   } ],
+   "parentPersonLinkElementSet" : [ ],
+   "childPersonLinkElementSet" : [ ],
+   "dateMap" : [ {
+      "key" : "birthDate",
+      "value" : "1967-01-23T00:00:00"
+   } ],
+   "gaDictionaryMap" : [ {
+      "key" : "gender",
+      "value" : {
+         "uniqueIdentifier" : "2fe85a67-b91e-4e9b-ae5b-3eb7326b322d",
+         "uuid" : "2fe85a67-b91e-4e9b-ae5b-3eb7326b322d",
+         "id" : 1041,
+         "displayValue" : "Maschile"
+      }
+   }, {
+      "key" : "birthPlaceId",
+      "value" : {
+         "uniqueIdentifier" : "79a7a5df-e06f-4ba6-9ce4-2dadf1559cd5",
+         "uuid" : "79a7a5df-e06f-4ba6-9ce4-2dadf1559cd5",
+         "displayValue" : "Roma"
+      }
+   }, {
+      "key" : "birthCountryId",
+      "value" : {
+         "uniqueIdentifier" : "4537870a-89e3-452a-9389-bfcbb773359c",
+         "uuid" : "4537870a-89e3-452a-9389-bfcbb773359c",
+         "displayValue" : "Italia"
+      }
+   } ]
+}
+                                </code></pre>
+                                <p />
+                                <p>Returned person if the currently authenticated user has permission to view it. Contains a full representation of the person.</p>
+                                <div class="representation" />
+                            </div>
+                        </li>                        
+                    </ul>
+                </div>
+            </div>
+        </div>            
+
+		<div class="persons">
+            <h3 id="dpersonsid">rm/restservices/api/v1/persons/{id}</h3>
+            <h6>Methods</h6>
+            <div class="methods">
+                <div class="method">
+                    <h4 id="dpersonsidget">GET&nbsp;</h4>
+                    <h6>rm/restservices/api/v1/persons/{id}</h6>
+                    <p>Returns a IRIS RM person.</p>
+                    <h6>request query parameters: no</h6>
+                    <p><em>available response representations:</em></p>                   
+                    <ul>
+                        <li>
+                            <div>200 - application/json [<a onclick="toggle('dpersonsiddet'); return false;" href="#"><em><span id="link-dpersonsiddet">expand</span></em></a>] </div>
+                            <div style="display: none;" class="toggle" id="dpersonsiddet">
+                                <p>
+                                </p><h6>Example</h6>
+                                <pre><code>
+{
+   "type" : "person",
+   "uniqueIdentifier" : "f1dbaf09-1524-49f5-a656-12db9be939a1",
+   "uuid" : "f1dbaf09-1524-49f5-a656-12db9be939a1",
+   "id" : 11803,
+   "crisId" : "rp11042",
+   "firstName" : "MAURO",
+   "lastName" : "DI DONATO",
+   "addressSet" : [ {
+      "temporary" : false,
+      "id" : 53709,
+      "discriminator" : "residenza",
+      "description" : "VIA SENECA, 73",
+      "postalCode" : "00136",
+      "country" : {
+         "uniqueIdentifier" : "4537870a-89e3-452a-9389-bfcbb773359c",
+         "uuid" : "4537870a-89e3-452a-9389-bfcbb773359c",
+         "displayValue" : "Italia"
+      },
+      "place" : {
+         "uniqueIdentifier" : "79a7a5df-e06f-4ba6-9ce4-2dadf1559cd5",
+         "uuid" : "79a7a5df-e06f-4ba6-9ce4-2dadf1559cd5",
+         "displayValue" : "Roma"
+      },
+      "displayValue" : "Via Seneca, 73 - 00136 Roma - Italia"
+   } ],
+   "contactSet" : [ {
+      "temporary" : false,
+      "id" : 16464,
+      "discriminator" : "mail",
+      "description" : "maurodidonato@libero.it",
+      "principal" : true
+   }, {
+      "temporary" : false,
+      "id" : 16465,
+      "discriminator" : "phone",
+      "description" : "3476135567",
+      "principal" : true
+   } ],
+   "personElementSet" : [ {
+      "temporary" : false,
+      "discriminator" : "codiceFiscale",
+      "gaDictionaryMap" : [ ],
+      "organizationUnitMap" : [ ],
+      "personMap" : [ ],
+      "stringMap" : [ {
+         "key" : "description",
+         "value" : "DDNMRA67A23H501Y"
+      } ],
+      "booleanMap" : [ ],
+      "integerMap" : [ ],
+      "numberMap" : [ ],
+      "dateMap" : [ {
+         "key" : "startDate",
+         "value" : "1967-01-23T00:00:00"
+      } ],
+      "clobMap" : [ ]
+   } ],
+   "parentPersonLinkElementSet" : [ ],
+   "childPersonLinkElementSet" : [ ],
+   "dateMap" : [ {
+      "key" : "birthDate",
+      "value" : "1967-01-23T00:00:00"
+   } ],
+   "gaDictionaryMap" : [ {
+      "key" : "gender",
+      "value" : {
+         "uniqueIdentifier" : "2fe85a67-b91e-4e9b-ae5b-3eb7326b322d",
+         "uuid" : "2fe85a67-b91e-4e9b-ae5b-3eb7326b322d",
+         "id" : 1041,
+         "displayValue" : "Maschile"
+      }
+   }, {
+      "key" : "birthPlaceId",
+      "value" : {
+         "uniqueIdentifier" : "79a7a5df-e06f-4ba6-9ce4-2dadf1559cd5",
+         "uuid" : "79a7a5df-e06f-4ba6-9ce4-2dadf1559cd5",
+         "displayValue" : "Roma"
+      }
+   }, {
+      "key" : "birthCountryId",
+      "value" : {
+         "uniqueIdentifier" : "4537870a-89e3-452a-9389-bfcbb773359c",
+         "uuid" : "4537870a-89e3-452a-9389-bfcbb773359c",
+         "displayValue" : "Italia"
+      }
+   } ]
+}
+                                </code></pre>
+                                <p />
+                                <p>Returned person if the currently authenticated user has permission to view it. Contains a full representation of the person.</p>
+                                <div class="representation" />
+                            </div>
+                        </li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>     		
+
+    </body>
+</html>

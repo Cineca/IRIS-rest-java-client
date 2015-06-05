@@ -115,6 +115,16 @@ public class RESTIRClient {
         }
         return response;
     }
+    
+    public Response items(Integer limit, Integer offset) {
+        this.webTarget = this.client.target(baseURI+pathIR).path("items/").queryParam("limit", limit).queryParam("offset", offset);
+
+        Response response = this.webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).header("scope", "ROLE_ADMIN").get();
+        if (response.getStatus() != 200) {
+            throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
+        }
+        return response;
+    }
 
     public Response itemWithMetadata(String number) {
         this.webTarget = this.client.target(baseURI+pathIR).path("items/" + number).queryParam("expand", "metadata");
@@ -172,7 +182,18 @@ public class RESTIRClient {
         return response;
     }
     
-    public Response person(String crisId) throws IOException {
+    
+    public Response person(String id) throws IOException {
+        this.webTarget = this.client.target(baseURI+pathRM).path("persons/" + id);
+
+        Response response = this.webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).header("scope", "ROLE_ADMIN").get();
+        if (response.getStatus() != 200) {
+            throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
+        }
+        return response;
+    }
+    
+    public Response personByCris(String crisId) throws IOException {
         this.webTarget = this.client.target(baseURI+pathRM).path("persons/crisid/" + crisId);
 
         Response response = this.webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).header("scope", "ROLE_ADMIN").get();
@@ -182,7 +203,17 @@ public class RESTIRClient {
         return response;
     }
     
-    public Response position(String crisId) throws IOException {
+    public Response positions(String id) throws IOException {
+        this.webTarget = this.client.target(baseURI+pathRM).path("persons/" + id + "/positions");
+
+        Response response = this.webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).header("scope", "ROLE_ADMIN").get();
+        if (response.getStatus() != 200) {
+            throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
+        }
+        return response;
+    }
+    
+    public Response positionsByCris(String crisId) throws IOException {
         this.webTarget = this.client.target(baseURI+pathRM).path("persons/crisid/" + crisId + "/positions");
 
         Response response = this.webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).header("scope", "ROLE_ADMIN").get();
@@ -191,6 +222,27 @@ public class RESTIRClient {
         }
         return response;
     }
+    
+    public Response positioncurrent(String id) throws IOException {
+        this.webTarget = this.client.target(baseURI+pathRM).path("persons/" + id + "/positioncurrent");
+
+        Response response = this.webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).header("scope", "ROLE_ADMIN").get();
+        if (response.getStatus() != 200) {
+            throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
+        }
+        return response;
+    }
+    
+    public Response positioncurrentByCris(String crisId) throws IOException {
+        this.webTarget = this.client.target(baseURI+pathRM).path("persons/crisid/" + crisId + "/positioncurrent");
+
+        Response response = this.webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).header("scope", "ROLE_ADMIN").get();
+        if (response.getStatus() != 200) {
+            throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
+        }
+        return response;
+    }
+    
 
     public void close() {
         this.client.close();

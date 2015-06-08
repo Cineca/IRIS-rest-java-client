@@ -513,6 +513,12 @@ public class Command {
 		return start + (int) Math.round(Math.random() * (end - start));
 	}
 	
+	/**
+	 * Retrieve first 6 item using /items/ids API METHOD
+	 * 
+	 * @param cl
+	 * @throws IOException
+	 */
 	private void testDBDownload(RESTIRClient cl) throws IOException {
 		ObjectMapper mapper = new ObjectMapper();
 

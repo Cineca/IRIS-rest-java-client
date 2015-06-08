@@ -326,6 +326,9 @@
                                 <div id="api/v1/items/search">
                                     <li><a href="#ditemssearch">https://unidemo.iris.cineca.it:443/rest/api/v1/items/search</a>[<a href="#ditemssearchpost">POST</a>] </li>
                                 </div>
+                                <div id="api/v1/items/ids">
+                                    <li><a href="#ditemsids">https://unidemo.iris.cineca.it:443/rest/api/v1/items/ids</a>[<a href="#ditemsidspost">POST</a>] </li>
+                                </div>								
                             </ul>
                         </li>
                     </div>
@@ -1511,6 +1514,85 @@
             </div>
         </div>      
             
+        <div class="item">
+            <h3 id="ditemsids">rest/api/v1/items/ids</h3>
+            <h6>Methods</h6>
+            <div class="methods">
+                <div class="method">
+                    <h4 id="ditemsidspost">POST&nbsp;</h4>
+                    <p>Obtain incremental item id list</p>
+                   
+                    <ul>
+                        <li>
+                            <div>application/json<abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('ditemsidsreq'); return false;" href="#"><em><span id="link-ditemsidsreq">expand</span></em></a>] </abbr></div>
+                            <div style="display: none;" class="toggle" id="ditemsidsreq">
+                                <p>
+                                </p><h6>Example</h6>
+                                <pre><code>
+{
+	"startId": 1000,
+	"count":6
+}
+                                </code></pre>
+                                <p></p>
+                            </div>
+                        </li>
+                    </ul>
+                    <p><em>available response representations:</em></p>
+                    <ul>
+                        <li>
+                            <div>200 - application/json [<a onclick="toggle('ditemsidsdet'); return false;" href="#"><em><span id="link-ditemsidsdet">expand</span></em></a>] </div>
+                            <div style="display: none;" class="toggle" id="ditemsidsdet">
+                                <p>
+                                </p><h6>Example</h6>
+                                <pre><code>
+{
+	"next": 2000,
+	"idList": [
+		1001,
+		1002,
+		1003,
+		1004,
+		1005,
+		1006]
+}
+                                </code></pre>
+                                <p />
+                                <p>Returned item lists id according query parameter if the currently authenticated user has permission to view it. Contains a partial representation of the item.</p>
+                                <div class="representation" />
+                            </div>
+                        </li>
+                        <li>
+                            <div>401 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('ditemsidsdet401'); return false;" href="#"><em><span id="link-ditemsidsdet401">expand</span></em></a>] </abbr></div>
+                            <div style="display: none;" class="toggle" id="ditemsidsdet401">
+                                <p>Returned if the currently authenticated user does not have permission to view any item in the list.</p>
+                                <p/><h6>Example</h6>
+                                <pre><code>
+{
+    "message": "Unauthorized attempt to access ....",
+    "code": "UNAUTHORIZED"
+}
+                                </code></pre>
+                            </div>
+                        </li>                      
+                        <li>
+                            <div>500 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('ditemsidsdet500'); return false;" href="#"><em><span id="link-ditemsidsdet500">expand</span></em></a>] </abbr></div>
+                            <div style="display: none;" class="toggle" id="ditemsidsdet500">
+                                <p>Returned if was any server error type.</p>
+                                <p/><h6>Example</h6>
+                                <pre><code>
+{
+    "message": ".....",
+    "code": "...."
+}
+                                </code></pre>                                
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>      
+			
         <h2 id="collections">Collections</h2>
 
         <div class="collection">

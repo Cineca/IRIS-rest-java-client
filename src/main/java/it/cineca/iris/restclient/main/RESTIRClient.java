@@ -25,13 +25,17 @@
 package it.cineca.iris.restclient.main;
 
 import it.cineca.iris.ir.rest.search.model.AnceSearchRestDTO;
+import it.cineca.iris.ir.rest.search.model.SearchIdsRestDTO;
 import it.cineca.iris.ir.rest.search.model.SearchRestDTO;
+
 import java.io.IOException;
+
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ObjectWriter;
 
@@ -148,6 +152,19 @@ public class RESTIRClient {
 
     public Response items(SearchRestDTO searchDTO) throws IOException {
         this.webTarget = this.client.target(baseURI+pathIR).path("items/search");
+
+        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+        String jsonSearchDTO = ow.writeValueAsString(searchDTO);
+
+        Response response = this.webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).header("scope", "ROLE_ADMIN").post(Entity.entity(jsonSearchDTO, MediaType.APPLICATION_JSON));
+        if (response.getStatus() != 200) {
+            throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
+        }
+        return response;
+    }
+    
+    public Response itemIds(SearchIdsRestDTO searchDTO) throws IOException {
+        this.webTarget = this.client.target(baseURI+pathIR).path("items/ids");
 
         ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
         String jsonSearchDTO = ow.writeValueAsString(searchDTO);

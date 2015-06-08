@@ -27,6 +27,7 @@ package it.cineca.iris.restclient.main;
 import it.cineca.iris.ir.rest.model.CommunityRestDTO;
 import it.cineca.iris.ir.rest.model.CommunityRestPageDTO;
 import it.cineca.iris.ir.rest.model.DCInputSetRestDTO;
+import it.cineca.iris.ir.rest.model.ItemIdRestPageDTO;
 import it.cineca.iris.ir.rest.model.ItemRestDTO;
 import it.cineca.iris.ir.rest.model.ItemRestPageDTO;
 import it.cineca.iris.ir.rest.model.MetadataEntryRestDTO;
@@ -35,6 +36,7 @@ import it.cineca.iris.ir.rest.model.RmPersonRestDTO;
 import it.cineca.iris.ir.rest.search.model.AnceSearchRestDTO;
 import it.cineca.iris.ir.rest.search.model.RestSearchCriteria;
 import it.cineca.iris.ir.rest.search.model.RestSortCriteria;
+import it.cineca.iris.ir.rest.search.model.SearchIdsRestDTO;
 import it.cineca.iris.ir.rest.search.model.SearchRestDTO;
 
 import java.io.BufferedReader;
@@ -119,6 +121,8 @@ public class Command {
 		this.testAnce(cl);
 		
 		this.testRestPerson(cl);
+		
+		this.testDBDownload(cl);
 
 		cl.close();
 	}
@@ -507,5 +511,45 @@ public class Command {
 
 	private static int randBetween(int start, int end) {
 		return start + (int) Math.round(Math.random() * (end - start));
+	}
+	
+	private void testDBDownload(RESTIRClient cl) throws IOException {
+		ObjectMapper mapper = new ObjectMapper();
+
+		System.out.println("\n-----------------------------------------------------------");
+		System.out.println("Start Sequencial random Items");
+		
+		int i = 0;
+		SearchIdsRestDTO itemSearchDTO = new SearchIdsRestDTO();
+		Integer startId = -1;
+		
+		//Real Use case: check ItemIdRestPageDTO.getNext() is null
+		while (i<2) {
+			itemSearchDTO.setStartId(startId);
+			itemSearchDTO.setCount(3);
+			
+			System.out.println("StartId: " +itemSearchDTO.getStartId());
+			System.out.println("Count: " +itemSearchDTO.getCount());
+
+			Response response = cl.itemIds(itemSearchDTO);
+			String test = response.readEntity(String.class);
+			ItemIdRestPageDTO idsPage = mapper.readValue(test, ItemIdRestPageDTO.class);
+			
+			List<Integer> ids = idsPage.getIdList();
+			
+			for (Integer itemId : ids) {
+				System.out.println("Read Item: " + itemId);
+				response = cl.itemWithMetadata(String.valueOf(itemId));
+				test = response.readEntity(String.class);
+				System.out.println("Item + metadata JSON: " + test);
+
+				ItemRestDTO item = mapper.readValue(test, ItemRestDTO.class);
+				System.out.println("Item handle: " + item.getHandle());
+				System.out.println("Item title: " + item.getMetadata().get("dc.title").get(0).getValue());
+			}
+			startId =  idsPage.getNext();
+			
+			i++;
+		}
 	}
 }

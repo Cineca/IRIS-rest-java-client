@@ -47,9 +47,10 @@ public class RmPersonRestDTO {
     public final ChildPersonLinkElementSetRestDTO childPersonLinkElementSet[];
     public final DateMapRestDTO dateMap[];
     public final GaDictionaryMapRestDTO gaDictionaryMap[];
+    public final GaSourceIdentifier gaSourceIdentifiers[];
 
     @JsonCreator
-    public RmPersonRestDTO(@JsonProperty("type") String type, @JsonProperty("uniqueIdentifier") String uniqueIdentifier, @JsonProperty("uuid") String uuid, @JsonProperty("id") long id, @JsonProperty("crisId") String crisId, @JsonProperty("firstName") String firstName, @JsonProperty("lastName") String lastName, @JsonProperty("addressSet") AddressRestSetDTO[] addressSet, @JsonProperty("contactSet") ContactSetRestDTO[] contactSet, @JsonProperty("personElementSet") PersonElementSetRestDTO[] personElementSet, @JsonProperty("parentPersonLinkElementSet") ParentPersonLinkElementSetRestDTO[] parentPersonLinkElementSet, @JsonProperty("childPersonLinkElementSet") ChildPersonLinkElementSetRestDTO[] childPersonLinkElementSet, @JsonProperty("dateMap") DateMapRestDTO[] dateMap, @JsonProperty("gaDictionaryMap") GaDictionaryMapRestDTO[] gaDictionaryMap){
+    public RmPersonRestDTO(@JsonProperty("type") String type, @JsonProperty("uniqueIdentifier") String uniqueIdentifier, @JsonProperty("uuid") String uuid, @JsonProperty("id") long id, @JsonProperty("crisId") String crisId, @JsonProperty("firstName") String firstName, @JsonProperty("lastName") String lastName, @JsonProperty("addressSet") AddressRestSetDTO[] addressSet, @JsonProperty("contactSet") ContactSetRestDTO[] contactSet, @JsonProperty("personElementSet") PersonElementSetRestDTO[] personElementSet, @JsonProperty("parentPersonLinkElementSet") ParentPersonLinkElementSetRestDTO[] parentPersonLinkElementSet, @JsonProperty("childPersonLinkElementSet") ChildPersonLinkElementSetRestDTO[] childPersonLinkElementSet, @JsonProperty("dateMap") DateMapRestDTO[] dateMap, @JsonProperty("gaDictionaryMap") GaDictionaryMapRestDTO[] gaDictionaryMap, @JsonProperty("gaSourceIdentifier") GaSourceIdentifier[] gaSourceIdentifiers){
         this.type = type;
         this.uniqueIdentifier = uniqueIdentifier;
         this.uuid = uuid;
@@ -64,7 +65,7 @@ public class RmPersonRestDTO {
         this.childPersonLinkElementSet = childPersonLinkElementSet;
         this.dateMap = dateMap;
         this.gaDictionaryMap = gaDictionaryMap;
+        this.gaSourceIdentifiers = gaSourceIdentifiers;
     }
-    
     
 }

@@ -1381,7 +1381,52 @@
                             <div>application/json<abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('ditemssearchreq'); return false;" href="#"><em><span id="link-ditemssearchreq">expand</span></em></a>] </abbr></div>
                             <div style="display: none;" class="toggle" id="ditemssearchreq">
                                 <p>
-                                </p><h6>Example</h6>
+								<div>Possible single clause value [<a onclick="toggle('dsearchdtoexp'); return false;" href="#"><em><span id="link-dsearchdtoexp">expand</span></em></a>] </div>
+								<div style="display: none;" class="toggle" id="dsearchdtoexp">
+									</br>
+										<table>
+											<tbody>
+												<tr>
+												  <th>column</th>
+												  <th>operation accepted</th>
+												  <th>value</th>
+												  <th>sort</th>												  
+												</tr>
+												<tr>
+												  <td><p><strong>is_a_snapshot</strong></p></td>
+												  <td><p>=</p></td>
+												  <td><p>int (0,1)</p></td>
+												  <td><p>no</p></td>
+												</tr>
+												<tr>
+												  <td><p><strong>handle</strong></p></td>
+												  <td><p>=</p></td>
+												  <td><p>string (item handle)</p></td>
+												  <td><p>no</p></td>
+												</tr>
+												<tr>
+												  <td><p><strong>item_id</strong></p></td>
+												  <td><p>=</p></td>
+												  <td><p>int (item id)</p></td>
+												  <td><p>yes</p></td>
+												</tr>
+												<tr>
+												  <td><p><strong>last_modified</strong></p></td>
+												  <td><p>= < > <= >=</p></td>
+												  <td><p>date (MM/GG/AAAA)</p></td>
+												  <td><p>yes</p></td>
+												</tr>	
+												<tr>
+												  <td><p><strong>collection_id</strong></p></td>
+												  <td><p>=</p></td>
+												  <td><p>int (collection id)</p></td>
+												  <td><p>yes</p></td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</p>
+								<h6>Example</h6>
                                 <pre><code>
 {
     "offset": 2,
@@ -1391,6 +1436,11 @@
     {
         "value": "21/04/2015",
         "operation": ">",
+        "column": "last_modified"
+    },
+	{
+        "value": "30/04/2015",
+        "operation": "<",
         "column": "last_modified"
     }
     ],
@@ -1520,14 +1570,35 @@
             <div class="methods">
                 <div class="method">
                     <h4 id="ditemsidspost">POST&nbsp;</h4>
-                    <p>Obtain incremental item id list</p>
+                    <p>Obtain incremental item id list from start id for count value</p>
                    
                     <ul>
                         <li>
                             <div>application/json<abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('ditemsidsreq'); return false;" href="#"><em><span id="link-ditemsidsreq">expand</span></em></a>] </abbr></div>
                             <div style="display: none;" class="toggle" id="ditemsidsreq">
-                                <p>
-                                </p><h6>Example</h6>
+								<p>
+								<div>Possible clause value [<a onclick="toggle('dsearchdtoidexp'); return false;" href="#"><em><span id="link-dsearchdtoidexp">expand</span></em></a>] </div>
+								<div style="display: none;" class="toggle" id="dsearchdtoidexp">
+									</br>
+										<table>
+											<tbody>
+												<tr>
+												  <th>field</th>
+												  <th>value</th>									  
+												</tr>
+												<tr>
+												  <td><p><strong>startId</strong></p></td>
+												  <td><p>int</p></td>
+												</tr>
+												<tr>
+												  <td><p><strong>count</strong></p></td>
+												  <td><p>int (<=1000)</p></td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</p>
+								<h6>Example</h6>
                                 <pre><code>
 {
 	"startId": 1000,

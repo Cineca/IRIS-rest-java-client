@@ -251,7 +251,7 @@ public class Command {
 		searchCriteriaLM.setValue("21/04/2015");
 
 		RestSearchCriteria searchCriteriaSnap = new RestSearchCriteria();
-		searchCriteriaSnap.setColumn("snapshot");
+		searchCriteriaSnap.setColumn("is_a_snapshot");
 		searchCriteriaSnap.setOperation("=");
 		searchCriteriaSnap.setValue("0");
 

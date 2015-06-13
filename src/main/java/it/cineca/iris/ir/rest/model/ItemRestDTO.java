@@ -42,7 +42,7 @@ public class ItemRestDTO extends DSpaceObject {
     private boolean withdrawn;
     private boolean inarchive;
     private boolean earlyDraft;
-    private int id;
+    private int itemId;
     private int wrapperId;
     private Date lastModified;
     private EPersonDTO submitter;
@@ -156,15 +156,25 @@ public class ItemRestDTO extends DSpaceObject {
         this.earlyDraft = earlyDraft;
     }
 
-    public int getId() {
-        return id;
+    public int getItemId() {
+        return itemId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setItemId(int id) {
+        this.itemId = id;
     }
+    
+    @Override
+	public int getId() {
+		return itemId;
+	}
+    
+	@Override
+	public void setId(int id) {
+		this.itemId = id;
+	}
 
-    public int getWrapperId() {
+	public int getWrapperId() {
         return wrapperId;
     }
 

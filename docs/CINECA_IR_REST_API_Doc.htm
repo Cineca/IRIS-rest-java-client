@@ -1,96 +1,93 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"><head>
-
-    
-        <meta http-equiv="content-type" content="text/html; charset=windows-1252" /><title>CINECA IR 1.0.0.0 REST API documentation</title>
-        
-        <style type="text/css">
-            body {
-                font-family: sans-serif;
-                font-size: 0.85em;
-                margin: 2em 8em;
-            }
-            .methods {
-                background-color: #eef;
-                padding: 1em;
-            }
-            h1 {
-                font-size: 2.5em;
-            }
-            h2 {
-                border-bottom: 1px solid black;
-                margin-top: 1em;
-                margin-bottom: 0.5em;
-                font-size: 2em;
-            }
-            h3 {
-                color: orange;
-                font-size: 1.75em;
-                margin-top: 1.25em;
-                margin-bottom: 0em;
-            }
-            h4 {
-                margin: 0em;
-                padding: 0em;
-                border-bottom: 2px solid white;
-            }
-            h6 {
-                font-size: 1.1em;
-                color: #99a;
-                margin: 0.5em 0em 0.25em 0em;
-            }
-            dd {
-                margin-left: 1em;
-            }
-            tt {
-                font-size: 1.2em;
-            }
-            table {
-                margin-bottom: 0.5em;
-            }
-            th {
-                text-align: left;
-                font-weight: normal;
-                color: black;
-                border-bottom: 1px solid black;
-                padding: 3px 6px;
-            }
-            td {
-                padding: 3px 6px;
-                vertical-align: top;
-                background-color: f6f6ff;
-                font-size: 0.85em;
-            }
-            td p {
-                margin: 0px;
-            }
-            ul {
-                padding-left: 1.75em;
-            }
-            p + ul, p + ol, p + dl {
-                margin-top: 0em;
-            }
-            .optional {
-                font-weight: normal;
-                opacity: 0.75;
-            }
-            .code-tag {
-                color: #000091;
-                background-color: inherit;
-            }
-            .code-comment {
-                color: #808080;
-                background-color: inherit;
-            }
-            .code-xml .code-keyword {
-                color: inherit;
-                font-weight: bold;
-            }
-            .code-quote {
-                color: #009100;
-                background-color: inherit;
-            }
-        </style>
+	<meta http-equiv="content-type" content="text/html; charset=windows-1252" /><title>CINECA IR 1.0.0.0 REST API documentation</title>
+		<style type="text/css">
+			body {
+				font-family: sans-serif;
+				font-size: 0.85em;
+				margin: 2em 8em;
+			}
+			.methods {
+				background-color: #eef;
+				padding: 1em;
+			}
+			h1 {
+				font-size: 2.5em;
+			}
+			h2 {
+				border-bottom: 1px solid black;
+				margin-top: 1em;
+				margin-bottom: 0.5em;
+				font-size: 2em;
+			}
+			h3 {
+				color: orange;
+				font-size: 1.75em;
+				margin-top: 1.25em;
+				margin-bottom: 0em;
+			}
+			h4 {
+				margin: 0em;
+				padding: 0em;
+				border-bottom: 2px solid white;
+			}
+			h6 {
+				font-size: 1.1em;
+				color: #99a;
+				margin: 0.5em 0em 0.25em 0em;
+			}
+			dd {
+				margin-left: 1em;
+			}
+			tt {
+				font-size: 1.2em;
+			}
+			table {
+				margin-bottom: 0.5em;
+			}
+			th {
+				text-align: left;
+				font-weight: normal;
+				color: black;
+				border-bottom: 1px solid black;
+				padding: 3px 6px;
+			}
+			td {
+				padding: 3px 6px;
+				vertical-align: top;
+				background-color: f6f6ff;
+				font-size: 0.85em;
+			}
+			td p {
+				margin: 0px;
+			}
+			ul {
+				padding-left: 1.75em;
+			}
+			p + ul, p + ol, p + dl {
+				margin-top: 0em;
+			}
+			.optional {
+				font-weight: normal;
+				opacity: 0.75;
+			}
+			.code-tag {
+				color: #000091;
+				background-color: inherit;
+			}
+			.code-comment {
+				color: #808080;
+				background-color: inherit;
+			}
+			.code-xml .code-keyword {
+				color: inherit;
+				font-weight: bold;
+			}
+			.code-quote {
+				color: #009100;
+				background-color: inherit;
+			}
+		</style>
         
         <script type="text/javascript" src="https://raw.githubusercontent.com/douglascrockford/JSON-js/master/json2.js" ></script>
         <script type="text/javascript">
@@ -221,12 +218,11 @@
             library within your own application.<br />
         </p>
 
-        <h2><a name="IRRESTAPIdiscussionpoints-StructureoftheRESTURIs">Structure
-                of the REST URIs</a></h2>
+        <h2><a name="IRRESTAPIdiscussionpoints-StructureoftheRESTURIs">Structure of the REST URIs</a></h2>
 
         <p><a name="IRRESTAPIdiscussionpoints-StructureoftheRESTURIs"> IR's REST APIs provide access to resources (data entities) via URI
-                paths. To use a REST API, your application will make an HTTP request
-                and parse the response. The IR REST API uses </a><a href="http://en.wikipedia.org/wiki/JSON">JSON</a> (and future <a href="http://it.wikipedia.org/wiki/XML">XML</a>) as its communication
+            paths. To use a REST API, your application will make an HTTP request
+            and parse the response. The IR REST API uses </a><a href="http://en.wikipedia.org/wiki/JSON">JSON</a> as its communication
             format, and the standard HTTP methods like <code>GET</code>, <code>PUT</code>,
             <code>POST</code> and <code>DELETE</code> (see API descriptions below
             for which methods are available for each resource). URIs for IR's REST
@@ -238,8 +234,7 @@
         <p> The current API version is <code>1</code>.</p>
 
         <p>As an example, if you wanted to retrieve the JSON representation of
-            item 328235, you would
-            access:<span style="text-decoration: underline;"></span>
+            item 328235, you would access:<span style="text-decoration: underline;"></span>
         </p>
 
         <pre><span class="external-link">https://unidemo.iris.cineca.it:443/rest/api/v1/items/328325<br /></span></pre>
@@ -270,22 +265,24 @@
         </p>
 
         <div class="methods">
-            <pre><code>
-{"id": 328325,<br /> "self": "/rest/api/v1/items/328325",<br /> .....<br /> "expand":[<br />	"metadata",<br />	"bitstreams",<br />	"history",<br />	"all"]<br />}<br />            </code></pre>
+			<pre><code>{"itemId": 328325,<br /> "self": "/rest/api/v1/items/328325",<br /> .....<br /> "expand":[<br />	"metadata",<br />	"bitstreams",<br />	"history",<br />	"all"]<br />}<br />
+			</code></pre>
         </div>
 
         <h2 id="authentication">Authentication</h2>
 
-        <p> Authentication for
-            REST API is <b>HTTP
-                Basic with using SSL.</b></p>
+        <p> Authentication for REST API is <b>HTTP Basic with using SSL.</b></p>
+		
         <p>Each request is necessary give username and password in header request that will use for http basic authentication.</p>
+		
         <p>For application purpose any authenticated user can operate with
             specific profile or scope and can act as another IRIS user. To do this
             in each request&nbsp; is possible set a specific HEADER TAG:</p>
+
         <div class="methods">
             <pre><code><span style="font-weight: bold;">TAG HEADER</span>		TAG VALUE<br /><br /><span style="font-weight: bold;">scope</span>			&lt;ROLE_USER|ROLE_ADMIN&gt;<br /><br /><span style="font-weight: bold;">on-behalf-of</span>		&lt;username&gt;<br /><br /><span style="font-weight: bold;">on-behalf-of-scope</span>	&lt;ROLE_USER|ROLE_ADMIN&gt;<br /><br /></code></pre>
         </div>
+		
         <p>If none scope is set the <span style="font-weight: bold;">default</span> is ROLE_USER.</p>
         <p>Tag on-behalf-of is necessary only for "login as" feature. Tag on-behalf-of-scope, if not set, is ROLE_USER (<span style="font-weight: bold;">default</span>).</p>
 
@@ -305,24 +302,25 @@
                             <ul>
                                 <div id="api/v1/items/{itemid}">
                                     <li><a href="#ditemsid">https://unidemo.iris.cineca.it:443/rest/api/v1/items/{itemid}</a>[<a href="#ditemsidget">GET</a>] </li>
-									<li><a href="#ditemsid">https://unidemo.iris.cineca.it:443/rest/api/v1/items/{namingAuthority}/{localName}</a>[<a href="#ditemsidget">GET</a>]</li>
-                                    <div id="api/v1/items/{itemid}/metadata">
+									<li><a href="#ditemsid">https://unidemo.iris.cineca.it:443/rest/api/v1/items/{namingAuthority}/{localName}</a>[<a href="#ditemsidget">GET</a>]</li>          
+									<div id="api/v1/items/{itemid}/metadata">
                                         <li><a href="#ditemsmeta">https://unidemo.iris.cineca.it:443/rest/api/v1/items/{itemid}/metadata</a>[<a href="#ditemsmetaget">GET</a>] </li>
 										<li><a href="#ditemsmeta">https://unidemo.iris.cineca.it:443/rest/api/v1/items/{namingAuthority}/{localName}/metadata</a>[<a href="#ditemsmetaget">GET</a>] </li>
                                     </div>
-                                    <div id="api/v1/items/{itemid}/metadata/{metadataKey}">
+									<div id="api/v1/items/{itemid}/metadata/{metadataKey}">
                                         <li><a href="#ditemsmetak">https://unidemo.iris.cineca.it:443/rest/api/v1/items/{itemid}/{metadataKey}</a>[<a href="#ditemsmetakget">GET</a>] </li>
 										<li><a href="#ditemsmetak">https://unidemo.iris.cineca.it:443/rest/api/v1/items/{namingAuthority}/{localName}/{metadataKey}</a>[<a href="#ditemsmetakget">GET</a>] </li>
                                     </div>
-                                    <div id="api/v1/items/{itemid}/bitstreams">
+									<div id="api/v1/items/{itemid}/bitstreams">
                                         <li><a href="#ditemsmetabs">https://unidemo.iris.cineca.it:443/rest/api/v1/items/{itemid}/bitstreams</a>[<a href="#ditemsmetabsget">GET</a>] </li>
 										<li><a href="#ditemsmetabs">https://unidemo.iris.cineca.it:443/rest/api/v1/items/{namingAuthority}/{localName}/bitstreams</a>[<a href="#ditemsmetabsget">GET</a>] </li>
                                     </div>
-                                    <div id="api/v1/items/{itemid}/histories">
+									<div id="api/v1/items/{itemid}/histories">
                                         <li><a href="#ditemshist">https://unidemo.iris.cineca.it:443/rest/api/v1/items/{itemid}/histories</a>[<a href="#ditemshistget">GET</a>] </li>
 										<li><a href="#ditemshist">https://unidemo.iris.cineca.it:443/rest/api/v1/items/{namingAuthority}/{localName}/histories</a>[<a href="#ditemshistget">GET</a>] </li>
                                     </div>									
-                                </div>                                     
+                                </div>
+								
                                 <div id="api/v1/items/search">
                                     <li><a href="#ditemssearch">https://unidemo.iris.cineca.it:443/rest/api/v1/items/search</a>[<a href="#ditemssearchpost">POST</a>] </li>
                                 </div>
@@ -334,6 +332,7 @@
                     </div>
                 </ul>
             </li>&nbsp;
+			
             <li>
                 <a href="#collections">Collections</a>
                 <ul>
@@ -345,13 +344,13 @@
                                     <div id="api/v1/collections/{collectionid}/items">
                                         <li><a href="#dcolsitems">https://unidemo.iris.cineca.it:443/rest/api/v1/collections/{collectionid}/items</a>[<a href="#dcolsitemsget">GET</a>] </li>
                                     </div>
-                                    
                                 </div>
                             </ul>
                         </li>
                     </div>
                 </ul>
             </li>&nbsp;
+			
             <li>
                 <a href="#communities">Communities</a>
                 <ul>
@@ -372,6 +371,7 @@
                     </div>
                 </ul>
             </li>&nbsp;
+			
             <li>
                 <a href="#bitstreams">Bitstreams</a>
                 <ul>
@@ -388,51 +388,63 @@
                         </li>
                     </div>
                 </ul>
-            </li>&nbsp;         
+            </li>&nbsp;   
+			
             <li>
                 <a href="#inputforms">Inputforms</a>
                 <ul>
                     <div id="api/v1/inputforms">&nbsp;
-                       
-                                <div id="api/v1/inputforms/{inputformid}">
-                                    <li><a href="#dinpsid">https://unidemo.iris.cineca.it:443/rest/api/v1/inputforms/{inputformid}</a>[<a href="#dinpsidget">GET</a>] </li>
-                                    <div id="api/v1/items/{inputformid}/forms">
-                                        <li><a href="#dinpsfrm">https://unidemo.iris.cineca.it:443/rest/api/v1/inputforms/{inputformid}/form</a>[<a href="#dinpsfrmget">GET</a>] </li>
-                                    </div>       
-                                    <div id="api/v1/items/{inputformid}/valuepairs">
-                                        <li><a href="#dinpsvp">https://unidemo.iris.cineca.it:443/rest/api/v1/inputforms/{inputformid}/valuepairs</a>[<a href="#dinpsvpget">GET</a>] </li>
-                                    </div>                                       
-                                </div>
-                           
+						<div id="api/v1/inputforms/{inputformid}">
+							<li><a href="#dinpsid">https://unidemo.iris.cineca.it:443/rest/api/v1/inputforms/{inputformid}</a>[<a href="#dinpsidget">GET</a>] </li>
+							<div id="api/v1/items/{inputformid}/forms">
+								<li><a href="#dinpsfrm">https://unidemo.iris.cineca.it:443/rest/api/v1/inputforms/{inputformid}/form</a>[<a href="#dinpsfrmget">GET</a>] </li>
+							</div>       
+							<div id="api/v1/items/{inputformid}/valuepairs">
+								<li><a href="#dinpsvp">https://unidemo.iris.cineca.it:443/rest/api/v1/inputforms/{inputformid}/valuepairs</a>[<a href="#dinpsvpget">GET</a>] </li>
+							</div>                                       
+						</div>
                     </div>
                 </ul>
             </li>&nbsp;  
+			
             <li>
                 <a href="#ance">Ance</a>
                 <ul>
                     <div id="api/v1/ance">&nbsp;
-                        
-                                <div id="api/v1/ance/{crisid}">
-                                    <li><a href="#danceid">https://unidemo.iris.cineca.it:443/rest/api/v1/ance/{crisid}</a>[<a href="#danceidget">GET</a>] </li>                                    
-                                </div>
-                                <div id="api/v1/ance/search">
-                                    <li><a href="#dancesearch">https://unidemo.iris.cineca.it:443/rest/api/v1/ance/search</a>[<a href="#dancesearchpost">POST</a>] </li>
-                                </div>                                
-                           
+						<div id="api/v1/ance/{crisid}">
+							<li><a href="#danceid">https://unidemo.iris.cineca.it:443/rest/api/v1/ance/{crisid}</a>[<a href="#danceidget">GET</a>] </li>                                    
+						</div>
+						<div id="api/v1/ance/search">
+							<li><a href="#dancesearch">https://unidemo.iris.cineca.it:443/rest/api/v1/ance/search</a>[<a href="#dancesearchpost">POST</a>] </li>
+						</div>                                
                     </div>
                 </ul>
-            </li>&nbsp;      
+            </li>&nbsp;
+			
 			<li>
                 <a href="#persons">Persons</a>
 				<ul>
                     <div id="rm/restservices/api/v1/persons">&nbsp;
-                        
-                                <div id="rm/restservices/api/v1/persons/crisid/{crisid}">
-                                    <li><a href="#dpersonscrisid">https://unidemo.iris.cineca.it:443/rm/restservices/api/v1/persons/crisid/{crisid}</a>[<a href="#dpersonscrisidget">GET</a>] </li>                                    
-                                </div>
-                                <div id="rm/restservices/api/v1/persons/{id}">
-                                    <li><a href="#dpersonsid">https://unidemo.iris.cineca.it:443/rm/restservices/api/v1/persons/{id}</a>[<a href="#dpersonsidget">GET</a>] </li>
-                                </div>                                
+						<div id="rm/restservices/api/v1/persons/crisid/{crisid}">
+							<li><a href="#dpersons">https://unidemo.iris.cineca.it:443/rm/restservices/api/v1/persons/crisid/{crisid}</a>[<a href="#dpersonsget">GET</a>] </li
+						</div>
+						<div id="rm/restservices/api/v1/persons/{id}">
+							<li><a href="#dpersons">https://unidemo.iris.cineca.it:443/rm/restservices/api/v1/persons/{id}</a>[<a href="#dpersonsget">GET</a>] </li>
+						</div>      
+
+						<div id="rm/restservices/api/v1/persons/crisid/{crisid}/positions">
+							<li><a href="#dpersonspos">https://unidemo.iris.cineca.it:443/rm/restservices/api/v1/persons/crisid/{crisid}/positions</a>[<a href="#dpersonsposget">GET</a>] </li>
+						</div>
+						<div id="rm/restservices/api/v1/persons/{id}/positions">
+							<li><a href="#dpersonspos">https://unidemo.iris.cineca.it:443/rm/restservices/api/v1/persons/{id}/positions</a>[<a href="#dpersonsposget">GET</a>] </li>
+						</div>  	
+						
+						<div id="rm/restservices/api/v1/persons/crisid/{crisid}/positioncurrent">
+							<li><a href="#dpersonspc">https://unidemo.iris.cineca.it:443/rm/restservices/api/v1/persons/crisid/{crisid}/positioncurrent</a>[<a href="#dpersonspcget">GET</a>] </li>
+						</div>
+						<div id="rm/restservices/api/v1/persons/{id}/positioncurrent">
+							<li><a href="#dpersonspc">https://unidemo.iris.cineca.it:443/rm/restservices/api/v1/persons/{id}/positioncurrent</a>[<a href="#dpersonspcget">GET</a>] </li>
+						</div>  	
                           
                     </div>
                 </ul>
@@ -440,22 +452,22 @@
         </ul>
 
         <h2 id="items">Items</h2>
-			<div>
-				<p><em>Items JSON rappresentation explained:</em></p>
-				<ul>
-					<li>
-						<div>Item field list [<a onclick="toggle('ditemsexp'); return false;" href="#"><em><span id="link-ditemsexp">expand</span></em></a>] </div>
-						<div style="display: none;" class="toggle" id="ditemsexp">
-							</br>
-							<table>
-							  <tbody>
+		<div>
+			<p><em>Items JSON rappresentation explained:</em></p>
+			<ul>
+				<li>
+					<div>Item field list [<a onclick="toggle('ditemsexp'); return false;" href="#"><em><span id="link-ditemsexp">expand</span></em></a>] </div>
+					<div style="display: none;" class="toggle" id="ditemsexp">
+						</br>
+						<table>
+							<tbody>
 								<tr>
 								  <th>field name</th>
 								  <th>description</th>
 								  <th>REST object</th>
 								</tr>
 								<tr>
-								  <td><p><strong>"id"</strong></p></td>
+								  <td><p><strong>"itemId"</strong></p></td>
 								  <td><p><em>Item Internal ID</em></p></td>
 								  <td><p>"item"</p></td>
 								</tr>
@@ -654,12 +666,12 @@
 								  <td><p><em>Collection handle</em></p></td>
 								  <td><p>"collection"</p></td>
 								</tr>
-							  </tbody>
-							</table>
-						</div>
-					</li>
-				</ul>
-			</div>
+							</tbody>
+						</table>
+					</div>
+				</li>
+			</ul>
+		</div>
 
         <div class="item">
             <h3 id="ditems">rest/api/v1/items</h3>
@@ -720,25 +732,25 @@
                                 <p /><h6>Example</h6>
                                 <pre><code>
 {
-    "next": "offset=20&limit=10",
-    "prev": "offset=10&limit=10",
-    "restResourseDTOList": [
-        {
-            "id": 1,
-            "owner": {
-                "id": -1,
-                "lastName": null,
-                "firstName": null,
-                "netid": null,
-                "email": null
-            },
-            "lastModified": 1300185331000,
-            "collection": {
-                "name": "01.a Pubblicazione su Rivista",
-                "id": 58,
-                "type": 3,
-                "handle": "123456789/1"
-            },
+	"next": "offset=20&limit=10",
+	"prev": "offset=10&limit=10",
+	"restResourseDTOList": [
+		{
+			"itemId": 1,
+			"owner": {
+				"id": -1,
+				"lastName": null,
+				"firstName": null,
+				"netid": null,
+				"email": null
+			},
+			"lastModified": 1300185331000,
+			"collection": {
+				"name": "01.a Pubblicazione su Rivista",
+				"id": 58,
+				"type": 3,
+				"handle": "123456789/1"
+			},
 			"lookupValues":{
 				"summary":"2014",
 				"spage":"13",
@@ -747,48 +759,48 @@
 				"isbn":"9788878709706",
 				......
 			}
-            "submitterID": 574,
-            "submitterNetID": "19838",
-            "identifierToDisseminate": -1,
-            "workFlowValidationStatus": -1,
-            "simpleItemStatus": 0,
-            "workFlowValidationRule": -1,
-            "collectionHandle": "123456789/1",
-            "inputFormId": 1,
-            "withdrawn": false,
-            "archived": false,
-            "snapshot": false,
-            "inWorkFlow": false,
-            "inWorkspace": true,
-            "earlyDraft": true,
-            "submitter": {
-                "id": 574,
-                "lastName": "PAI NOTA",
-                "firstName": "AN MAIA",
-                "netid": "19838",
-                "email": "user@email.it"
-            },
+			"submitterID": 574,
+			"submitterNetID": "19838",
+			"identifierToDisseminate": -1,
+			"workFlowValidationStatus": -1,
+			"simpleItemStatus": 0,
+			"workFlowValidationRule": -1,
+			"collectionHandle": "123456789/1",
+			"inputFormId": 1,
+			"withdrawn": false,
+			"archived": false,
+			"snapshot": false,
+			"inWorkFlow": false,
+			"inWorkspace": true,
+			"earlyDraft": true,
+			"submitter": {
+				"id": 574,
+				"lastName": "PAI NOTA",
+				"firstName": "AN MAIA",
+				"netid": "19838",
+				"email": "user@email.it"
+			},
 			"reopened": false,
-            "name": "",
-            "type": "items",
-            "self": "/rest/api/v1/items/1",
-            "expand": [
-                "metadata",
-                "bitstreams",
-                "history",
-                "all"
-            ]
-        },
-        { … },
-        { … },
-        { … },
-        { … },
-        { … },
-        { … },
-        { … },
-        { … },
-        { … }
-    ]
+			"name": "",
+			"type": "items",
+			"self": "/rest/api/v1/items/1",
+			"expand": [
+				"metadata",
+				"bitstreams",
+				"history",
+				"all"
+			]
+		},
+		{ … },
+		{ … },
+		{ … },
+		{ … },
+		{ … },
+		{ … },
+		{ … },
+		{ … },
+		{ … }
+	]
 }
                                 </code></pre>
                                 <p />
@@ -838,24 +850,24 @@
                     <p>Returns a IRIS IR item.</p>
                     <h6>request query parameters</h6>
                     <table>
-                      <tbody>
-                        <tr>
-                          <th>parameter</th>
-                          <th>value</th>
-                          <th>description</th>
-                        </tr>
-                        <tr>
-                          <td>
-                          <p><strong>expand</strong></p>
-                          </td>
-                          <td>
-                          <p><em><a href="http://www.w3.org/TR/xmlschema-2/#string">string</a></em></p>
-                          </td>
-                          <td>
-                          <p>a String containing acceptable expand list (separated by comma). See response for values</p>
-                          </td>
-                        </tr>
-                      </tbody>
+						<tbody>
+							<tr>
+							  <th>parameter</th>
+							  <th>value</th>
+							  <th>description</th>
+							</tr>
+							<tr>
+							  <td>
+							  <p><strong>expand</strong></p>
+							  </td>
+							  <td>
+							  <p><em><a href="http://www.w3.org/TR/xmlschema-2/#string">string</a></em></p>
+							  </td>
+							  <td>
+							  <p>a String containing acceptable expand list (separated by comma). See response for values</p>
+							  </td>
+							</tr>
+						</tbody>
                     </table>
                     <p><em>available response representations:</em></p>
                     <ul>
@@ -865,7 +877,7 @@
                                 <p /><h6>Example</h6>
                                 <pre><code>   
     {
-        "id": 1,
+        "itemId": 1,
         "owner": {
             "id": -1,
             "lastName": null,
@@ -1393,7 +1405,7 @@
 												  <th>sort</th>												  
 												</tr>
 												<tr>
-												  <td><p><strong>is_a_snapshot</strong></p></td>
+												  <td><p><strong>snapshot</strong></p></td>
 												  <td><p>=</p></td>
 												  <td><p>int (0,1)</p></td>
 												  <td><p>no</p></td>
@@ -1405,23 +1417,17 @@
 												  <td><p>no</p></td>
 												</tr>
 												<tr>
-												  <td><p><strong>item_id</strong></p></td>
+												  <td><p><strong>itemId</strong></p></td>
 												  <td><p>=</p></td>
 												  <td><p>int (item id)</p></td>
 												  <td><p>yes</p></td>
 												</tr>
 												<tr>
-												  <td><p><strong>last_modified</strong></p></td>
+												  <td><p><strong>lastModified</strong></p></td>
 												  <td><p>= < > <= >=</p></td>
 												  <td><p>date (MM/GG/AAAA)</p></td>
 												  <td><p>yes</p></td>
 												</tr>	
-												<tr>
-												  <td><p><strong>collection_id</strong></p></td>
-												  <td><p>=</p></td>
-												  <td><p>int (collection id)</p></td>
-												  <td><p>yes</p></td>
-												</tr>
 											</tbody>
 										</table>
 									</div>
@@ -1436,17 +1442,17 @@
     {
         "value": "21/04/2015",
         "operation": ">",
-        "column": "last_modified"
+        "column": "lastModified"
     },
 	{
         "value": "30/04/2015",
         "operation": "<",
-        "column": "last_modified"
+        "column": "lastModified"
     }
     ],
     "sortingColsCriteria": [
     {
-        "column": "last_modified",
+        "column": "lastModified",
         "asc": true
     }
     ]
@@ -1469,7 +1475,7 @@
     "prev": "offset=0&limit=2",
     "restResourseDTOList": [
         {
-            "id": 1,
+            "itemId": 1,
             "owner": {
                 "id": -1,
                 "lastName": null,
@@ -1964,7 +1970,7 @@
 	"restResourseDTOList": [
 	{
 		"lastModified": 1361979065000,
-		"id": 58866,
+		"itemId": 58866,
 		"owner": {
 			"id": -1,
 			"netid": null,
@@ -3293,20 +3299,23 @@
 		
     <h2 id="persons">Persons</h2>
 		
-	<div class="persons">
-            <h3 id="dpersonscrisid">rm/restservices/api/v1/persons/crisid/{crisid}</h3>
+		<div class="persons">
+            <h3 id="dpersons">rm/restservices/api/v1/persons/crisid/{crisid}
+			</br>rm/restservices/api/v1/persons/{id}</h3>
+			
             <h6>Methods</h6>
             <div class="methods">
                 <div class="method">
-                    <h4 id="dpersonscrisidget">GET&nbsp; </h4>
+                    <h4 id="dpersonsget">GET&nbsp; </h4>
                     <h6>rm/restservices/api/v1/persons/crisid/{crisid}</h6>
+					<h6>rm/restservices/api/v1/persons/{id}</h6>
                     <p>Returns a IRIS RM person.</p>
                     <h6>request query parameters: no</h6>
                     <p><em>available response representations:</em></p>
                     <ul>
                         <li>
-                            <div>200 - application/json [<a onclick="toggle('dpersonscrisiddet'); return false;" href="#"><em><span id="link-dpersonscrisiddet">expand</span></em></a>] </div>
-                            <div style="display: none;" class="toggle" id="dpersonscrisiddet">
+                            <div>200 - application/json [<a onclick="toggle('dpersonsdet'); return false;" href="#"><em><span id="link-dpersonsdet">expand</span></em></a>] </div>
+                            <div style="display: none;" class="toggle" id="dpersonsdet">
                                 <p /><h6>Example</h6>
                                 <pre><code>   
 {
@@ -3316,13 +3325,13 @@
    "id" : 11803,
    "crisId" : "rp11042",
    "firstName" : "MAURO",
-   "lastName" : "DI DONATO",
+   "lastName" : "DONATO",
    "addressSet" : [ {
       "temporary" : false,
       "id" : 53709,
       "discriminator" : "residenza",
-      "description" : "VIA SENECA, 73",
-      "postalCode" : "00136",
+      "description" : "VIA SEN, 730",
+      "postalCode" : "40136",
       "country" : {
          "uniqueIdentifier" : "4537870a-89e3-452a-9389-bfcbb773359c",
          "uuid" : "4537870a-89e3-452a-9389-bfcbb773359c",
@@ -3331,21 +3340,21 @@
       "place" : {
          "uniqueIdentifier" : "79a7a5df-e06f-4ba6-9ce4-2dadf1559cd5",
          "uuid" : "79a7a5df-e06f-4ba6-9ce4-2dadf1559cd5",
-         "displayValue" : "Roma"
+         "displayValue" : "Bologna"
       },
-      "displayValue" : "Via Seneca, 73 - 00136 Roma - Italia"
+      "displayValue" : "Via Sen, 730 - 40136 Bologna - Italia"
    } ],
    "contactSet" : [ {
       "temporary" : false,
       "id" : 16464,
       "discriminator" : "mail",
-      "description" : "maurodidonato@libero.it",
+      "description" : "mauro@libero.it",
       "principal" : true
    }, {
       "temporary" : false,
       "id" : 16465,
       "discriminator" : "phone",
-      "description" : "3476135567",
+      "description" : "347",
       "principal" : true
    } ],
    "personElementSet" : [ {
@@ -3356,123 +3365,7 @@
       "personMap" : [ ],
       "stringMap" : [ {
          "key" : "description",
-         "value" : "DDNMRA67A23H501Y"
-      } ],
-      "booleanMap" : [ ],
-      "integerMap" : [ ],
-      "numberMap" : [ ],
-      "dateMap" : [ {
-         "key" : "startDate",
-         "value" : "1967-01-23T00:00:00"
-      } ],
-      "clobMap" : [ ]
-   } ],
-   "parentPersonLinkElementSet" : [ ],
-   "childPersonLinkElementSet" : [ ],
-   "dateMap" : [ {
-      "key" : "birthDate",
-      "value" : "1967-01-23T00:00:00"
-   } ],
-   "gaDictionaryMap" : [ {
-      "key" : "gender",
-      "value" : {
-         "uniqueIdentifier" : "2fe85a67-b91e-4e9b-ae5b-3eb7326b322d",
-         "uuid" : "2fe85a67-b91e-4e9b-ae5b-3eb7326b322d",
-         "id" : 1041,
-         "displayValue" : "Maschile"
-      }
-   }, {
-      "key" : "birthPlaceId",
-      "value" : {
-         "uniqueIdentifier" : "79a7a5df-e06f-4ba6-9ce4-2dadf1559cd5",
-         "uuid" : "79a7a5df-e06f-4ba6-9ce4-2dadf1559cd5",
-         "displayValue" : "Roma"
-      }
-   }, {
-      "key" : "birthCountryId",
-      "value" : {
-         "uniqueIdentifier" : "4537870a-89e3-452a-9389-bfcbb773359c",
-         "uuid" : "4537870a-89e3-452a-9389-bfcbb773359c",
-         "displayValue" : "Italia"
-      }
-   } ]
-}
-                                </code></pre>
-                                <p />
-                                <p>Returned person if the currently authenticated user has permission to view it. Contains a full representation of the person.</p>
-                                <div class="representation" />
-                            </div>
-                        </li>                        
-                    </ul>
-                </div>
-            </div>
-        </div>            
-
-		<div class="persons">
-            <h3 id="dpersonsid">rm/restservices/api/v1/persons/{id}</h3>
-            <h6>Methods</h6>
-            <div class="methods">
-                <div class="method">
-                    <h4 id="dpersonsidget">GET&nbsp;</h4>
-                    <h6>rm/restservices/api/v1/persons/{id}</h6>
-                    <p>Returns a IRIS RM person.</p>
-                    <h6>request query parameters: no</h6>
-                    <p><em>available response representations:</em></p>                   
-                    <ul>
-                        <li>
-                            <div>200 - application/json [<a onclick="toggle('dpersonsiddet'); return false;" href="#"><em><span id="link-dpersonsiddet">expand</span></em></a>] </div>
-                            <div style="display: none;" class="toggle" id="dpersonsiddet">
-                                <p>
-                                </p><h6>Example</h6>
-                                <pre><code>
-{
-   "type" : "person",
-   "uniqueIdentifier" : "f1dbaf09-1524-49f5-a656-12db9be939a1",
-   "uuid" : "f1dbaf09-1524-49f5-a656-12db9be939a1",
-   "id" : 11803,
-   "crisId" : "rp11042",
-   "firstName" : "MAURO",
-   "lastName" : "DI DONATO",
-   "addressSet" : [ {
-      "temporary" : false,
-      "id" : 53709,
-      "discriminator" : "residenza",
-      "description" : "VIA SENECA, 73",
-      "postalCode" : "00136",
-      "country" : {
-         "uniqueIdentifier" : "4537870a-89e3-452a-9389-bfcbb773359c",
-         "uuid" : "4537870a-89e3-452a-9389-bfcbb773359c",
-         "displayValue" : "Italia"
-      },
-      "place" : {
-         "uniqueIdentifier" : "79a7a5df-e06f-4ba6-9ce4-2dadf1559cd5",
-         "uuid" : "79a7a5df-e06f-4ba6-9ce4-2dadf1559cd5",
-         "displayValue" : "Roma"
-      },
-      "displayValue" : "Via Seneca, 73 - 00136 Roma - Italia"
-   } ],
-   "contactSet" : [ {
-      "temporary" : false,
-      "id" : 16464,
-      "discriminator" : "mail",
-      "description" : "maurodidonato@libero.it",
-      "principal" : true
-   }, {
-      "temporary" : false,
-      "id" : 16465,
-      "discriminator" : "phone",
-      "description" : "3476135567",
-      "principal" : true
-   } ],
-   "personElementSet" : [ {
-      "temporary" : false,
-      "discriminator" : "codiceFiscale",
-      "gaDictionaryMap" : [ ],
-      "organizationUnitMap" : [ ],
-      "personMap" : [ ],
-      "stringMap" : [ {
-         "key" : "description",
-         "value" : "DDNMRA67A23H501Y"
+         "value" : "DDRA6723H5"
       } ],
       "booleanMap" : [ ],
       "integerMap" : [ ],
@@ -3519,11 +3412,179 @@
                                 <div class="representation" />
                             </div>
                         </li>
-                        
+						<li>
+                            <div>404 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('ditemsiddet404'); return false;" href="#"><em><span id="link-ditemsiddet404">expand</span></em></a>] </abbr></div>
+                            <div style="display: none;" class="toggle" id="ditemsiddet404">
+                                <p>Returned if person does not exist.</p>
+                            </div>
+                        </li>     						
                     </ul>
                 </div>
             </div>
-        </div>     		
+        </div>            
+
+		<div class="persons">
+            <h3 id="dpersonspos">rm/restservices/api/v1/persons/{id}/positions
+			</br>rm/restservices/api/v1/persons/crisid/{crisid}/positions</h3>
+            <h6>Methods</h6>
+            <div class="methods">
+                <div class="method">
+                    <h4 id="dpersonsposget">GET&nbsp;</h4>
+                    <h6>rm/restservices/api/v1/persons/{id}/positions</h6>
+					<h6>rm/restservices/api/v1/persons/crisid/{crisid}/positions</h6>
+                    <p>Returns a IRIS RM person careers.</p>
+                    <h6>request query parameters: no</h6>
+                    <p><em>available response representations:</em></p>                   
+                    <ul>
+                        <li>
+                            <div>200 - application/json [<a onclick="toggle('dpersonsposdet'); return false;" href="#"><em><span id="link-dpersonsposdet">expand</span></em></a>] </div>
+                            <div style="display: none;" class="toggle" id="dpersonsposdet">
+                                <p>
+                                </p><h6>Example</h6>
+                                <pre><code>
+{
+   "items" : [ {
+      "type" : "positionCurrent",
+      "temporary" : false,
+      "discriminator" : "research",
+      "startDate" : "2006-03-01T00:00:00",
+	  "endDate" : "2000-10-31T00:00:00",
+      "organizationUnit" : {
+         "uniqueIdentifier" : "9ec8dd05-eb0e-4894-9569-0b8382b6907d",
+         "uuid" : "9ec8dd05-eb0e-4894-9569-0b8382b6907d",
+         "id" : 883,
+         "description" : "Ricercatori Universitari",
+         "displayValue" : "Ricercatori Universitari",
+         "startDate" : "1900-01-01T00:00:00",
+         "organizationUnitType" : {
+            "displayValue" : "Qualifica (ricerca)"
+         },
+         "gaSourceIdentifiers" : [ {
+            "destinationId" : 883,
+            "destinationTable" : "GA.ORG_UNIT",
+            "id" : 31355,
+            "sourceId" : "RU",
+            "sourceTable" : "UGOV.RU.RUOLO"
+         } ]
+      },
+      "positionType" : {
+         "uniqueIdentifier" : "c14bcc89-9f27-4bbb-902c-b20600ac5c3b",
+         "uuid" : "c14bcc89-9f27-4bbb-902c-b20600ac5c3b",
+         "id" : 882,
+         "description" : "Ricercatori",
+         "displayValue" : "Ricercatori",
+         "startDate" : "1900-01-01T00:00:00",
+         "organizationUnitType" : {
+            "displayValue" : "Ruolo (ricerca)"
+         },
+         "gaSourceIdentifiers" : [ {
+            "destinationId" : 882,
+            "destinationTable" : "GA.ORG_UNIT",
+            "id" : 31354,
+            "sourceId" : "2",
+            "sourceTable" : "UGOV.RU.TIPO_RUOLO"
+         } ]
+      }
+   },{....}
+   ]
+}
+                                </code></pre>
+                                <p />
+                                <p>Returned person careers if the currently authenticated user has permission to view it. Contains a full representation of the person career.</p>
+                                <div class="representation" />
+                            </div>
+                        </li>
+						<li>
+                            <div>404 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('ditemsiddet404'); return false;" href="#"><em><span id="link-ditemsiddet404">expand</span></em></a>] </abbr></div>
+                            <div style="display: none;" class="toggle" id="ditemsiddet404">
+                                <p>Returned if person does not exist or does not have a careers.</p>
+                            </div>
+                        </li>                          
+                    </ul>
+                </div>
+            </div>
+        </div>    
+
+		<div class="persons">
+            <h3 id="dpersonspc">rm/restservices/api/v1/persons/{id}/positioncurrent
+			</br> rm/restservices/api/v1/persons/crisid/{crisid}/positioncurrent</h3>
+            <h6>Methods</h6>
+            <div class="methods">
+                <div class="method">
+                    <h4 id="dpersonspcget">GET&nbsp; </h4>
+					<h6>rm/restservices/api/v1/persons/{id}/positioncurrent</h6>
+                    <h6>rm/restservices/api/v1/persons/crisid/{crisid}/positioncurrent</h6>
+                    <p>Returns a IRIS RM person current career.</p>
+                    <h6>request query parameters: no</h6>
+                    <p><em>available response representations:</em></p>
+                    <ul>
+                        <li>
+                            <div>200 - application/json [<a onclick="toggle('dpersonspcdet'); return false;" href="#"><em><span id="link-dpersonspcdet">expand</span></em></a>] </div>
+                            <div style="display: none;" class="toggle" id="dpersonspcdet">
+                                <p /><h6>Example</h6>
+                                <pre><code>   
+{
+   "items" : [ {
+      "type" : "positionCurrent",
+      "temporary" : false,
+      "discriminator" : "research",
+      "startDate" : "2006-03-01T00:00:00",
+      "organizationUnit" : {
+         "uniqueIdentifier" : "9ec8dd05-eb0e-4894-9569-0b8382b6907d",
+         "uuid" : "9ec8dd05-eb0e-4894-9569-0b8382b6907d",
+         "id" : 883,
+         "description" : "Ricercatori Universitari",
+         "displayValue" : "Ricercatori Universitari",
+         "startDate" : "1900-01-01T00:00:00",
+         "organizationUnitType" : {
+            "displayValue" : "Qualifica (ricerca)"
+         },
+         "gaSourceIdentifiers" : [ {
+            "destinationId" : 883,
+            "destinationTable" : "GA.ORG_UNIT",
+            "id" : 31355,
+            "sourceId" : "RU",
+            "sourceTable" : "UGOV.RU.RUOLO"
+         } ]
+      },
+      "positionType" : {
+         "uniqueIdentifier" : "c14bcc89-9f27-4bbb-902c-b20600ac5c3b",
+         "uuid" : "c14bcc89-9f27-4bbb-902c-b20600ac5c3b",
+         "id" : 882,
+         "description" : "Ricercatori",
+         "displayValue" : "Ricercatori",
+         "startDate" : "1900-01-01T00:00:00",
+         "organizationUnitType" : {
+            "displayValue" : "Ruolo (ricerca)"
+         },
+         "gaSourceIdentifiers" : [ {
+            "destinationId" : 882,
+            "destinationTable" : "GA.ORG_UNIT",
+            "id" : 31354,
+            "sourceId" : "2",
+            "sourceTable" : "UGOV.RU.TIPO_RUOLO"
+         } ]
+      }
+   },{....}
+   ]
+}
+   
+                                </code></pre>
+                                <p />
+                                <p>Returned person current career if the currently authenticated user has permission to view it. Contains a full representation of the person career.</p>
+                                <div class="representation" />
+                            </div>
+                        </li>
+						<li>
+                            <div>404 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('ditemsiddet404'); return false;" href="#"><em><span id="link-ditemsiddet404">expand</span></em></a>] </abbr></div>
+                            <div style="display: none;" class="toggle" id="ditemsiddet404">
+                                <p>Returned if person does not have a current career.</p>
+                            </div>
+                        </li>  						
+                    </ul>
+                </div>
+            </div>
+        </div>  		
 
     </body>
 </html>

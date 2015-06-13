@@ -246,12 +246,12 @@ public class Command {
 		itemSearchDTO.setExpand("");
 
 		RestSearchCriteria searchCriteriaLM = new RestSearchCriteria();
-		searchCriteriaLM.setColumn("last_modified");
+		searchCriteriaLM.setColumn("lastModified");
 		searchCriteriaLM.setOperation(">");
 		searchCriteriaLM.setValue("21/04/2015");
 
 		RestSearchCriteria searchCriteriaSnap = new RestSearchCriteria();
-		searchCriteriaSnap.setColumn("is_a_snapshot");
+		searchCriteriaSnap.setColumn("snapshot");
 		searchCriteriaSnap.setOperation("=");
 		searchCriteriaSnap.setValue("0");
 
@@ -262,7 +262,7 @@ public class Command {
 
 		RestSortCriteria sortCriteria = new RestSortCriteria();
 		sortCriteria.setAsc(true);
-		sortCriteria.setColumn("last_modified");
+		sortCriteria.setColumn("lastModified");
 
 		ArrayList<RestSortCriteria> sortList = new ArrayList<>();
 		sortList.add(sortCriteria);
@@ -457,12 +457,12 @@ public class Command {
 		/* Create search criteria */
 		// Set minus date for search items
 		RestSearchCriteria lmAfter = new RestSearchCriteria();
-		lmAfter.setColumn("last_modified");
+		lmAfter.setColumn("lastModified");
 		lmAfter.setOperation(">");
 		lmAfter.setValue(this.getRandomDate(2010 - factor, 2013));
 		// Set max date for search items
 		RestSearchCriteria lmBefore = new RestSearchCriteria();
-		lmBefore.setColumn("last_modified");
+		lmBefore.setColumn("lastModified");
 		lmBefore.setOperation("<");
 		lmBefore.setValue(this.getRandomDate(2013, 2014 + factor));
 
@@ -475,7 +475,7 @@ public class Command {
 		// Create sort criteria
 		RestSortCriteria sortCriteria = new RestSortCriteria();
 		sortCriteria.setAsc(true);
-		sortCriteria.setColumn("last_modified");
+		sortCriteria.setColumn("lastModified");
 		// Set sort criteria
 		ArrayList<RestSortCriteria> sortList = new ArrayList<>();
 		sortList.add(sortCriteria);

@@ -60,8 +60,18 @@ public class RESTIRClient {
         this.pathRM = pathRM;
     }
 
-    public Response echo() {
+    public Response echoIR() {
         this.webTarget = this.client.target(baseURI+pathIR).path("echo");
+
+        Response response = this.webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get();
+        if (response.getStatus() != 200) {
+            throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
+        }
+        return response;
+    }
+    
+    public Response echoRM() {
+        this.webTarget = this.client.target(baseURI+pathRM).path("echo");
 
         Response response = this.webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get();
         if (response.getStatus() != 200) {
@@ -201,7 +211,7 @@ public class RESTIRClient {
     
     
     public Response person(String id) throws IOException {
-        this.webTarget = this.client.target(baseURI+pathRM).path("persons/" + id);
+        this.webTarget = this.client.target(baseURI+pathRM).path("personsbyid/" + id);
 
         Response response = this.webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).header("scope", "ROLE_ADMIN").get();
         if (response.getStatus() != 200) {
@@ -211,7 +221,7 @@ public class RESTIRClient {
     }
     
     public Response personByCris(String crisId) throws IOException {
-        this.webTarget = this.client.target(baseURI+pathRM).path("persons/crisid/" + crisId);
+        this.webTarget = this.client.target(baseURI+pathRM).path("personsbyrpid/" + crisId);
 
         Response response = this.webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).header("scope", "ROLE_ADMIN").get();
         if (response.getStatus() != 200) {
@@ -221,7 +231,7 @@ public class RESTIRClient {
     }
     
     public Response positions(String id) throws IOException {
-        this.webTarget = this.client.target(baseURI+pathRM).path("persons/" + id + "/positions");
+        this.webTarget = this.client.target(baseURI+pathRM).path("personsbyid/" + id + "/positions");
 
         Response response = this.webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).header("scope", "ROLE_ADMIN").get();
         if (response.getStatus() != 200) {
@@ -231,7 +241,7 @@ public class RESTIRClient {
     }
     
     public Response positionsByCris(String crisId) throws IOException {
-        this.webTarget = this.client.target(baseURI+pathRM).path("persons/crisid/" + crisId + "/positions");
+        this.webTarget = this.client.target(baseURI+pathRM).path("personsbyrpid/" + crisId + "/positions");
 
         Response response = this.webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).header("scope", "ROLE_ADMIN").get();
         if (response.getStatus() != 200) {
@@ -241,7 +251,7 @@ public class RESTIRClient {
     }
     
     public Response positioncurrent(String id) throws IOException {
-        this.webTarget = this.client.target(baseURI+pathRM).path("persons/" + id + "/positioncurrent");
+        this.webTarget = this.client.target(baseURI+pathRM).path("personsbyid/" + id + "/positioncurrent");
 
         Response response = this.webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).header("scope", "ROLE_ADMIN").get();
         if (response.getStatus() != 200) {
@@ -251,7 +261,7 @@ public class RESTIRClient {
     }
     
     public Response positioncurrentByCris(String crisId) throws IOException {
-        this.webTarget = this.client.target(baseURI+pathRM).path("persons/crisid/" + crisId + "/positioncurrent");
+        this.webTarget = this.client.target(baseURI+pathRM).path("personsbyrpid/" + crisId + "/positioncurrent");
 
         Response response = this.webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).header("scope", "ROLE_ADMIN").get();
         if (response.getStatus() != 200) {

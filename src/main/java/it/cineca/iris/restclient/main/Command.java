@@ -133,10 +133,17 @@ public class Command {
 	 * @param cl
 	 */
 	private void echo(RESTIRClient cl) {
-		Response response = cl.echo();
+		System.out.println("Check IR...");
+		Response response = cl.echoIR();
 		String test = response.readEntity(String.class);
 		System.out.println("Check: " + test);
+		
+		System.out.println("Check RM...");
+		response = cl.echoRM();
+		test = response.readEntity(String.class);
+		System.out.println("Check: " + test);
 	}
+	
 	
 	/**
 	 * Test for read community method

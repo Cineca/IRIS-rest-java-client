@@ -114,9 +114,11 @@ public class Command {
 		
 		ItemRestPageDTO items = this.testSearch(cl);
 		
-		int inputFormId = items.getRestResourseDTOList().get(0).getInputFormId();
+		if (items.getRestResourseDTOList().size() >0) {
+			int inputFormId = items.getRestResourseDTOList().get(0).getInputFormId();
 
-		this.testInputForm(cl, inputFormId);
+			this.testInputForm(cl, inputFormId);
+		}
 
 		this.testAnce(cl);
 		
@@ -278,8 +280,11 @@ public class Command {
 		Response response = cl.items(itemSearchDTO);
 		String test = response.readEntity(String.class);
 		ItemRestPageDTO items = mapper.readValue(test, ItemRestPageDTO.class);
-		System.out.println("id:" + items.getRestResourseDTOList().get(0).getId());
-		System.out.println("next:" + items.getNext());
+		
+		if (items.getRestResourseDTOList().size()>0) {
+			System.out.println("id:" + items.getRestResourseDTOList().get(0).getId());
+			System.out.println("next:" + items.getNext());
+		}
 		
 		return items;
 	}
@@ -339,29 +344,37 @@ public class Command {
 	 * @param cl
 	 * @throws IOException
 	 */
-	private void testAnce(RESTIRClient cl) throws IOException {
+	private void testAnce(RESTIRClient cl) {
 		ObjectMapper mapper = new ObjectMapper();
 		
 		System.out.println("-----------------------------------------------------------");
 		System.out.println("Ance search: journal76139");
-		AnceSearchRestDTO anceSearchDTO = new AnceSearchRestDTO();
-		anceSearchDTO.setCrisId("journal76139");
-		Response response = cl.journals(anceSearchDTO);
-		String test = response.readEntity(String.class);
-		System.out.println("id:" + test);
-		List<RecordANCERivistaRestDTO> journals = mapper.readValue(test,
-				new TypeReference<List<RecordANCERivistaRestDTO>>() {
-				});
-		System.out.println("id:" + journals.get(0).getISSN());
-
-		System.out.println("-----------------------------------------------------------");
-		System.out.println("Ance by cris id: journal76139");
-		response = cl.journal("journal76139");
-		test = response.readEntity(String.class);
-		System.out.println("id:" + test);
-		RecordANCERivistaRestDTO journal = mapper.readValue(test,
-				RecordANCERivistaRestDTO.class);
-		System.out.println("id:" + journal.getISSN());
+			
+		try {
+			AnceSearchRestDTO anceSearchDTO = new AnceSearchRestDTO();
+			anceSearchDTO.setCrisId("journal76139");
+			Response response;
+			
+			response = cl.journals(anceSearchDTO);
+			
+			String test = response.readEntity(String.class);
+			System.out.println("id:" + test);
+			List<RecordANCERivistaRestDTO> journals = mapper.readValue(test,
+					new TypeReference<List<RecordANCERivistaRestDTO>>() {
+					});
+			System.out.println("id:" + journals.get(0).getISSN());
+	
+			System.out.println("-----------------------------------------------------------");
+			System.out.println("Ance by cris id: journal76139");
+			response = cl.journal("journal76139");
+			test = response.readEntity(String.class);
+			System.out.println("id:" + test);
+			RecordANCERivistaRestDTO journal = mapper.readValue(test,
+					RecordANCERivistaRestDTO.class);
+			System.out.println("id:" + journal.getISSN());
+		} catch (Exception e) {
+			System.out.println("NOT FOUND...");
+		}
 	}
 	
 

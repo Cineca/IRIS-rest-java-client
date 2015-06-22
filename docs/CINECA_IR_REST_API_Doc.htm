@@ -311,9 +311,9 @@
                                         <li><a href="#ditemsmetak">https://unidemo.iris.cineca.it:443/rest/api/v1/items/{itemid}/{metadataKey}</a>[<a href="#ditemsmetakget">GET</a>] </li>
 										<li><a href="#ditemsmetak">https://unidemo.iris.cineca.it:443/rest/api/v1/items/{namingAuthority}/{localName}/{metadataKey}</a>[<a href="#ditemsmetakget">GET</a>] </li>
                                     </div>
-									<div id="api/v1/items/{itemid}/bitstreams">
-                                        <li><a href="#ditemsmetabs">https://unidemo.iris.cineca.it:443/rest/api/v1/items/{itemid}/bitstreams</a>[<a href="#ditemsmetabsget">GET</a>] </li>
-										<li><a href="#ditemsmetabs">https://unidemo.iris.cineca.it:443/rest/api/v1/items/{namingAuthority}/{localName}/bitstreams</a>[<a href="#ditemsmetabsget">GET</a>] </li>
+									<div id="api/v1/items/{itemid}/streams">
+                                        <li><a href="#ditemsmetabs">https://unidemo.iris.cineca.it:443/rest/api/v1/items/{itemid}/streams</a>[<a href="#ditemsmetabsget">GET</a>] </li>
+										<li><a href="#ditemsmetabs">https://unidemo.iris.cineca.it:443/rest/api/v1/items/{namingAuthority}/{localName}/streams</a>[<a href="#ditemsmetabsget">GET</a>] </li>
                                     </div>
 									<div id="api/v1/items/{itemid}/histories">
                                         <li><a href="#ditemshist">https://unidemo.iris.cineca.it:443/rest/api/v1/items/{itemid}/histories</a>[<a href="#ditemshistget">GET</a>] </li>
@@ -375,13 +375,13 @@
             <li>
                 <a href="#bitstreams">Bitstreams</a>
                 <ul>
-                    <div id="api/v1/bitstreams">&nbsp;
-                        <li><a href="#dbits">https://unidemo.iris.cineca.it:443/rest/api/v1/bitstreams</a>[<a href="#dbitsget">GET</a>]
+                    <div id="api/v1/streams">&nbsp;
+                        <li><a href="#dbits">https://unidemo.iris.cineca.it:443/rest/api/v1/streams</a>[<a href="#dbitsget">GET</a>]
                             <ul>
                                 <div id="api/v1/items/{communityid}">
-                                    <li><a href="#dbitsid">https://unidemo.iris.cineca.it:443/rest/api/v1/bitstreams/{bitstreamid}</a>[<a href="#dbitsget">GET</a>] </li>
+                                    <li><a href="#dbitsid">https://unidemo.iris.cineca.it:443/rest/api/v1/streams/{bitstreamid}</a>[<a href="#dbitsget">GET</a>] </li>
                                     <div id="api/v1/items/{communityid}/collections">
-                                        <li><a href="#dbitsatts">https://unidemo.iris.cineca.it:443/rest/api/v1/bitstreams/{bitstreamid}/attachment</a>[<a href="#dbitsattsget">GET</a>] </li>
+                                        <li><a href="#dbitsatts">https://unidemo.iris.cineca.it:443/rest/api/v1/streams/{bitstreamid}/attachment</a>[<a href="#dbitsattsget">GET</a>] </li>
                                     </div>                                    
                                 </div>
                             </ul>
@@ -425,25 +425,25 @@
                 <a href="#persons">Persons</a>
 				<ul>
                     <div id="rm/restservices/api/v1/persons">&nbsp;
-						<div id="rm/restservices/api/v1/persons/crisid/{crisid}">
-							<li><a href="#dpersons">https://unidemo.iris.cineca.it:443/rm/restservices/api/v1/persons/crisid/{crisid}</a>[<a href="#dpersonsget">GET</a>] </li
+						<div id="rm/restservices/api/v1/personsbyrpid/{crisid}">
+							<li><a href="#dpersons">https://unidemo.iris.cineca.it:443/rm/restservices/api/v1/personsbyrpid/{crisid}</a>[<a href="#dpersonsget">GET</a>] </li
 						</div>
-						<div id="rm/restservices/api/v1/persons/{id}">
-							<li><a href="#dpersons">https://unidemo.iris.cineca.it:443/rm/restservices/api/v1/persons/{id}</a>[<a href="#dpersonsget">GET</a>] </li>
+						<div id="rm/restservices/api/v1/personsbyid/{id}">
+							<li><a href="#dpersons">https://unidemo.iris.cineca.it:443/rm/restservices/api/v1/personsbyid/{id}</a>[<a href="#dpersonsget">GET</a>] </li>
 						</div>      
 
-						<div id="rm/restservices/api/v1/persons/crisid/{crisid}/positions">
-							<li><a href="#dpersonspos">https://unidemo.iris.cineca.it:443/rm/restservices/api/v1/persons/crisid/{crisid}/positions</a>[<a href="#dpersonsposget">GET</a>] </li>
+						<div id="rm/restservices/api/v1/personsbyrpid/{crisid}/positions">
+							<li><a href="#dpersonspos">https://unidemo.iris.cineca.it:443/rm/restservices/api/v1/personsbyrpid/{crisid}/positions</a>[<a href="#dpersonsposget">GET</a>] </li>
 						</div>
-						<div id="rm/restservices/api/v1/persons/{id}/positions">
-							<li><a href="#dpersonspos">https://unidemo.iris.cineca.it:443/rm/restservices/api/v1/persons/{id}/positions</a>[<a href="#dpersonsposget">GET</a>] </li>
+						<div id="rm/restservices/api/v1/personsbyid/{id}/positions">
+							<li><a href="#dpersonspos">https://unidemo.iris.cineca.it:443/rm/restservices/api/v1/personsbyid/{id}/positions</a>[<a href="#dpersonsposget">GET</a>] </li>
 						</div>  	
 						
-						<div id="rm/restservices/api/v1/persons/crisid/{crisid}/positioncurrent">
-							<li><a href="#dpersonspc">https://unidemo.iris.cineca.it:443/rm/restservices/api/v1/persons/crisid/{crisid}/positioncurrent</a>[<a href="#dpersonspcget">GET</a>] </li>
+						<div id="rm/restservices/api/v1/personsbyrpid/{crisid}/positioncurrent">
+							<li><a href="#dpersonspc">https://unidemo.iris.cineca.it:443/rm/restservices/api/v1/personsbyrpid/{crisid}/positioncurrent</a>[<a href="#dpersonspcget">GET</a>] </li>
 						</div>
-						<div id="rm/restservices/api/v1/persons/{id}/positioncurrent">
-							<li><a href="#dpersonspc">https://unidemo.iris.cineca.it:443/rm/restservices/api/v1/persons/{id}/positioncurrent</a>[<a href="#dpersonspcget">GET</a>] </li>
+						<div id="rm/restservices/api/v1/personsbyid/{id}/positioncurrent">
+							<li><a href="#dpersonspc">https://unidemo.iris.cineca.it:443/rm/restservices/api/v1/personsbyid/{id}/positioncurrent</a>[<a href="#dpersonspcget">GET</a>] </li>
 						</div>  	
                           
                     </div>
@@ -1193,13 +1193,13 @@
         </div>            
             
         <div class="item">
-            <h3 id="ditemsmetabs">rest/api/v1/items/{itemid}/bitstreams </br> rest/api/v1/items/{namingAuthority}/{localName}/bitstreams</h3>
+            <h3 id="ditemsmetabs">rest/api/v1/items/{itemid}/streams </br> rest/api/v1/items/{namingAuthority}/{localName}/streams</h3>
             <h6>Methods</h6>
             <div class="methods">
                 <div class="method">
                     <h4 id="ditemsmetabsget">GET&nbsp; </h4>
-                    <h6>rest/api/v1/items/{itemid}/bitstreams</h6>
-					<h6>rest/api/v1/items/{namingAuthority}/{localName}/bitstreams</h6>
+                    <h6>rest/api/v1/items/{itemid}/streams</h6>
+					<h6>rest/api/v1/items/{namingAuthority}/{localName}/streams</h6>
                     <p>Returns a IRIS IR specific bitstreams item.</p>
                     <h6>request query parameters: none</h6>
                     <p><em>available response representations:</em></p>
@@ -1213,7 +1213,7 @@
     {
         "format": "Adobe PDF",
         "mimeType": "application/pdf",
-        "retrieveLink": "/bitstreams/59721/attachment",
+        "retrieveLink": "/streams/59721/attachment",
         "bundleName": "ORIGINAL",
         "sizeBytes": 15,
         "checkSum": {
@@ -1229,12 +1229,12 @@
             "licenseType",
             "all"
         ],
-        "self": "/rest/api/v1/bitstream/59721"
+        "self": "/rest/api/v1/streams/59721"
     },
     {
         "format": "License",
         "mimeType": "text/plain; charset=utf-8",
-        "retrieveLink": "/bitstreams/59725/attachment",
+        "retrieveLink": "/streams/59725/attachment",
         "bundleName": "LICENSE",
         "sizeBytes": 0,
         "checkSum": {
@@ -1250,7 +1250,7 @@
             "licenseType",
             "all"
         ],
-        "self": "/rest/api/v1/bitstream/59725"
+        "self": "/rest/api/v1/streams/59725"
     }
 ]
                                 </code></pre>
@@ -2489,7 +2489,7 @@
         <h2 id="bitstreams">Bitstreams</h2>
 
         <div class="bitstreams">
-            <h3 id="dbits">rest/api/v1/bitstreams</h3>
+            <h3 id="dbits">rest/api/v1/streams</h3>
             <h6>Methods</h6>
             <div class="methods">
                 <div class="method">
@@ -2561,7 +2561,7 @@
 		},
 		"sizeBytes": 33792,
 		"sequenceId": 1,
-		"retrieveLink": "/bitstreams/33155/attachment",
+		"retrieveLink": "/streams/33155/attachment",
 		"name": "?? ??? ??? ???????.doc",
 		"type": "bitstream",
 		"id": 33155,
@@ -2570,7 +2570,7 @@
 			"licenseType",
 			"all"
 		],
-		"self": "/rest/api/v1/bitstream/33155"
+		"self": "/rest/api/v1/streams/33155"
 	},
 	{ … },
 	{ … },
@@ -2621,12 +2621,12 @@
         </div>
             
         <div class="bitstreams">
-            <h3 id="dbitsid">rest/api/v1/bitstreams/{bitstreamid}</h3>
+            <h3 id="dbitsid">rest/api/v1/streams/{bitstreamid}</h3>
             <h6>Methods</h6>
             <div class="methods">
                 <div class="method">
                     <h4 id="dbitsidget">GET&nbsp; </h4>
-                    <h6>rest/api/v1/bitstreams/{bitstreamid}<span class="optional">?expand</span></h6>
+                    <h6>rest/api/v1/streams/{bitstreamid}<span class="optional">?expand</span></h6>
                     <p>Returns a IRIS IR bitstream.</p>
                     <h6>request query parameters</h6>
                     <table>
@@ -2666,7 +2666,7 @@
 	},
 	"sizeBytes": 165769,
 	"sequenceId": 1,
-	"retrieveLink": "/bitstreams/60046/attachment",
+	"retrieveLink": "/streams/60046/attachment",
 	"name": "1.+Desktop+prodotti.docx",
 	"type": "bitstream",
 	"id": 60046,
@@ -2675,7 +2675,7 @@
 		"licenseType",
 		"all"
 	],
-	"self": "/rest/api/v1/bitstream/60046"
+	"self": "/rest/api/v1/streams/60046"
 }                                </code></pre>
                                 <p />
                                 <p>Returned collection if the currently authenticated user has permission to view it. Contains a partial representation of the collection.</p>
@@ -2727,12 +2727,12 @@
         </div>            
 
         <div class="bitstreams">
-            <h3 id="dbitsatts">rest/api/v1/bitstreams/{bitstreamid}/attachment</h3>
+            <h3 id="dbitsatts">rest/api/v1/streams/{bitstreamid}/attachment</h3>
             <h6>Methods</h6>
             <div class="methods">
                 <div class="method">
                     <h4 id="dbitsattsget">GET&nbsp; </h4>
-                    <h6>rest/api/v1/bitstreams/{bitstreamid}/attachment</h6>
+                    <h6>rest/api/v1/streams/{bitstreamid}/attachment</h6>
                     <p>Returns a IRIS IR bitstream attachment</p>
                     <h6>request query parameters: none</h6>
                     <p><em>available response representations:</em></p>
@@ -3300,15 +3300,15 @@
     <h2 id="persons">Persons</h2>
 		
 		<div class="persons">
-            <h3 id="dpersons">rm/restservices/api/v1/persons/crisid/{crisid}
-			</br>rm/restservices/api/v1/persons/{id}</h3>
+            <h3 id="dpersons">rm/restservices/api/v1/personsbyrpid/{crisid}
+			</br>rm/restservices/api/v1/personsbyid/{id}</h3>
 			
             <h6>Methods</h6>
             <div class="methods">
                 <div class="method">
                     <h4 id="dpersonsget">GET&nbsp; </h4>
-                    <h6>rm/restservices/api/v1/persons/crisid/{crisid}</h6>
-					<h6>rm/restservices/api/v1/persons/{id}</h6>
+                    <h6>rm/restservices/api/v1/personsbyrpid/{crisid}</h6>
+					<h6>rm/restservices/api/v1/personsbyid/{id}</h6>
                     <p>Returns a IRIS RM person.</p>
                     <h6>request query parameters: no</h6>
                     <p><em>available response representations:</em></p>
@@ -3424,14 +3424,14 @@
         </div>            
 
 		<div class="persons">
-            <h3 id="dpersonspos">rm/restservices/api/v1/persons/{id}/positions
-			</br>rm/restservices/api/v1/persons/crisid/{crisid}/positions</h3>
+            <h3 id="dpersonspos">rm/restservices/api/v1/personsbyid/{id}/positions
+			</br>rm/restservices/api/v1/personsbyrpid/{crisid}/positions</h3>
             <h6>Methods</h6>
             <div class="methods">
                 <div class="method">
                     <h4 id="dpersonsposget">GET&nbsp;</h4>
-                    <h6>rm/restservices/api/v1/persons/{id}/positions</h6>
-					<h6>rm/restservices/api/v1/persons/crisid/{crisid}/positions</h6>
+                    <h6>rm/restservices/api/v1/personsbyid/{id}/positions</h6>
+					<h6>rm/restservices/api/v1/personsbyrpid/{crisid}/positions</h6>
                     <p>Returns a IRIS RM person careers.</p>
                     <h6>request query parameters: no</h6>
                     <p><em>available response representations:</em></p>                   
@@ -3506,14 +3506,14 @@
         </div>    
 
 		<div class="persons">
-            <h3 id="dpersonspc">rm/restservices/api/v1/persons/{id}/positioncurrent
-			</br> rm/restservices/api/v1/persons/crisid/{crisid}/positioncurrent</h3>
+            <h3 id="dpersonspc">rm/restservices/api/v1/personsbyid/{id}/positioncurrent
+			</br> rm/restservices/api/v1/personsbyrpid/{crisid}/positioncurrent</h3>
             <h6>Methods</h6>
             <div class="methods">
                 <div class="method">
                     <h4 id="dpersonspcget">GET&nbsp; </h4>
-					<h6>rm/restservices/api/v1/persons/{id}/positioncurrent</h6>
-                    <h6>rm/restservices/api/v1/persons/crisid/{crisid}/positioncurrent</h6>
+					<h6>rm/restservices/api/v1/personsbyid/{id}/positioncurrent</h6>
+                    <h6>rm/restservices/api/v1/personsbyrpid/{crisid}/positioncurrent</h6>
                     <p>Returns a IRIS RM person current career.</p>
                     <h6>request query parameters: no</h6>
                     <p><em>available response representations:</em></p>

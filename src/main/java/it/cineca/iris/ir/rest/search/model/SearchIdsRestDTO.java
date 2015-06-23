@@ -24,10 +24,14 @@
  */
 package it.cineca.iris.ir.rest.search.model;
 
+import java.util.List;
+
 public class SearchIdsRestDTO {
 	
 	private Integer startId;
 	private Integer count;
+	
+	private List<RestSearchCriteria> searchColsCriteria;
 	
 	public Integer getStartId() {
 		return startId;
@@ -44,5 +48,13 @@ public class SearchIdsRestDTO {
 	public void setCount(Integer count) {
 		this.count = count;
 	}
+	
+    public List<RestSearchCriteria> getSearchColsCriteria() {
+        return searchColsCriteria;
+    }
+
+    public void setSearchColsCriteria(List<RestSearchCriteria> searchColsCriteria) {
+        this.searchColsCriteria = searchColsCriteria;
+    }
 
 }

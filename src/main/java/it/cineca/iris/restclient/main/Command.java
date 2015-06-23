@@ -108,6 +108,7 @@ public class Command {
 		
 		this.echo(cl);
 
+		/*
 		this.testCommunity(cl);
 
 		this.testReadItems(cl);
@@ -124,6 +125,7 @@ public class Command {
 		
 		this.testRestPerson(cl);
 		
+		*/
 		this.testDBDownload(cl);
 
 		cl.close();
@@ -547,10 +549,27 @@ public class Command {
 		
 		int i = 0;
 		SearchIdsRestDTO itemSearchDTO = new SearchIdsRestDTO();
+		List<RestSearchCriteria> searchColsCriteria = new ArrayList<RestSearchCriteria>();
+		
+		RestSearchCriteria searchCriteriaLM = new RestSearchCriteria();
+		searchCriteriaLM.setColumn("lastModified");
+		searchCriteriaLM.setOperation(">");
+		searchCriteriaLM.setValue("21/04/2015");
+	
+		searchColsCriteria.add(searchCriteriaLM);
+
+		RestSearchCriteria searchCriteriaSnap = new RestSearchCriteria();
+		searchCriteriaSnap.setColumn("snapshot");
+		searchCriteriaSnap.setOperation("=");
+		searchCriteriaSnap.setValue("0");
+		
+		searchColsCriteria.add(searchCriteriaSnap);
+		
+		itemSearchDTO.setSearchColsCriteria(searchColsCriteria );
 		Integer startId = -1;
 		
 		//Real Use case: check ItemIdRestPageDTO.getNext() is null
-		while (i<2) {
+		while (startId != null && i<2) {
 			itemSearchDTO.setStartId(startId);
 			itemSearchDTO.setCount(3);
 			

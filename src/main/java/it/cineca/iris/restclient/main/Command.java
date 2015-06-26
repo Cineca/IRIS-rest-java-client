@@ -24,6 +24,8 @@
  */
 package it.cineca.iris.restclient.main;
 
+import it.cineca.iris.ir.rest.model.CareerItemDTO;
+import it.cineca.iris.ir.rest.model.CareerItemsDTO;
 import it.cineca.iris.ir.rest.model.CommunityRestDTO;
 import it.cineca.iris.ir.rest.model.CommunityRestPageDTO;
 import it.cineca.iris.ir.rest.model.DCInputSetRestDTO;
@@ -33,6 +35,7 @@ import it.cineca.iris.ir.rest.model.ItemRestPageDTO;
 import it.cineca.iris.ir.rest.model.MetadataEntryRestDTO;
 import it.cineca.iris.ir.rest.model.RecordANCERivistaRestDTO;
 import it.cineca.iris.ir.rest.model.RmPersonRestDTO;
+import it.cineca.iris.ir.rest.model.utils.Person;
 import it.cineca.iris.ir.rest.search.model.AnceSearchRestDTO;
 import it.cineca.iris.ir.rest.search.model.RestSearchCriteria;
 import it.cineca.iris.ir.rest.search.model.RestSortCriteria;
@@ -107,8 +110,7 @@ public class Command {
 		RESTIRClient cl = new RESTIRClient(restBaseURI, pathIR, pathRM, username, password);
 		
 		this.echo(cl);
-
-		/*
+		
 		this.testCommunity(cl);
 
 		this.testReadItems(cl);
@@ -125,7 +127,6 @@ public class Command {
 		
 		this.testRestPerson(cl);
 		
-		*/
 		this.testDBDownload(cl);
 
 		cl.close();
@@ -438,12 +439,15 @@ public class Command {
 		System.out.println("Person JSON:" + result);
 		RmPersonRestDTO person = mapper.readValue(result, RmPersonRestDTO.class);
 		System.out.println(person.lastName);
+		System.out.println("CF :" + Person.getCF(person));
 		
 		System.out.println("\n-----------------------------------------------------------");
 		System.out.println("All Positions by cris id: " + crisId);
 		response = cl.positionsByCris(crisId);
 		result = response.readEntity(String.class);
 		System.out.println("Positions JSON:" + result);
+		CareerItemsDTO career = mapper.readValue(result, CareerItemsDTO.class);
+		System.out.println("Matricola:" + Person.getMatricola(career));
 		
 		System.out.println("\n-----------------------------------------------------------");
 		System.out.println("Position Current by cris id: " + crisId);
@@ -451,6 +455,8 @@ public class Command {
 			response = cl.positioncurrentByCris(crisId);
 			result = response.readEntity(String.class);
 			System.out.println("Position Current JSON:" + result);
+			career = mapper.readValue(result, CareerItemsDTO.class);
+			System.out.println("Matricola:" + Person.getMatricola(career));
 		} catch (RuntimeException e) {
 			System.out.println("Position Current JSON:" + e.getMessage());
 			System.out.println("User has not current position");

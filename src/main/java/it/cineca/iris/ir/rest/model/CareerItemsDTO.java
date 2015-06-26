@@ -24,50 +24,21 @@
  */
 package it.cineca.iris.ir.rest.model;
 
+import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.annotate.JsonProperty;
+
 /**
-*
-* @author pmeriggi
-*/
-public class GaSourceIdentifier {
+ * 
+ * 
+ * @author pmeriggi
+ * 
+ */
+public class CareerItemsDTO {
 	
-	private Integer id;
-	private String sourceId;
-	private String sourceTable;
-	private Integer destinationId;
-	private String destinationTable;
-	
-	public Integer getId() {
-		return id;
-	}
-	public void setId(Integer id) {
-		this.id = id;
-	}
-	public String getSourceId() {
-		return sourceId;
-	}
-	public void setSourceId(String sourceId) {
-		this.sourceId = sourceId;
-	}
-	public String getSourceTable() {
-		return sourceTable;
-	}
-	public void setSourceTable(String sourceTable) {
-		this.sourceTable = sourceTable;
-	}
-	public Integer getDestinationId() {
-		return destinationId;
-	}
-	public void setDestinationId(Integer destinationId) {
-		this.destinationId = destinationId;
-	}
-	public String getDestinationTable() {
-		return destinationTable;
-	}
-	public void setDestinationTable(String destinationTable) {
-		this.destinationTable = destinationTable;
-	}
-	public GaSourceIdentifier() {
-		super();
-	}
-	
+	public final CareerItemDTO items[];
+
+    @JsonCreator
+    public CareerItemsDTO(@JsonProperty("items") CareerItemDTO[] items){
+        this.items = items;
+    }
 }

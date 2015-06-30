@@ -1399,40 +1399,95 @@
 										<table>
 											<tbody>
 												<tr>
-												  <th>column</th>
-												  <th>operation accepted</th>
-												  <th>value</th>
-												  <th>sort</th>												  
+													<th>column</th>
+													<th>operation accepted</th>
+													<th>value</th>
+													<th>sort</th>	
+													<th>description</th>													  
 												</tr>
 												<tr>
 												  <td><p><strong>snapshot</strong></p></td>
 												  <td><p>=</p></td>
 												  <td><p>int (0,1)</p></td>
 												  <td><p>no</p></td>
+												  <td><p>If snapshot=1, item is a history version of latest item</p></td>
 												</tr>
 												<tr>
 												  <td><p><strong>handle</strong></p></td>
 												  <td><p>=</p></td>
 												  <td><p>string (item handle)</p></td>
 												  <td><p>no</p></td>
+												  <td><p>Handle value of item</p></td>
 												</tr>
 												<tr>
 												  <td><p><strong>itemId</strong></p></td>
 												  <td><p>=</p></td>
 												  <td><p>int (item id)</p></td>
 												  <td><p>yes</p></td>
+												  <td><p>Id value of item</p></td>
 												</tr>
 												<tr>
 												  <td><p><strong>lastModified</strong></p></td>
 												  <td><p>= < > <= >=</p></td>
 												  <td><p>date (MM/GG/AAAA)</p></td>
 												  <td><p>yes</p></td>
+												  <td><p>Date of item last modified</p></td>
 												</tr>
 												<tr>
 												  <td><p><strong>collectionId</strong></p></td>
 												  <td><p>=</p></td>
 												  <td><p>int (collection id)</p></td>
 												  <td><p>yes</p></td>
+												  <td><p>Collection id of item</p></td>
+												</tr>
+												<tr>
+												  <td><p><strong>workFlowValidationStatus</strong></p></td>
+												  <td><p>=</p></td>
+												  <td><p>int (VALIDATION STP 3=5,VALIDATION STP 2=4, VALIDATION STP 1=3, REJECT=2, VALIDATE=1, INACTIVE=0, WORKSPACE=-1)</p></td>
+												  <td><p>no</p></td>
+												  <td><p>Item workflow status</p></td>
+												</tr>
+												<tr>
+												  <td><p><strong>withdrawn</strong></p></td>
+												  <td><p>=</p></td>
+												  <td><p>int (0,1)</p></td>
+												  <td><p>no</p></td>
+												  <td><p>If withdrawn = 1, item is deleted (logical delete)</p></td>
+												</tr>
+												<tr>
+												  <td><p><strong>rowcreationts</strong></p></td>
+												  <td><p>= < > <= >=</p></td>
+												  <td><p>date (MM/GG/AAAA)</p></td>
+												  <td><p>no</p></td>
+												  <td><p>Date of item create</p></td>
+												</tr>
+												<tr>
+												  <td><p><strong>lookupValues_year</strong></p></td>
+												  <td><p>= < > <= >=</p></td>
+												  <td><p>date (MM/GG/AAAA)</p></td>
+												  <td><p>no</p></td>
+												  <td><p>Date of item's publish</p></td>
+												</tr>		
+												<tr>
+												  <td><p><strong>lookupValues_contextuser</strong></p></td>
+												  <td><p>=</p></td>
+												  <td><p>string (cris id)</p></td>
+												  <td><p>no</p></td>
+												  <td><p>Cris id of item's author</p></td>
+												</tr>
+												<tr>
+												  <td><p><strong>lookupValues_contextdept</strong></p></td>
+												  <td><p>=</p></td>
+												  <td><p>int id dept</p></td>
+												  <td><p>no</p></td>
+												  <td><p>Id of item's department</p></td>
+												</tr>
+												<tr>
+												  <td><p><strong>workFlowValidationRule</strong></p></td>
+												  <td><p>=</p></td>
+												  <td><p>int (-1,0,1)</p></td>
+												  <td><p>no</p></td>
+												  <td><p>Item workflow rule</p></td>
 												</tr>
 											</tbody>
 										</table>

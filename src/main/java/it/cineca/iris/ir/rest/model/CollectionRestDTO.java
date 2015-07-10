@@ -36,7 +36,7 @@ public class CollectionRestDTO extends DSpaceObject {
 
     //Relationships
     private BitstreamRestDTO logo;
-    private List<CommunityRestDTO> parentCommunityList = new ArrayList<CommunityRestDTO>();
+    private List<CommunityRestDTO> parentCommunities = new ArrayList<CommunityRestDTO>();
 
     //Collection-Metadata
     private String license;
@@ -56,12 +56,12 @@ public class CollectionRestDTO extends DSpaceObject {
         this.logo = logo;
     }
 
-    public List<CommunityRestDTO> getParentCommunityList() {
-        return parentCommunityList;
+    public List<CommunityRestDTO> getParentCommunities() {
+        return parentCommunities;
     }
 
-    public void setParentCommunityList(List<CommunityRestDTO> parentCommunityList) {
-        this.parentCommunityList = parentCommunityList;
+    public void setParentCommunities(List<CommunityRestDTO> parentCommunities) {
+        this.parentCommunities = parentCommunities;
     }
 
     public String getLicense() {

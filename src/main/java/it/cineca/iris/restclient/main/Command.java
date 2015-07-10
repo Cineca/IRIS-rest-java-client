@@ -26,6 +26,7 @@ package it.cineca.iris.restclient.main;
 
 import it.cineca.iris.ir.rest.model.CareerItemDTO;
 import it.cineca.iris.ir.rest.model.CareerItemsDTO;
+import it.cineca.iris.ir.rest.model.CollectionRestPageDTO;
 import it.cineca.iris.ir.rest.model.CommunityRestDTO;
 import it.cineca.iris.ir.rest.model.CommunityRestPageDTO;
 import it.cineca.iris.ir.rest.model.DCInputSetRestDTO;
@@ -92,6 +93,8 @@ public class Command {
 				pathRM = prop.getProperty("PATH_RM"), 
 				username = prop.getProperty("USERNAME"), 
 				password = prop.getProperty("PASSWORD");
+		
+		System.out.println("Test on: " + restBaseURI);
 
 		if (username == null || password == null) {
 			BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -112,6 +115,8 @@ public class Command {
 		this.echo(cl);
 		
 		this.testCommunity(cl);
+		
+		this.testCollections(cl);
 
 		this.testReadItems(cl);
 		
@@ -186,6 +191,26 @@ public class Command {
 		System.out.println("Community handle: " + community.getHandle());
 		System.out.println("Community name: " + community.getName());
 		System.out.println("Community id: " + community.getId());
+	}
+	
+	private void testCollections(RESTIRClient cl) throws JsonParseException, JsonMappingException, IOException {
+		ObjectMapper mapper = new ObjectMapper();
+
+		System.out.println("-----------------------------------------------------------");
+		System.out.println("Read Collections");
+		Response response = cl.collections();
+		String test = response.readEntity(String.class);
+		System.out.println("Community JSON: " + test);
+
+		CollectionRestPageDTO collections = mapper.readValue(test,
+				CollectionRestPageDTO.class);
+
+		System.out.println("Collections handle: " + collections.getRestResourseDTOList().get(0).getHandle());
+		System.out.println("Collections name: " + collections.getRestResourseDTOList().get(0).getName());
+		System.out.println("Collections id: " + collections.getRestResourseDTOList().get(0).getId());
+		System.out.println("Collections inputform: " + collections.getRestResourseDTOList().get(0).getInputformActiveId());
+		System.out.println("Collections next: " + collections.getNext());
+		
 	}
 	
 	/**

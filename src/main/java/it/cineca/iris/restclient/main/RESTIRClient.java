@@ -99,6 +99,16 @@ public class RESTIRClient {
         }
         return response;
     }
+    
+    public Response collections() {
+        this.webTarget = this.client.target(baseURI+pathIR).path("collections");
+
+        Response response = this.webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get();
+        if (response.getStatus() != 200) {
+            throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
+        }
+        return response;
+    }
 
     public Response item(String number) {
         this.webTarget = this.client.target(baseURI+pathIR).path("items/" + number);

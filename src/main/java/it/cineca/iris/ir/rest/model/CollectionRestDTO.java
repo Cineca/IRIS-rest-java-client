@@ -44,6 +44,9 @@ public class CollectionRestDTO extends DSpaceObject {
 
     //Calculated
     private Integer numberItems;
+    
+    //Input form id active on collection
+    private Integer inputformActiveId;
 
     public BitstreamRestDTO getLogo() {
         return logo;
@@ -109,7 +112,15 @@ public class CollectionRestDTO extends DSpaceObject {
         this.numberItems = numberItems;
     }
 
-    public CollectionRestDTO() {
+    public Integer getInputformActiveId() {
+		return inputformActiveId;
+	}
+
+	public void setInputformActiveId(Integer inputformActiveId) {
+		this.inputformActiveId = inputformActiveId;
+	}
+
+	public CollectionRestDTO() {
     }
 
 }

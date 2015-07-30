@@ -1493,7 +1493,7 @@
 										</table>
 									</div>
 								</p>
-								<h6>Example</h6>
+								<h6>Use Case 1: obtains paginated items modified in date interval (22-April 2015 to 29-April 2015)</h6>
                                 <pre><code>
 {
     "offset": 2,
@@ -1515,6 +1515,46 @@
     {
         "column": "lastModified",
         "asc": true
+    }
+    ]
+}
+                                </code></pre>
+								<h6>Use Case 2: obtains paginated items published in 2014</h6>
+                                <pre><code>
+{
+    "offset": 2,
+    "limit": 2,
+    "expand": "all",
+    "searchColsCriteria": [
+    {
+        "value": "2014",
+        "operation": ">=",
+        "column": "lookupValues_year"
+    },
+	{
+        "value": "2015",
+        "operation": "<",
+        "column": "lookupValues_year"
+    }
+    ]
+}
+                                </code></pre>
+								<h6>Use Case 3: obtains paginated items insert in archive in January</h6>
+                                <pre><code>
+{
+    "offset": 2,
+    "limit": 2,
+    "expand": "all",
+    "searchColsCriteria": [
+    {
+        "value": "01/01/2015",
+        "operation": ">=",
+        "column": "rowcreationts"
+    },
+	{
+        "value": "31/01/2015",
+        "operation": "<=",
+        "column": "rowcreationts"
     }
     ]
 }

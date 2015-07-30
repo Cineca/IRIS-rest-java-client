@@ -1493,6 +1493,7 @@
 										</table>
 									</div>
 								</p>
+								<p>In searchColsCriteria property, each criteria can be append to compose a condition complicated . It will interpreted as AND logic operation between each clause.</p>
 								<h6>Use Case 1: obtains paginated items modified in date interval (22-April 2015 to 29-April 2015)</h6>
                                 <pre><code>
 {
@@ -1519,7 +1520,7 @@
     ]
 }
                                 </code></pre>
-								<h6>Use Case 2: obtains paginated items published in 2014</h6>
+								<h6>Use Case 2: obtains paginated not deleted items published in 2014</h6>
                                 <pre><code>
 {
     "offset": 2,
@@ -1535,6 +1536,11 @@
         "value": "2015",
         "operation": "<",
         "column": "lookupValues_year"
+    },
+	{
+        "value": "0",
+        "operation": "=",
+        "column": "withdrawn"
     }
     ]
 }

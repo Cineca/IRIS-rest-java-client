@@ -42,10 +42,11 @@ public class AddressRestSetDTO {
     public final String postalCode;
     public final Country country;
     public final Place place;
+    public final String placeString;
     public final String displayValue;
 
     @JsonCreator
-    public AddressRestSetDTO(@JsonProperty("temporary") boolean temporary, @JsonProperty("id") long id, @JsonProperty("discriminator") String discriminator, @JsonProperty("description") String description, @JsonProperty("postalCode") String postalCode, @JsonProperty("country") Country country, @JsonProperty("place") Place place, @JsonProperty("displayValue") String displayValue) {
+    public AddressRestSetDTO(@JsonProperty("temporary") boolean temporary, @JsonProperty("id") long id, @JsonProperty("discriminator") String discriminator, @JsonProperty("description") String description, @JsonProperty("postalCode") String postalCode, @JsonProperty("country") Country country, @JsonProperty("place") Place place, @JsonProperty("placeString") String placeString, @JsonProperty("displayValue") String displayValue) {
         this.temporary = temporary;
         this.id = id;
         this.discriminator = discriminator;
@@ -53,6 +54,7 @@ public class AddressRestSetDTO {
         this.postalCode = postalCode;
         this.country = country;
         this.place = place;
+        this.placeString = placeString;
         this.displayValue = displayValue;
     }
 

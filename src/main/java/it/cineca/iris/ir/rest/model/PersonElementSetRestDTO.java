@@ -88,15 +88,25 @@ public class PersonElementSetRestDTO {
 
     public static final class BooleanMap {
 
+        public final String key;
+        public final Boolean value;
+
         @JsonCreator
-        public BooleanMap() {
+        public BooleanMap(@JsonProperty("key") String key, @JsonProperty("value") Boolean value) {
+            this.key = key;
+            this.value = value;
         }
     }
 
     public static final class IntegerMap {
+    	
+        public final String key;
+        public final Integer value;
 
         @JsonCreator
-        public IntegerMap() {
+        public IntegerMap(@JsonProperty("key") String key, @JsonProperty("value") Integer value) {
+            this.key = key;
+            this.value = value;
         }
     }
 

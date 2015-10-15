@@ -24,7 +24,6 @@
  */
 package it.cineca.iris.restclient.main;
 
-import it.cineca.iris.ir.rest.model.CareerItemDTO;
 import it.cineca.iris.ir.rest.model.CareerItemsDTO;
 import it.cineca.iris.ir.rest.model.CollectionRestPageDTO;
 import it.cineca.iris.ir.rest.model.CommunityRestDTO;
@@ -71,7 +70,48 @@ public class Command {
 	
 	public static void main(String[] argv) throws KeyManagementException, NoSuchAlgorithmException, IOException {
 		Command command = new Command(); 
-		command.runTest();
+		command.simpleTest();
+	}
+	
+	public void simpleTest() throws IOException, NoSuchAlgorithmException, KeyManagementException {
+		System.out.println("-----------------------------------------------------------");
+		System.out.println("---------------------- START TESTING ----------------------");
+		System.out.println("-----------------------------------------------------------\n");
+		
+		PropertiesReader reader = new PropertiesReader();
+		Properties prop = reader.getProperties();
+
+		String restBaseURI = prop.getProperty("BASE_URI"), 
+				pathIR = prop.getProperty("PATH_IR"), 
+				pathRM = prop.getProperty("PATH_RM"), 
+				username = prop.getProperty("USERNAME"), 
+				password = prop.getProperty("PASSWORD");
+		
+		System.out.println("Test on: " + restBaseURI);
+
+		if (username == null || password == null) {
+			BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+			if (username == null) {
+				System.out.print("Enter Username:");
+				username = br.readLine();
+			}
+
+			if (password == null) {
+				System.out.print("Enter Password:");
+				password = br.readLine();
+			}
+		}
+
+		RESTIRClient cl = new RESTIRClient(restBaseURI, pathIR, pathRM, username, password);
+
+		this.echo(cl);
+		
+		this.findPeopleByCris(cl, "rp42647");
+		this.findPeopleByCris(cl, "rp43903");
+		this.findPeopleByCris(cl, "rp50236");
+		this.findPeopleByCris(cl, "rp35890");
+		this.findPeopleByCris(cl, "rp43903");
 	}
 	
 	/**
@@ -80,7 +120,7 @@ public class Command {
 	 * @throws NoSuchAlgorithmException
 	 * @throws KeyManagementException
 	 */
-	public void runTest()throws IOException, NoSuchAlgorithmException, KeyManagementException {
+	public void runTest() throws IOException, NoSuchAlgorithmException, KeyManagementException {
 		System.out.println("-----------------------------------------------------------");
 		System.out.println("---------------------- START TESTING ----------------------");
 		System.out.println("-----------------------------------------------------------\n");

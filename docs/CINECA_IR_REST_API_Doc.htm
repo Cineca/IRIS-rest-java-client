@@ -1497,7 +1497,7 @@
 								<h6>Use Case 1: obtains paginated items modified in date interval (22-April 2015 to 29-April 2015)</h6>
                                 <pre><code>
 {
-    "offset": 2,
+    "offset": 0,
     "limit": 2,
     "expand": "all",
     "searchColsCriteria": [
@@ -1523,7 +1523,7 @@
 								<h6>Use Case 2: obtains paginated not deleted items published in 2014</h6>
                                 <pre><code>
 {
-    "offset": 2,
+    "offset": 0,
     "limit": 2,
     "expand": "all",
     "searchColsCriteria": [
@@ -1548,7 +1548,7 @@
 								<h6>Use Case 3: obtains paginated items insert in archive in January</h6>
                                 <pre><code>
 {
-    "offset": 2,
+    "offset": 0,
     "limit": 2,
     "expand": "all",
     "searchColsCriteria": [
@@ -1565,6 +1565,21 @@
     ]
 }
                                 </code></pre>
+								<h6>Use Case 4: obtains paginated items from specified author</h6>
+                                <pre><code>
+{
+    "offset": 0,
+    "limit": 2,
+    "expand": "all",
+    "searchColsCriteria": [
+    {
+      "value": "rp21724",
+      "column": "lookupValues_contextuser",
+      "operation": "="
+    }
+    ]
+}
+                                </code></pre>								
                                 <p></p>
                             </div>
                         </li>
@@ -1696,16 +1711,26 @@
 										<table>
 											<tbody>
 												<tr>
-												  <th>field</th>
-												  <th>value</th>									  
+													<th>column</th>
+													<th>operation accepted</th>
+													<th>value</th>
+													<th>sort</th>	
+													<th>description</th>													  
 												</tr>
 												<tr>
-												  <td><p><strong>startId</strong></p></td>
-												  <td><p>int</p></td>
+												  <td><p><strong>snapshot</strong></p></td>
+												  <td><p>=</p></td>
+												  <td><p>int (0,1)</p></td>
+												  <td><p>no</p></td>
+												  <td><p>If snapshot=1, item is a history version of latest item</p></td>
 												</tr>
+												
 												<tr>
-												  <td><p><strong>count</strong></p></td>
-												  <td><p>int (<=1000)</p></td>
+												  <td><p><strong>lastModified</strong></p></td>
+												  <td><p>= < > <= >=</p></td>
+												  <td><p>date (MM/GG/AAAA)</p></td>
+												  <td><p>yes</p></td>
+												  <td><p>Date of item last modified</p></td>
 												</tr>
 											</tbody>
 										</table>
@@ -1715,7 +1740,24 @@
                                 <pre><code>
 {
 	"startId": 1000,
-	"count":6
+	"count":6,
+	"searchColsCriteria": [
+    {
+        "value": "01/07/2012",
+        "operation": ">",
+        "column": "lastModified"
+    },
+	{
+        "value": "30/07/2012",
+        "operation": "<",
+        "column": "lastModified"
+    },
+    {
+        "value": "0",
+        "operation":"=",
+        "column":"snapshot"
+    }
+    ]
 }
                                 </code></pre>
                                 <p></p>

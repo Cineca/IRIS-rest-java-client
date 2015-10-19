@@ -724,6 +724,13 @@
                         </tr>
                       </tbody>
                     </table>
+					
+					</br>
+					
+					<h6 id="usecaseheader">Use Case 1: obtains author's items (alternative options to <a href="#usecaserp">Search with POST</a>):</h6>
+					
+					<pre><code><span style="font-weight: bold;">TAG HEADER</span>		TAG VALUE<br /><br /><span style="font-weight: bold;">scope</span>			&lt;ROLE_ADMIN&gt;<br /><br /><span style="font-weight: bold;">on-behalf-of</span>		&lt;author username&gt;<br /><br /><span style="font-weight: bold;">on-behalf-of-scope</span>	&lt;ROLE_USER&gt;<br /><br /></code></pre>
+
                     <p><em>available response representations:</em></p>
                     <ul>
                         <li>
@@ -1565,7 +1572,7 @@
     ]
 }
                                 </code></pre>
-								<h6>Use Case 4: obtains paginated items from specified author</h6>
+								<h6 id="usecaserp">Use Case 4: obtains paginated items from specified author (alternative options to <a href="#usecaseheader">Search with Header</a>)</h6>
                                 <pre><code>
 {
     "offset": 0,

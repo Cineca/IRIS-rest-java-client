@@ -1436,7 +1436,7 @@
 												<tr>
 												  <td><p><strong>lastModified</strong></p></td>
 												  <td><p>= < > <= >=</p></td>
-												  <td><p>date (MM/GG/AAAA)</p></td>
+												  <td><p>date (GG/MM/AAAA)</p></td>
 												  <td><p>yes</p></td>
 												  <td><p>Date of item last modified</p></td>
 												</tr>
@@ -1464,14 +1464,14 @@
 												<tr>
 												  <td><p><strong>rowcreationts</strong></p></td>
 												  <td><p>= < > <= >=</p></td>
-												  <td><p>date (MM/GG/AAAA)</p></td>
+												  <td><p>date (GG/MM/AAAA)</p></td>
 												  <td><p>no</p></td>
 												  <td><p>Date of item create</p></td>
 												</tr>
 												<tr>
 												  <td><p><strong>lookupValues_year</strong></p></td>
 												  <td><p>= < > <= >=</p></td>
-												  <td><p>date (MM/GG/AAAA)</p></td>
+												  <td><p>date (GG/MM/AAAA)</p></td>
 												  <td><p>no</p></td>
 												  <td><p>Date of item's publish</p></td>
 												</tr>		
@@ -1735,7 +1735,7 @@
 												<tr>
 												  <td><p><strong>lastModified</strong></p></td>
 												  <td><p>= < > <= >=</p></td>
-												  <td><p>date (MM/GG/AAAA)</p></td>
+												  <td><p>date (GG/MM/AAAA)</p></td>
 												  <td><p>yes</p></td>
 												  <td><p>Date of item last modified</p></td>
 												</tr>
@@ -1743,7 +1743,7 @@
 										</table>
 									</div>
 								</p>
-								<h6>Example</h6>
+								<h6>Use Case 1: obtain sequential items id modified between 01/07/2012 and 30/07/2012 not snapshot</h6>
                                 <pre><code>
 {
 	"startId": 1000,
@@ -1767,6 +1767,31 @@
     ]
 }
                                 </code></pre>
+								<p></p>
+                                <h6>Use Case 2: obtain sequential items id publish in 2014 and 2015 years that are not snapshot</h6>
+                                <pre><code>
+{
+	"startId": 0,
+	"count":6,
+	"searchColsCriteria": [
+    {
+        "value": "2014",
+        "operation": ">=",
+        "column": "lookupValues_year"
+    },
+	{
+        "value": "2015",
+        "operation": "<=",
+        "column": "lookupValues_year"
+    },
+    {
+        "value": "0",
+        "operation":"=",
+        "column":"snapshot"
+    }
+    ]
+}							
+								</code></pre>
                                 <p></p>
                             </div>
                         </li>

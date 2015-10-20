@@ -163,7 +163,9 @@ public class Command {
 		
 		this.testRestPerson();
 		
-		this.testDBDownload();
+		this.testDBDownloadLastModified();
+		
+		this.testDBDownloadPublishDate();
 
 		cl.close();
 	}
@@ -577,11 +579,11 @@ public class Command {
 	 * @param cl
 	 * @throws IOException
 	 */
-	private void testDBDownload() throws IOException {
+	private void testDBDownloadLastModified() throws IOException {
 		ObjectMapper mapper = new ObjectMapper();
 
 		System.out.println("\n-----------------------------------------------------------");
-		System.out.println("Start Sequencial random Items");
+		System.out.println("Start Sequencial random Items on Last Modified");
 		System.out.println("-----------------------------------------------------------");
 		
 		int i = 0;
@@ -634,6 +636,71 @@ public class Command {
 			i++;
 		}
 	}
+	
+	private void testDBDownloadPublishDate() throws IOException {
+		ObjectMapper mapper = new ObjectMapper();
+
+		System.out.println("\n-----------------------------------------------------------");
+		System.out.println("Start Sequencial random Items on Publish Date");
+		System.out.println("-----------------------------------------------------------");
+		
+		int i = 0;
+		SearchIdsRestDTO itemSearchDTO = new SearchIdsRestDTO();
+		List<RestSearchCriteria> searchColsCriteria = new ArrayList<RestSearchCriteria>();
+		
+		RestSearchCriteria searchCriteriaBY = new RestSearchCriteria();
+		searchCriteriaBY.setColumn("lookupValues_year");
+		searchCriteriaBY.setOperation(">=");
+		searchCriteriaBY.setValue("2014");
+	
+		searchColsCriteria.add(searchCriteriaBY);
+		
+		RestSearchCriteria searchCriteriaTY = new RestSearchCriteria();
+		searchCriteriaTY.setColumn("lookupValues_year");
+		searchCriteriaTY.setOperation("<=");
+		searchCriteriaTY.setValue("2015");
+
+
+		RestSearchCriteria searchCriteriaSnap = new RestSearchCriteria();
+		searchCriteriaSnap.setColumn("snapshot");
+		searchCriteriaSnap.setOperation("=");
+		searchCriteriaSnap.setValue("0");
+		
+		searchColsCriteria.add(searchCriteriaSnap);
+		
+		itemSearchDTO.setSearchColsCriteria(searchColsCriteria );
+		Integer startId = -1;
+		
+		//Real Use case: check ItemIdRestPageDTO.getNext() is null
+		while (startId != null && i<2) {
+			itemSearchDTO.setStartId(startId);
+			itemSearchDTO.setCount(3);
+			
+			System.out.println("StartId: " +itemSearchDTO.getStartId());
+			System.out.println("Count: " +itemSearchDTO.getCount());
+
+			Response response = cl.itemIds(itemSearchDTO);
+			String test = response.readEntity(String.class);
+			ItemIdRestPageDTO idsPage = mapper.readValue(test, ItemIdRestPageDTO.class);
+			
+			List<Integer> ids = idsPage.getIdList();
+			
+			for (Integer itemId : ids) {
+				System.out.println("Read Item: " + itemId);
+				response = cl.itemWithMetadata(String.valueOf(itemId));
+				test = response.readEntity(String.class);
+				System.out.println("Item + metadata JSON: " + test);
+
+				ItemRestDTO item = mapper.readValue(test, ItemRestDTO.class);
+				System.out.println("Item handle: " + item.getHandle());
+				System.out.println("Item title: " + item.getMetadata().get("dc.title").get(0).getValue());
+			}
+			startId =  idsPage.getNext();
+			
+			i++;
+		}
+	}
+
 
 	/**
 	 * Test read person

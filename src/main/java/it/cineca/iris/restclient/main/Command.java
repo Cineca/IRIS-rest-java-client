@@ -24,6 +24,7 @@
  */
 package it.cineca.iris.restclient.main;
 
+import it.cineca.iris.ir.rest.command.model.OptionBitStreamDTO;
 import it.cineca.iris.ir.rest.model.CareerItemsDTO;
 import it.cineca.iris.ir.rest.model.CollectionRestDTO;
 import it.cineca.iris.ir.rest.model.CommunityRestDTO;
@@ -45,6 +46,8 @@ import it.cineca.iris.ir.rest.search.model.SearchRestDTO;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.SocketTimeoutException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
@@ -67,75 +70,102 @@ import org.codehaus.jackson.type.TypeReference;
  * 
  */
 public class Command {
-	
+
 	private RESTIRClient cl;
 	private List<ItemRestDTO> itemsDTO;
 	private String author;
-		
+
 	public Command() {
 		createClient();
 	}
 
-	public static void main(String[] argv) throws KeyManagementException, NoSuchAlgorithmException, IOException {
+	public static void main(String[] argv) {
 		Command command = new Command();
-	
+
 		//command.simpleTest();
 		command.runTest();
 	}
-	
+
 	private void createClient() {
-		
-		System.out.println("\n-----------------------------------------------------------");
-		System.out.println("---------------------- START TESTING ----------------------");
-		System.out.println("-----------------------------------------------------------\n");
-		
+
+		System.out
+				.println("\n-----------------------------------------------------------");
+		System.out
+				.println("---------------------- START TESTING ----------------------");
+		System.out
+				.println("-----------------------------------------------------------\n");
+
 		try {
 			PropertiesReader reader = new PropertiesReader();
 			Properties prop = reader.getProperties();
 
-			String restBaseURI = prop.getProperty("BASE_URI"), 
-				pathIR = prop.getProperty("PATH_IR"), 
-				pathRM = prop.getProperty("PATH_RM"), 
-				username = prop.getProperty("USERNAME"), 
-				password = prop.getProperty("PASSWORD");
-		
+			String restBaseURI = prop.getProperty("BASE_URI"), pathIR = prop
+					.getProperty("PATH_IR"), pathRM = prop
+					.getProperty("PATH_RM"), username = prop
+					.getProperty("USERNAME"), password = prop
+					.getProperty("PASSWORD");
+
 			System.out.println("Test on: " + restBaseURI);
 
 			if (username == null || password == null) {
-				BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+				BufferedReader br = new BufferedReader(new InputStreamReader(
+						System.in));
 
-			if (username == null) {
-				System.out.print("Enter Username:");
-				username = br.readLine();
+				if (username == null) {
+					System.out.print("Enter Username:");
+					username = br.readLine();
+				}
+
+				if (password == null) {
+					System.out.print("Enter Password:");
+					password = br.readLine();
+				}
 			}
 
-			if (password == null) {
-				System.out.print("Enter Password:");
-				password = br.readLine();
-			}
-		}
+			this.cl = new RESTIRClient(restBaseURI, pathIR, pathRM, username,
+					password);
 
-			this.cl = new RESTIRClient(restBaseURI, pathIR, pathRM, username, password);
-		
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
-	 * Simple test for custom 
+	 * Simple test for custom
 	 * 
 	 * @throws IOException
 	 * @throws NoSuchAlgorithmException
 	 * @throws KeyManagementException
 	 */
-	public void simpleTest() throws IOException, NoSuchAlgorithmException, KeyManagementException {
+	public void simpleTest() {
 
-		this.echo();
-		
-		//TO DO...
+		try {
+			this.echo();
+
+			// CUSTOM TO DO... ;-)
+			this.testUpload(55358);
+
+		} catch (SocketTimeoutException e) {
+			System.out
+			.println("\n-----------------------------------------------------------");
+			System.out.print("Time out!!!");
+			System.out
+			.println("\n-----------------------------------------------------------");
+			
+		} catch (Exception e) {
+			System.out
+			.println("\n-----------------------------------------------------------");
+			System.out.print(e.getMessage());
+			System.out
+			.println("\n-----------------------------------------------------------");
+			
+		} finally {
+			if (this.cl != null) {
+				cl.close();
+			}
+		}
 	}
-	
+
 	/**
 	 * Long test...
 	 * 
@@ -143,53 +173,74 @@ public class Command {
 	 * @throws NoSuchAlgorithmException
 	 * @throws KeyManagementException
 	 */
-	public void runTest() throws IOException, NoSuchAlgorithmException, KeyManagementException {
+	public void runTest() {
 
-		this.echo();
-		
-		this.testReadItems();
-		
-		this.testCollection();
-		
-		this.testCommunities();
+		try {
 
-		this.testSearchLastModified();
-		
-		this.testSearchAuthor();
-		
-		this.testInputForm();
-		
-		this.testAnce();
-		
-		this.testRestPerson();
-		
-		this.testDBDownloadLastModified();
-		
-		this.testDBDownloadPublishDate();
+			this.echo();
 
-		cl.close();
+			this.testReadItems();
+
+			this.testUpload(65452);
+
+			this.testCollection();
+
+			this.testCommunities();
+
+			this.testSearchLastModified();
+
+			this.testSearchAuthor();
+
+			this.testInputForm();
+
+			this.testAnce();
+
+			this.testRestPerson();
+
+			this.testDBDownloadLastModified();
+
+			this.testDBDownloadPublishDate();
+
+		} catch (SocketTimeoutException e) {
+			System.out
+			.println("\n-----------------------------------------------------------");
+			System.out.print("Time out!!!");
+			System.out
+			.println("\n-----------------------------------------------------------");
+		} catch (Exception e) {
+			System.out
+			.println("\n-----------------------------------------------------------");
+			System.out.print(e.getMessage());
+			System.out
+			.println("\n-----------------------------------------------------------");
+		} finally {
+			if (this.cl != null) {
+				cl.close();
+			}
+		}
 	}
-	
+
 	/**
 	 * REST API echo
 	 * 
 	 * @param cl
 	 */
 	private void echo() {
-		System.out.println("-----------------------------------------------------------");
+		System.out
+				.println("-----------------------------------------------------------");
 		System.out.println("Check IR...");
 		Response response = cl.echoIR();
 		String test = response.readEntity(String.class);
 		System.out.println("Check: " + test);
-		
+
 		System.out.println("Check RM...");
 		response = cl.echoRM();
 		test = response.readEntity(String.class);
 		System.out.println("Check: " + test);
-		System.out.println("-----------------------------------------------------------");
+		System.out
+				.println("-----------------------------------------------------------");
 	}
-	
-	
+
 	/**
 	 * Test for read community method
 	 * 
@@ -197,27 +248,35 @@ public class Command {
 	 * @throws JsonMappingException
 	 * @throws IOException
 	 */
-	private void testCommunities() throws JsonParseException, JsonMappingException, IOException {
+	private void testCommunities() throws JsonParseException,
+			JsonMappingException, IOException {
 		ObjectMapper mapper = new ObjectMapper();
 
-		System.out.println("\n-----------------------------------------------------------");
+		System.out
+				.println("\n-----------------------------------------------------------");
 		System.out.println("Read Communities");
-		System.out.println("-----------------------------------------------------------");
-		
+		System.out
+				.println("-----------------------------------------------------------");
+
 		System.out.println("\nRead all Communities");
 		Response response = cl.communities();
 		String test = response.readEntity(String.class);
 		System.out.println("Community JSON: " + test);
 		CommunityRestPageDTO communities = mapper.readValue(test,
 				CommunityRestPageDTO.class);
-		System.out.println("Community handle: " + communities.getRestResourseDTOList().get(0).getHandle());
-		System.out.println("Community name: " + communities.getRestResourseDTOList().get(0).getName());
-		System.out.println("Community id: " + communities.getRestResourseDTOList().get(0).getId());
+		System.out.println("Community handle: "
+				+ communities.getRestResourseDTOList().get(0).getHandle());
+		System.out.println("Community name: "
+				+ communities.getRestResourseDTOList().get(0).getName());
+		System.out.println("Community id: "
+				+ communities.getRestResourseDTOList().get(0).getId());
 		System.out.println("Community next: " + communities.getNext());
 
 		System.out.println("\nRead First Community of list");
-		System.out.println("Read Community: " + communities.getRestResourseDTOList().get(0).getId());
-		response = cl.community(String.valueOf(communities.getRestResourseDTOList().get(0).getId()));
+		System.out.println("Read Community: "
+				+ communities.getRestResourseDTOList().get(0).getId());
+		response = cl.community(String.valueOf(communities
+				.getRestResourseDTOList().get(0).getId()));
 		test = response.readEntity(String.class);
 		System.out.println("Community JSON: " + test);
 		CommunityRestDTO community = mapper.readValue(test,
@@ -225,9 +284,9 @@ public class Command {
 		System.out.println("Community handle: " + community.getHandle());
 		System.out.println("Community name: " + community.getName());
 		System.out.println("Community id: " + community.getId());
-		
+
 	}
-	
+
 	/**
 	 * Read collection from known item
 	 * 
@@ -235,40 +294,48 @@ public class Command {
 	 * @throws JsonMappingException
 	 * @throws IOException
 	 */
-	private void testCollection() throws JsonParseException, JsonMappingException, IOException {
-		System.out.println("\n-----------------------------------------------------------");
-		System.out.println("Read Collection from Item");			
-		System.out.println("-----------------------------------------------------------");
+	private void testCollection() throws JsonParseException,
+			JsonMappingException, IOException {
+		System.out
+				.println("\n-----------------------------------------------------------");
+		System.out.println("Read Collection from Item");
+		System.out
+				.println("-----------------------------------------------------------");
 
 		if (!itemsDTO.isEmpty()) {
 			ObjectMapper mapper = new ObjectMapper();
-		
+
 			int itemId = itemsDTO.get(0).getId();
-			
+
 			System.out.println("\nItem: " + String.valueOf(itemId));
 			Response response = cl.itemAll(String.valueOf(itemId));
 			String test = response.readEntity(String.class);
 			System.out.println("Item JSON: " + test);
 			ItemRestDTO item = mapper.readValue(test, ItemRestDTO.class);
 			System.out.println("Item Handle: " + item.getHandle());
-			System.out.println("Item last modify date: " + item.getLastModified());
-			System.out.println("Collection Id: " + item.getCollection().getId());
-		
+			System.out.println("Item last modify date: "
+					+ item.getLastModified());
+			System.out
+					.println("Collection Id: " + item.getCollection().getId());
+
 			System.out.println("\nRead Collection of Item read...");
-			response = cl.collection(String.valueOf(item.getCollection().getId()));
+			response = cl.collection(String.valueOf(item.getCollection()
+					.getId()));
 			test = response.readEntity(String.class);
 			System.out.println("Community JSON: " + test);
-			CollectionRestDTO collection = mapper.readValue(test, CollectionRestDTO.class);
+			CollectionRestDTO collection = mapper.readValue(test,
+					CollectionRestDTO.class);
 			System.out.println("Collections handle: " + collection.getHandle());
 			System.out.println("Collections name: " + collection.getName());
 			System.out.println("Collections id: " + collection.getId());
-			System.out.println("Collections inputform: " + collection.getInputformActiveId());
-			
+			System.out.println("Collections inputform: "
+					+ collection.getInputformActiveId());
+
 		} else {
 			System.out.println("No Item");
 		}
-	} 
-	
+	}
+
 	/**
 	 * Retrieve items
 	 * 
@@ -276,56 +343,64 @@ public class Command {
 	 * @throws JsonMappingException
 	 * @throws IOException
 	 */
-	private void testReadItems() throws JsonParseException, JsonMappingException, IOException {
+	private void testReadItems() throws JsonParseException,
+			JsonMappingException, IOException {
 		ObjectMapper mapper = new ObjectMapper();
 
-		System.out.println("\n-----------------------------------------------------------");
+		System.out
+				.println("\n-----------------------------------------------------------");
 		System.out.println("Retrieve items from REST API (first 4)");
-		System.out.println("-----------------------------------------------------------");
-		Response response = cl.items(4,0);
+		System.out
+				.println("-----------------------------------------------------------");
+		Response response = cl.items(4, 0);
 		String test = response.readEntity(String.class);
 		ItemRestPageDTO items = mapper.readValue(test, ItemRestPageDTO.class);
-		
+
 		itemsDTO = items.getRestResourseDTOList();
-		
+
 		if (!itemsDTO.isEmpty()) {
 			int itemId = itemsDTO.get(0).getId();
-			
-			System.out.println("Read First Item ALL: " + String.valueOf(itemId));
+
+			System.out
+					.println("Read First Item ALL: " + String.valueOf(itemId));
 			response = cl.itemAll(String.valueOf(itemId));
 			test = response.readEntity(String.class);
 			System.out.println("Item JSON: " + test);
 			ItemRestDTO item = mapper.readValue(test, ItemRestDTO.class);
 			System.out.println("Item Handle: " + item.getHandle());
-			System.out.println("Item last modify date: " + item.getLastModified());
-			System.out.println("Collection Id: " + item.getCollection().getId());
+			System.out.println("Item last modify date: "
+					+ item.getLastModified());
+			System.out
+					.println("Collection Id: " + item.getCollection().getId());
 			System.out.println("ISSN: " + item.getLookupValues().get("jissn"));
 
-			System.out.println("\nRead First Item with METADATA: " + String.valueOf(itemId));
+			System.out.println("\nRead First Item with METADATA: "
+					+ String.valueOf(itemId));
 			response = cl.itemWithMetadata(String.valueOf(itemId));
 			test = response.readEntity(String.class);
 			System.out.println("Item + metadata JSON: " + test);
 			item = mapper.readValue(test, ItemRestDTO.class);
 			System.out.println("Item handle: " + item.getHandle());
-			System.out.println("Item title: " + item.getMetadata().get("dc.title").get(0).getValue());
+			System.out.println("Item title: "
+					+ item.getMetadata().get("dc.title").get(0).getValue());
 
-			System.out.println("\nRead First Item with no extra: " + String.valueOf(itemId));
+			System.out.println("\nRead First Item with no extra: "
+					+ String.valueOf(itemId));
 			response = cl.item(String.valueOf(itemId));
 			test = response.readEntity(String.class);
 			System.out.println("Item JSON: " + test);
 			item = mapper.readValue(test, ItemRestDTO.class);
 			System.out.println("Item Handle: " + item.getHandle());
-		}  else {
+		} else {
 			System.out.println("\nNo Item retrieved");
 		}
 
 	}
-	
+
 	/**
 	 * Test search method based on DTO:
 	 * 
-	 * lastModified > 21/04/2015
-	 * snapshot = 0 
+	 * lastModified > 21/04/2015 snapshot = 0
 	 * 
 	 * ORDER BY lastModified
 	 * 
@@ -333,13 +408,16 @@ public class Command {
 	 * @return
 	 * @throws IOException
 	 */
-	private void testSearchLastModified () throws IOException {
+	private void testSearchLastModified() throws IOException {
 		ObjectMapper mapper = new ObjectMapper();
-		
-		System.out.println("\n-----------------------------------------------------------");
-		System.out.println("Search the first 2 item with lastModified > 21/04/2015 and snapshot = 0");
-		System.out.println("-----------------------------------------------------------");
-		
+
+		System.out
+				.println("\n-----------------------------------------------------------");
+		System.out
+				.println("Search the first 2 item with lastModified > 21/04/2015 and snapshot = 0");
+		System.out
+				.println("-----------------------------------------------------------");
+
 		SearchRestDTO itemSearchDTO = new SearchRestDTO();
 		itemSearchDTO.setOffset(0);
 		itemSearchDTO.setLimit(2);
@@ -371,25 +449,24 @@ public class Command {
 		Response response = cl.items(itemSearchDTO);
 		String test = response.readEntity(String.class);
 		ItemRestPageDTO items = mapper.readValue(test, ItemRestPageDTO.class);
-		
-		if (items.getRestResourseDTOList().size()>0) {
+
+		if (items.getRestResourseDTOList().size() > 0) {
 			System.out.println("prev:" + items.getPrev());
 			System.out.println("next:" + items.getNext());
-			
+
 			for (ItemRestDTO itemRestDTO : items.getRestResourseDTOList()) {
 				System.out.println("Item ids:" + itemRestDTO.getId());
-			} 
+			}
 		} else {
 			System.out.println("No Item retrieved");
 		}
-		
+
 	}
-	
+
 	/**
 	 * Test search method based on DTO:
 	 * 
-	 * lastModified > 21/04/2015
-	 * snapshot = 0 
+	 * lastModified > 21/04/2015 snapshot = 0
 	 * 
 	 * ORDER BY lastModified
 	 * 
@@ -397,73 +474,83 @@ public class Command {
 	 * @return
 	 * @throws IOException
 	 */
-	private void testSearchAuthor () throws IOException {
-		System.out.println("\n-----------------------------------------------------------");
+	private void testSearchAuthor() throws IOException {
+		System.out
+				.println("\n-----------------------------------------------------------");
 		System.out.println("Search Item from author...");
-		System.out.println("-----------------------------------------------------------");
-		
+		System.out
+				.println("-----------------------------------------------------------");
+
 		if (!itemsDTO.isEmpty()) {
 			ObjectMapper mapper = new ObjectMapper();
-			
+
 			boolean found = false;
 			int index = 0;
-			
+
 			System.out.println("\nRetrieve an rp...");
 
-			while (!found && index<itemsDTO.size()) {
+			while (!found && index < itemsDTO.size()) {
 				int itemId = itemsDTO.get(index).getId();
-				
+
 				Response response = cl.itemWithMetadata(String.valueOf(itemId));
 				String test = response.readEntity(String.class);
 				System.out.println("Item + metadata JSON: " + test);
 
 				ItemRestDTO item = mapper.readValue(test, ItemRestDTO.class);
-				
-				if (item!= null &&  item.getMetadata() != null && item.getMetadata().containsKey("dc.authority.people")) {
-					List<MetadataEntryRestDTO> authors = item.getMetadata().get("dc.authority.people");
+
+				if (item != null
+						&& item.getMetadata() != null
+						&& item.getMetadata()
+								.containsKey("dc.authority.people")) {
+					List<MetadataEntryRestDTO> authors = item.getMetadata()
+							.get("dc.authority.people");
 					if (!authors.isEmpty()) {
 						found = true;
 						this.author = authors.get(0).getAuthority();
 					}
 				}
 			}
-			
+
 			if (found) {
-				
+
 				System.out.println("\nGet items from authors " + this.author);
-				System.out.println("-----------------------------------------------------------");
-	
+				System.out
+						.println("-----------------------------------------------------------");
+
 				SearchRestDTO itemSearchDTO = new SearchRestDTO();
 				itemSearchDTO.setOffset(0);
 				itemSearchDTO.setLimit(2);
 				itemSearchDTO.setExpand("");
-		
+
 				RestSearchCriteria searchCriteriaLM = new RestSearchCriteria();
 				searchCriteriaLM.setColumn("lookupValues_contextuser");
 				searchCriteriaLM.setOperation("=");
 				searchCriteriaLM.setValue(this.author);
-		
+
 				RestSearchCriteria searchCriteriaSnap = new RestSearchCriteria();
 				searchCriteriaSnap.setColumn("snapshot");
 				searchCriteriaSnap.setOperation("=");
 				searchCriteriaSnap.setValue("0");
-		
+
 				ArrayList<RestSearchCriteria> searchList = new ArrayList<>();
 				searchList.add(searchCriteriaLM);
 				searchList.add(searchCriteriaSnap);
 				itemSearchDTO.setSearchColsCriteria(searchList);
-		
+
 				Response response = cl.items(itemSearchDTO);
 				String test = response.readEntity(String.class);
-				ItemRestPageDTO items = mapper.readValue(test, ItemRestPageDTO.class);
-				
-				if (items.getRestResourseDTOList().size()>0) {
-					System.out.println("id:" + items.getRestResourseDTOList().get(0).getId());
+				ItemRestPageDTO items = mapper.readValue(test,
+						ItemRestPageDTO.class);
+
+				if (items.getRestResourseDTOList().size() > 0) {
+					System.out.println("id:"
+							+ items.getRestResourseDTOList().get(0).getId());
 					System.out.println("next:" + items.getNext());
-					
-					for (ItemRestDTO itemRestDTO : items.getRestResourseDTOList()) {
+
+					for (ItemRestDTO itemRestDTO : items
+							.getRestResourseDTOList()) {
 						System.out.println("id:" + itemRestDTO.getId());
-					} 
+					}
 				} else {
 					System.out.println("No Item retrieved");
 				}
@@ -473,28 +560,31 @@ public class Command {
 		}
 	}
 
-	
 	/**
 	 * Test input form read method
+	 * 
 	 * @param cl
 	 * @param inputFormId
 	 * @throws JsonParseException
 	 * @throws JsonMappingException
 	 * @throws IOException
 	 */
-	private void testInputForm() throws JsonParseException, JsonMappingException, IOException {
+	private void testInputForm() throws JsonParseException,
+			JsonMappingException, IOException {
 		ObjectMapper mapper = new ObjectMapper();
-		
-		System.out.println("\n-----------------------------------------------------------");
-		System.out.println("Read inputform from item...");
-		System.out.println("-----------------------------------------------------------");
 
-		
+		System.out
+				.println("\n-----------------------------------------------------------");
+		System.out.println("Read inputform from item...");
+		System.out
+				.println("-----------------------------------------------------------");
+
 		if (!itemsDTO.isEmpty()) {
 			int inputFormId = itemsDTO.get(0).getInputFormId();
-		
-			System.out.println("\nRead inputform: " + String.valueOf(inputFormId));
-			
+
+			System.out.println("\nRead inputform: "
+					+ String.valueOf(inputFormId));
+
 			Response response = cl.inputFormAll(String.valueOf(inputFormId));
 			String test = response.readEntity(String.class);
 			System.out.println(test);
@@ -543,11 +633,13 @@ public class Command {
 	private void testAnce() {
 		try {
 			ObjectMapper mapper = new ObjectMapper();
-			
-			System.out.println("\n-----------------------------------------------------------");
+
+			System.out
+					.println("\n-----------------------------------------------------------");
 			System.out.println("Ance search: journal76139");
-			System.out.println("-----------------------------------------------------------");
-			
+			System.out
+					.println("-----------------------------------------------------------");
+
 			AnceSearchRestDTO anceSearchDTO = new AnceSearchRestDTO();
 			anceSearchDTO.setCrisId("journal76139");
 			Response response = cl.journals(anceSearchDTO);
@@ -557,11 +649,13 @@ public class Command {
 					new TypeReference<List<RecordANCERivistaRestDTO>>() {
 					});
 			System.out.println("id:" + journals.get(0).getISSN());
-	
-			System.out.println("\n-----------------------------------------------------------");
+
+			System.out
+					.println("\n-----------------------------------------------------------");
 			System.out.println("Ance by cris id: journal76139");
-			System.out.println("-----------------------------------------------------------");
-			
+			System.out
+					.println("-----------------------------------------------------------");
+
 			response = cl.journal("journal76139");
 			test = response.readEntity(String.class);
 			System.out.println("id:" + test);
@@ -572,7 +666,7 @@ public class Command {
 			System.out.println("NOT FOUND...");
 		}
 	}
-	
+
 	/**
 	 * Retrieve first 6 item using /items/ids API METHOD
 	 * 
@@ -582,45 +676,48 @@ public class Command {
 	private void testDBDownloadLastModified() throws IOException {
 		ObjectMapper mapper = new ObjectMapper();
 
-		System.out.println("\n-----------------------------------------------------------");
+		System.out
+				.println("\n-----------------------------------------------------------");
 		System.out.println("Start Sequencial random Items on Last Modified");
-		System.out.println("-----------------------------------------------------------");
-		
+		System.out
+				.println("-----------------------------------------------------------");
+
 		int i = 0;
 		SearchIdsRestDTO itemSearchDTO = new SearchIdsRestDTO();
 		List<RestSearchCriteria> searchColsCriteria = new ArrayList<RestSearchCriteria>();
-		
+
 		RestSearchCriteria searchCriteriaLM = new RestSearchCriteria();
 		searchCriteriaLM.setColumn("lastModified");
 		searchCriteriaLM.setOperation(">");
 		searchCriteriaLM.setValue("21/04/2015");
-	
+
 		searchColsCriteria.add(searchCriteriaLM);
 
 		RestSearchCriteria searchCriteriaSnap = new RestSearchCriteria();
 		searchCriteriaSnap.setColumn("snapshot");
 		searchCriteriaSnap.setOperation("=");
 		searchCriteriaSnap.setValue("0");
-		
+
 		searchColsCriteria.add(searchCriteriaSnap);
-		
-		itemSearchDTO.setSearchColsCriteria(searchColsCriteria );
+
+		itemSearchDTO.setSearchColsCriteria(searchColsCriteria);
 		Integer startId = -1;
-		
-		//Real Use case: check ItemIdRestPageDTO.getNext() is null
-		while (startId != null && i<2) {
+
+		// Real Use case: check ItemIdRestPageDTO.getNext() is null
+		while (startId != null && i < 2) {
 			itemSearchDTO.setStartId(startId);
 			itemSearchDTO.setCount(3);
-			
-			System.out.println("StartId: " +itemSearchDTO.getStartId());
-			System.out.println("Count: " +itemSearchDTO.getCount());
+
+			System.out.println("StartId: " + itemSearchDTO.getStartId());
+			System.out.println("Count: " + itemSearchDTO.getCount());
 
 			Response response = cl.itemIds(itemSearchDTO);
 			String test = response.readEntity(String.class);
-			ItemIdRestPageDTO idsPage = mapper.readValue(test, ItemIdRestPageDTO.class);
-			
+			ItemIdRestPageDTO idsPage = mapper.readValue(test,
+					ItemIdRestPageDTO.class);
+
 			List<Integer> ids = idsPage.getIdList();
-			
+
 			for (Integer itemId : ids) {
 				System.out.println("Read Item: " + itemId);
 				response = cl.itemWithMetadata(String.valueOf(itemId));
@@ -629,62 +726,65 @@ public class Command {
 
 				ItemRestDTO item = mapper.readValue(test, ItemRestDTO.class);
 				System.out.println("Item handle: " + item.getHandle());
-				System.out.println("Item title: " + item.getMetadata().get("dc.title").get(0).getValue());
+				System.out.println("Item title: "
+						+ item.getMetadata().get("dc.title").get(0).getValue());
 			}
-			startId =  idsPage.getNext();
-			
+			startId = idsPage.getNext();
+
 			i++;
 		}
 	}
-	
+
 	private void testDBDownloadPublishDate() throws IOException {
 		ObjectMapper mapper = new ObjectMapper();
 
-		System.out.println("\n-----------------------------------------------------------");
+		System.out
+				.println("\n-----------------------------------------------------------");
 		System.out.println("Start Sequencial random Items on Publish Date");
-		System.out.println("-----------------------------------------------------------");
-		
+		System.out
+				.println("-----------------------------------------------------------");
+
 		int i = 0;
 		SearchIdsRestDTO itemSearchDTO = new SearchIdsRestDTO();
 		List<RestSearchCriteria> searchColsCriteria = new ArrayList<RestSearchCriteria>();
-		
+
 		RestSearchCriteria searchCriteriaBY = new RestSearchCriteria();
 		searchCriteriaBY.setColumn("lookupValues_year");
 		searchCriteriaBY.setOperation(">=");
 		searchCriteriaBY.setValue("2014");
-	
+
 		searchColsCriteria.add(searchCriteriaBY);
-		
+
 		RestSearchCriteria searchCriteriaTY = new RestSearchCriteria();
 		searchCriteriaTY.setColumn("lookupValues_year");
 		searchCriteriaTY.setOperation("<=");
 		searchCriteriaTY.setValue("2015");
 
-
 		RestSearchCriteria searchCriteriaSnap = new RestSearchCriteria();
 		searchCriteriaSnap.setColumn("snapshot");
 		searchCriteriaSnap.setOperation("=");
 		searchCriteriaSnap.setValue("0");
-		
+
 		searchColsCriteria.add(searchCriteriaSnap);
-		
-		itemSearchDTO.setSearchColsCriteria(searchColsCriteria );
+
+		itemSearchDTO.setSearchColsCriteria(searchColsCriteria);
 		Integer startId = -1;
-		
-		//Real Use case: check ItemIdRestPageDTO.getNext() is null
-		while (startId != null && i<2) {
+
+		// Real Use case: check ItemIdRestPageDTO.getNext() is null
+		while (startId != null && i < 2) {
 			itemSearchDTO.setStartId(startId);
 			itemSearchDTO.setCount(3);
-			
-			System.out.println("StartId: " +itemSearchDTO.getStartId());
-			System.out.println("Count: " +itemSearchDTO.getCount());
+
+			System.out.println("StartId: " + itemSearchDTO.getStartId());
+			System.out.println("Count: " + itemSearchDTO.getCount());
 
 			Response response = cl.itemIds(itemSearchDTO);
 			String test = response.readEntity(String.class);
-			ItemIdRestPageDTO idsPage = mapper.readValue(test, ItemIdRestPageDTO.class);
-			
+			ItemIdRestPageDTO idsPage = mapper.readValue(test,
+					ItemIdRestPageDTO.class);
+
 			List<Integer> ids = idsPage.getIdList();
-			
+
 			for (Integer itemId : ids) {
 				System.out.println("Read Item: " + itemId);
 				response = cl.itemWithMetadata(String.valueOf(itemId));
@@ -693,14 +793,14 @@ public class Command {
 
 				ItemRestDTO item = mapper.readValue(test, ItemRestDTO.class);
 				System.out.println("Item handle: " + item.getHandle());
-				System.out.println("Item title: " + item.getMetadata().get("dc.title").get(0).getValue());
+				System.out.println("Item title: "
+						+ item.getMetadata().get("dc.title").get(0).getValue());
 			}
-			startId =  idsPage.getNext();
-			
+			startId = idsPage.getNext();
+
 			i++;
 		}
 	}
-
 
 	/**
 	 * Test read person
@@ -711,40 +811,45 @@ public class Command {
 	private void testRestPerson() throws IOException {
 		List<ItemRestDTO> items = new ArrayList<>();
 		int factor = 0;
-		
-		//Create a list of 10 items. 
-		do{
-			ItemRestPageDTO itemRest =this.getRandomItem(0, "metadata");
-			
-			if(itemRest != null && itemRest.getRestResourseDTOList() != null){
+
+		// Create a list of 10 items.
+		do {
+			ItemRestPageDTO itemRest = this.getRandomItem(0, "metadata");
+
+			if (itemRest != null && itemRest.getRestResourseDTOList() != null) {
 				items.addAll(itemRest.getRestResourseDTOList());
 			}
-			
-			factor++;
-		} while(factor < 10 && items.size() <= 10 );
 
-		if(items.size() > 1) {
-			
-			//Foreach Items
-			for(ItemRestDTO itemDto : items){
-				System.out.println("\n-----------------------------------------------------------");
-				System.out.println("Show info Author of Item: " + itemDto.getHandle());
-				
-				if(itemDto.getMetadata() != null && itemDto.getMetadata().get("dc.authority.people") != null){
-					//Foreach Authors
-					for(MetadataEntryRestDTO authors : itemDto.getMetadata().get("dc.authority.people")){
+			factor++;
+		} while (factor < 10 && items.size() <= 10);
+
+		if (items.size() > 1) {
+
+			// Foreach Items
+			for (ItemRestDTO itemDto : items) {
+				System.out
+						.println("\n-----------------------------------------------------------");
+				System.out.println("Show info Author of Item: "
+						+ itemDto.getHandle());
+
+				if (itemDto.getMetadata() != null
+						&& itemDto.getMetadata().get("dc.authority.people") != null) {
+					// Foreach Authors
+					for (MetadataEntryRestDTO authors : itemDto.getMetadata()
+							.get("dc.authority.people")) {
 						String crisId = authors.getAuthority();
 						this.findPeopleByCris(crisId);
 					}
 				}
-				
+
 			}
 		} else {
-			System.out.println("\n-----------------------------------------------------------");
+			System.out
+					.println("\n-----------------------------------------------------------");
 			System.out.println("Items NOT FOUND");
 		}
 	}
-	
+
 	/**
 	 * Show info of people
 	 * 
@@ -752,29 +857,33 @@ public class Command {
 	 * @param crisId
 	 * @throws IOException
 	 */
-	private void findPeopleByCris(String crisId) throws IOException{
-		System.out.println("\n-----------------------------------------------------------");
+	private void findPeopleByCris(String crisId) throws IOException {
+		System.out
+				.println("\n-----------------------------------------------------------");
 		System.out.println("Author by cris id: " + crisId);
-		
+
 		ObjectMapper mapper = new ObjectMapper();
 		Response response = cl.personByCris(crisId);
 		String result = response.readEntity(String.class);
 		System.out.println("Person JSON:" + result);
-		RmPersonRestDTO person = mapper.readValue(result, RmPersonRestDTO.class);
+		RmPersonRestDTO person = mapper
+				.readValue(result, RmPersonRestDTO.class);
 		System.out.println(person.lastName);
 		System.out.println("CF :" + Person.getCF(person));
-		
-		System.out.println("\n-----------------------------------------------------------");
+
+		System.out
+				.println("\n-----------------------------------------------------------");
 		System.out.println("All Positions by cris id: " + crisId);
 		response = cl.positionsByCris(crisId);
 		result = response.readEntity(String.class);
 		System.out.println("Positions JSON:" + result);
 		CareerItemsDTO career = mapper.readValue(result, CareerItemsDTO.class);
 		System.out.println("Matricola:" + Person.getMatricola(career));
-		
-		System.out.println("\n-----------------------------------------------------------");
+
+		System.out
+				.println("\n-----------------------------------------------------------");
 		System.out.println("Position Current by cris id: " + crisId);
-		
+
 		try {
 			response = cl.positioncurrentByCris(crisId);
 			result = response.readEntity(String.class);
@@ -791,7 +900,8 @@ public class Command {
 	 * Search random item between 2 date
 	 * 
 	 * @param cl
-	 * @param factor: to expande range
+	 * @param factor
+	 *            : to expande range
 	 * @return ItemRestPageDTO
 	 * @throws IOException
 	 */
@@ -799,7 +909,8 @@ public class Command {
 			throws IOException {
 		ObjectMapper mapper = new ObjectMapper();
 
-		System.out.println("\n-----------------------------------------------------------");
+		System.out
+				.println("\n-----------------------------------------------------------");
 		System.out.println("Start Search random Items");
 		SearchRestDTO itemSearchDTO = new SearchRestDTO();
 		itemSearchDTO.setOffset(4);
@@ -840,8 +951,60 @@ public class Command {
 		return items;
 	}
 
+	private void testUpload(Integer itemId) throws JsonParseException,
+			JsonMappingException, IOException {
+		System.out
+				.println("\n-----------------------------------------------------------");
+		System.out.println("Upload Attachment from Item: ");
+		System.out
+				.println("-----------------------------------------------------------");
+
+		if (itemId == null && !itemsDTO.isEmpty()) {
+			itemId = itemsDTO.get(0).getId();
+		}
+
+		if (itemId != null) {
+			System.out.println("\nItem: " + String.valueOf(itemId));
+			System.out.println("\nUpload file...");
+			
+			createTestFile("test.txt");
+			
+			OptionBitStreamDTO optionBitStreamDTO = new OptionBitStreamDTO();
+			optionBitStreamDTO.setDescription("Test file");
+			optionBitStreamDTO.setOptionName("openAccess");
+			
+			Response response = cl.uploadStream(itemId, optionBitStreamDTO, "test.txt");
+			String test = response.readEntity(String.class);
+			System.out.println("Result JSON: " + test);
+		} else {
+			System.out.println("No Item");
+		}
+	}
+	
+	private void createTestFile(String fileName) {
+		PrintWriter writer = null;
+	    
+		try{
+			writer = new PrintWriter(fileName, "UTF-8");
+			
+			writer.println("This is a REST upload ...");
+			writer.println("....test");
+			    
+	      }catch(Exception e){
+				System.out
+				.println("\n-----------------------------------------------------------");
+				System.out.print(e.getMessage());
+				System.out
+				.println("\n-----------------------------------------------------------");
+	      } finally { 
+	    	  if (writer != null) {
+	    		  writer.close();
+	    	  }
+	      }
+	}
+
 	/**
-	 * Utiliy method 
+	 * Utiliy method
 	 * 
 	 * @param min
 	 * @param max

@@ -238,6 +238,8 @@
         </p>
 
         <pre><span class="external-link">https://unidemo.iris.cineca.it:443/rest/api/v1/items/328325<br /></span></pre>
+		
+		<p><b>Due to negative performance each request has a limit for retrived object set to 50 elements</b></p>
 
         <h2 id="expansion">Expansion in the REST APIs</h2>
 
@@ -453,6 +455,7 @@
 
         <h2 id="items">Items</h2>
 		<div>
+			<p><b>Remember: Due to negative performance each request has a upper limit for retrived object set to 50 elements</b></p>
 			<p><em>Items JSON rappresentation explained:</em></p>
 			<ul>
 				<li>
@@ -1535,12 +1538,12 @@
     "expand": "all",
     "searchColsCriteria": [
     {
-        "value": "2014",
+        "value": "01/01/2014",
         "operation": ">=",
         "column": "lookupValues_year"
     },
 	{
-        "value": "2015",
+        "value": "31/12/2015",
         "operation": "<",
         "column": "lookupValues_year"
     },

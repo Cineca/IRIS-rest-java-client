@@ -271,13 +271,13 @@
 			</code></pre>
         </div>
 
-        <h2 id="authentication">Authentication</h2>
+        <h2 id="authentication">Authentication and Authorization</h2>
 
         <p> Authentication for REST API is <b>HTTP Basic with using SSL.</b></p>
 		
         <p>Each request is necessary give username and password in header request that will use for http basic authentication.</p>
 		
-        <p>For application purpose any authenticated user can operate with
+        <p>For application purpose any authenticated user can operate (authorization) with
             specific profile or scope and can act as another IRIS user. To do this
             in each request&nbsp; is possible set a specific HEADER TAG:</p>
 
@@ -286,6 +286,7 @@
         </div>
 		
         <p>If none scope is set the <span style="font-weight: bold;">default</span> is ROLE_USER.</p>
+		<p>Generally speaking the best way for retrieve all data is act like ROLE_ADMIN with the most powerfull user (aka restadmin)</p>
         <p>Tag on-behalf-of is necessary only for "login as" feature. Tag on-behalf-of-scope, if not set, is ROLE_USER (<span style="font-weight: bold;">default</span>).</p>
 
         <h2>Index</h2>

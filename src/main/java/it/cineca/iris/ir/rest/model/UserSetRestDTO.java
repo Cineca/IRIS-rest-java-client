@@ -22,41 +22,26 @@
  *  51 Franklin Street, Fifth Floor
  *  Boston, MA  02110-1301  USA
  */
-package it.cineca.iris.restclient.secure;
+package it.cineca.iris.ir.rest.model;
 
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
-
-import javax.net.ssl.X509TrustManager;
+import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
  * 
  * @author pmeriggi
  *
  */
-public class SecureRestClientTrustManager implements X509TrustManager {
+public class UserSetRestDTO {
 
-    @Override
-    public void checkClientTrusted(X509Certificate[] arg0, String arg1)
-            throws CertificateException {
-    }
+    public final boolean temporary;
+    public final long id;
+    public final String username;
 
-    @Override
-    public void checkServerTrusted(X509Certificate[] arg0, String arg1)
-            throws CertificateException {
-    }
-
-    @Override
-    public X509Certificate[] getAcceptedIssuers() {
-        return new X509Certificate[0];
-    }
-
-    public boolean isClientTrusted(X509Certificate[] arg0) {
-        return true;
-    }
-
-    public boolean isServerTrusted(X509Certificate[] arg0) {
-        return true;
+    @JsonCreator
+    public UserSetRestDTO(@JsonProperty("temporary") boolean temporary, @JsonProperty("id") long id, @JsonProperty("username") String username) {
+        this.temporary = temporary;
+        this.id = id;
+        this.username = username;
     }
 }
-

@@ -48,9 +48,10 @@ public class RmPersonRestDTO {
     public final DateMapRestDTO dateMap[];
     public final GaDictionaryMapRestDTO gaDictionaryMap[];
     public final GaSourceIdentifier gaSourceIdentifiers[];
+    public final UserSetRestDTO userSet[];
 
     @JsonCreator
-    public RmPersonRestDTO(@JsonProperty("type") String type, @JsonProperty("uniqueIdentifier") String uniqueIdentifier, @JsonProperty("uuid") String uuid, @JsonProperty("id") long id, @JsonProperty("crisId") String crisId, @JsonProperty("firstName") String firstName, @JsonProperty("lastName") String lastName, @JsonProperty("addressSet") AddressRestSetDTO[] addressSet, @JsonProperty("contactSet") ContactSetRestDTO[] contactSet, @JsonProperty("personElementSet") PersonElementSetRestDTO[] personElementSet, @JsonProperty("parentPersonLinkElementSet") ParentPersonLinkElementSetRestDTO[] parentPersonLinkElementSet, @JsonProperty("childPersonLinkElementSet") ChildPersonLinkElementSetRestDTO[] childPersonLinkElementSet, @JsonProperty("dateMap") DateMapRestDTO[] dateMap, @JsonProperty("gaDictionaryMap") GaDictionaryMapRestDTO[] gaDictionaryMap, @JsonProperty("gaSourceIdentifier") GaSourceIdentifier[] gaSourceIdentifiers){
+    public RmPersonRestDTO(@JsonProperty("type") String type, @JsonProperty("uniqueIdentifier") String uniqueIdentifier, @JsonProperty("uuid") String uuid, @JsonProperty("id") long id, @JsonProperty("crisId") String crisId, @JsonProperty("firstName") String firstName, @JsonProperty("lastName") String lastName, @JsonProperty("addressSet") AddressRestSetDTO[] addressSet, @JsonProperty("contactSet") ContactSetRestDTO[] contactSet, @JsonProperty("personElementSet") PersonElementSetRestDTO[] personElementSet, @JsonProperty("parentPersonLinkElementSet") ParentPersonLinkElementSetRestDTO[] parentPersonLinkElementSet, @JsonProperty("childPersonLinkElementSet") ChildPersonLinkElementSetRestDTO[] childPersonLinkElementSet, @JsonProperty("dateMap") DateMapRestDTO[] dateMap, @JsonProperty("gaDictionaryMap") GaDictionaryMapRestDTO[] gaDictionaryMap, @JsonProperty("gaSourceIdentifier") GaSourceIdentifier[] gaSourceIdentifiers, @JsonProperty("userSet") UserSetRestDTO[] userSet){
         this.type = type;
         this.uniqueIdentifier = uniqueIdentifier;
         this.uuid = uuid;
@@ -66,6 +67,50 @@ public class RmPersonRestDTO {
         this.dateMap = dateMap;
         this.gaDictionaryMap = gaDictionaryMap;
         this.gaSourceIdentifiers = gaSourceIdentifiers;
+        this.userSet = userSet;
     }
+    
+    /**
+     * Get Codice Fiscale
+     * 
+     * @return
+     */
+	public String getCF() {
+		String result = null;
+		boolean found = false;
+		int i = 0;
+		
+		while (!found && i<personElementSet.length) {
+			if ("codiceFiscale".equals(personElementSet[i].discriminator)) {
+				PersonElementSetRestDTO element = personElementSet[i];
+				if (element.stringMap.length>0) {
+					result = element.stringMap[0].value;
+					found = true;
+				}
+			}
+			i++;
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * Get Cris Id
+	 * 
+	 * @return
+	 */
+	public String getCrisId() {
+		return crisId;
+	}
+	
+	public String getUsername() {
+		String result = null;
+		
+		if (this.userSet != null && this.userSet.length > 0) {
+			result = this.userSet[0].username;
+		}
+		
+		return result;
+	}
     
 }

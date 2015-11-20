@@ -45,6 +45,7 @@ public class ItemRestDTO extends DSpaceObject {
     private int itemId;
     private int wrapperId;
     private Date lastModified;
+    private String lastModifiedISO;
     private EPersonDTO submitter;
     private EPersonDTO owner;
     private int workflowState;
@@ -190,7 +191,15 @@ public class ItemRestDTO extends DSpaceObject {
         this.lastModified = lastModified;
     }
 
-    public EPersonDTO getSubmitter() {
+    public String getLastModifiedISO() {
+		return lastModifiedISO;
+	}
+
+	public void setLastModifiedISO(String lastModifiedISO) {
+		this.lastModifiedISO = lastModifiedISO;
+	}
+
+	public EPersonDTO getSubmitter() {
         return submitter;
     }
 

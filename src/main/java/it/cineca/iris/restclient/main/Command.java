@@ -27,16 +27,22 @@ package it.cineca.iris.restclient.main;
 import it.cineca.iris.ir.rest.command.model.OptionBitStreamDTO;
 import it.cineca.iris.ir.rest.model.CareerItemsDTO;
 import it.cineca.iris.ir.rest.model.CollectionRestDTO;
+import it.cineca.iris.ir.rest.model.CollectionRestPageDTO;
 import it.cineca.iris.ir.rest.model.CommunityRestDTO;
 import it.cineca.iris.ir.rest.model.CommunityRestPageDTO;
 import it.cineca.iris.ir.rest.model.DCInputSetRestDTO;
+import it.cineca.iris.ir.rest.model.DCInputSetRowRestDTO;
 import it.cineca.iris.ir.rest.model.ItemIdRestPageDTO;
 import it.cineca.iris.ir.rest.model.ItemRestDTO;
 import it.cineca.iris.ir.rest.model.ItemRestPageDTO;
+import it.cineca.iris.ir.rest.model.ItemRestWriteDTO;
 import it.cineca.iris.ir.rest.model.MetadataEntryRestDTO;
 import it.cineca.iris.ir.rest.model.RecordANCERivistaRestDTO;
 import it.cineca.iris.ir.rest.model.RmPersonRestDTO;
-import it.cineca.iris.ir.rest.model.utils.Person;
+import it.cineca.iris.ir.rest.model.utils.AbstractAuthorityResolver;
+import it.cineca.iris.ir.rest.model.utils.AbstractInputformType;
+import it.cineca.iris.ir.rest.model.utils.ChoiceAuthorityManager;
+import it.cineca.iris.ir.rest.model.utils.IInputformType;
 import it.cineca.iris.ir.rest.search.model.AnceSearchRestDTO;
 import it.cineca.iris.ir.rest.search.model.RestSearchCriteria;
 import it.cineca.iris.ir.rest.search.model.RestSortCriteria;
@@ -55,9 +61,13 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Properties;
+import java.util.Random;
 
+import javax.ws.rs.core.MultivaluedHashMap;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.lang.RandomStringUtils;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -73,20 +83,39 @@ public class Command {
 
 	private RESTIRClient cl;
 	private List<ItemRestDTO> itemsDTO;
-	private String author;
-
-	public Command() {
-		createClient();
-	}
+	private String authorAuthority;
+	private String authorCF;
+	private String username;
 
 	public static void main(String[] argv) {
 		Command command = new Command();
-
-		//command.simpleTest();
-		command.runTest();
+		try {
+			command.createClient();
+			
+			//command.runReadTest();
+		
+			command.runWriteTest();
+			
+		} catch (SocketTimeoutException e) {
+			System.out
+			.println("\n-----------------------------------------------------------");
+			System.out.print("Time out!!!");
+			System.out
+			.println("\n-----------------------------------------------------------");
+		} catch (Exception e) {
+			System.out
+			.println("\n-----------------------------------------------------------");
+			e.printStackTrace();
+			System.out
+			.println("\n-----------------------------------------------------------");
+		} finally {
+			if (command != null) {
+				command.shutdownClient();
+			}
+		}
 	}
 
-	private void createClient() {
+	protected void createClient() throws IOException, KeyManagementException, NoSuchAlgorithmException {
 
 		System.out
 				.println("\n-----------------------------------------------------------");
@@ -95,38 +124,42 @@ public class Command {
 		System.out
 				.println("-----------------------------------------------------------\n");
 
-		try {
-			PropertiesReader reader = new PropertiesReader();
-			Properties prop = reader.getProperties();
+		
+		PropertiesReader reader = new PropertiesReader();
+		Properties prop = reader.getProperties();
 
-			String restBaseURI = prop.getProperty("BASE_URI"), pathIR = prop
-					.getProperty("PATH_IR"), pathRM = prop
-					.getProperty("PATH_RM"), username = prop
-					.getProperty("USERNAME"), password = prop
-					.getProperty("PASSWORD");
+		String restBaseURI = prop.getProperty("BASE_URI"), pathIR = prop
+				.getProperty("PATH_IR"), pathRM = prop
+				.getProperty("PATH_RM"), username = prop
+				.getProperty("USERNAME"), password = prop
+				.getProperty("PASSWORD");
 
-			System.out.println("Test on: " + restBaseURI);
+		System.out.println("Test on: " + restBaseURI);
 
-			if (username == null || password == null) {
-				BufferedReader br = new BufferedReader(new InputStreamReader(
-						System.in));
+		if (username == null || password == null) {
+			BufferedReader br = new BufferedReader(new InputStreamReader(
+					System.in));
 
-				if (username == null) {
-					System.out.print("Enter Username:");
-					username = br.readLine();
-				}
-
-				if (password == null) {
-					System.out.print("Enter Password:");
-					password = br.readLine();
-				}
+			if (username == null) {
+				System.out.print("Enter Username:");
+				username = br.readLine();
 			}
 
-			this.cl = new RESTIRClient(restBaseURI, pathIR, pathRM, username,
-					password);
+			if (password == null) {
+				System.out.print("Enter Password:");
+				password = br.readLine();
+			}
+		}
 
-		} catch (IOException e) {
-			e.printStackTrace();
+		this.cl = new RESTIRClient(restBaseURI, pathIR, pathRM, username,
+				password);
+		
+		this.cl.buildUnsecureInstance();
+	}
+	
+	private void shutdownClient() {
+		if (this.cl != null) {
+			cl.close();
 		}
 	}
 
@@ -137,87 +170,62 @@ public class Command {
 	 * @throws NoSuchAlgorithmException
 	 * @throws KeyManagementException
 	 */
-	public void simpleTest() {
-
-		try {
-			this.echo();
-
-			// CUSTOM TO DO... ;-)
-			this.testUpload(55358);
-
-		} catch (SocketTimeoutException e) {
-			System.out
-			.println("\n-----------------------------------------------------------");
-			System.out.print("Time out!!!");
-			System.out
-			.println("\n-----------------------------------------------------------");
-			
-		} catch (Exception e) {
-			System.out
-			.println("\n-----------------------------------------------------------");
-			System.out.print(e.getMessage());
-			System.out
-			.println("\n-----------------------------------------------------------");
-			
-		} finally {
-			if (this.cl != null) {
-				cl.close();
-			}
-		}
-	}
+	private void simpleTest() {}
 
 	/**
 	 * Long test...
+	 * 
+	 * @throws JsonMappingException 
+	 * @throws JsonParseException 
 	 * 
 	 * @throws IOException
 	 * @throws NoSuchAlgorithmException
 	 * @throws KeyManagementException
 	 */
-	public void runTest() {
+	private void runReadTest() throws JsonParseException, JsonMappingException, IOException {
 
-		try {
+		this.echo();
 
-			this.echo();
+		this.testReadItems();
 
-			this.testReadItems();
+		this.testCollection();
 
-			this.testUpload(65452);
+		this.testCommunities();
 
-			this.testCollection();
+		this.testSearchLastModified();
 
-			this.testCommunities();
+		this.testSearchAuthor();
 
-			this.testSearchLastModified();
+		this.testInputForm();
 
-			this.testSearchAuthor();
+		this.testAnce();
 
-			this.testInputForm();
+		this.testRestPerson();
 
-			this.testAnce();
+		this.testDBDownloadLastModified();
 
-			this.testRestPerson();
+		this.testDBDownloadPublishDate();
 
-			this.testDBDownloadLastModified();
+	}
+	
+	/**
+	 * Write test...
+	 * @throws Exception 
+	 */
+	private void runWriteTest() throws Exception {
+		
+		this.echo();
+		
+		this.testReadItems();
+		
+		this.testSearchAuthor();
+		
+		this.findPersonByCris(this.authorAuthority);
+		
+		this.createNewItem("11368","2842417");
+		
+		//this.testUpload(null);
 
-			this.testDBDownloadPublishDate();
-
-		} catch (SocketTimeoutException e) {
-			System.out
-			.println("\n-----------------------------------------------------------");
-			System.out.print("Time out!!!");
-			System.out
-			.println("\n-----------------------------------------------------------");
-		} catch (Exception e) {
-			System.out
-			.println("\n-----------------------------------------------------------");
-			System.out.print(e.getMessage());
-			System.out
-			.println("\n-----------------------------------------------------------");
-		} finally {
-			if (this.cl != null) {
-				cl.close();
-			}
-		}
 	}
 
 	/**
@@ -506,14 +514,14 @@ public class Command {
 							.get("dc.authority.people");
 					if (!authors.isEmpty()) {
 						found = true;
-						this.author = authors.get(0).getAuthority();
+						this.authorAuthority = authors.get(0).getAuthority();
 					}
 				}
 			}
 
 			if (found) {
 
-				System.out.println("\nGet items from authors " + this.author);
+				System.out.println("\nGet items from authors " + this.authorAuthority);
 				System.out
 						.println("-----------------------------------------------------------");
 
@@ -525,7 +533,7 @@ public class Command {
 				RestSearchCriteria searchCriteriaLM = new RestSearchCriteria();
 				searchCriteriaLM.setColumn("lookupValues_contextuser");
 				searchCriteriaLM.setOperation("=");
-				searchCriteriaLM.setValue(this.author);
+				searchCriteriaLM.setValue(this.authorAuthority);
 
 				RestSearchCriteria searchCriteriaSnap = new RestSearchCriteria();
 				searchCriteriaSnap.setColumn("snapshot");
@@ -838,7 +846,7 @@ public class Command {
 					for (MetadataEntryRestDTO authors : itemDto.getMetadata()
 							.get("dc.authority.people")) {
 						String crisId = authors.getAuthority();
-						this.findPeopleByCris(crisId);
+						this.findCurrentCareerByCris(crisId);
 					}
 				}
 
@@ -849,17 +857,10 @@ public class Command {
 			System.out.println("Items NOT FOUND");
 		}
 	}
-
-	/**
-	 * Show info of people
-	 * 
-	 * @param cl
-	 * @param crisId
-	 * @throws IOException
-	 */
-	private void findPeopleByCris(String crisId) throws IOException {
+	
+	private void findPersonByCris(String crisId) throws IOException {
 		System.out
-				.println("\n-----------------------------------------------------------");
+		.println("\n-----------------------------------------------------------");
 		System.out.println("Author by cris id: " + crisId);
 
 		ObjectMapper mapper = new ObjectMapper();
@@ -869,16 +870,35 @@ public class Command {
 		RmPersonRestDTO person = mapper
 				.readValue(result, RmPersonRestDTO.class);
 		System.out.println(person.lastName);
-		System.out.println("CF :" + Person.getCF(person));
+		
+		System.out.println("CF :" + person.getCF());
+		
+		this.authorCF = person.getCF();
+		this.username = person.getUsername();
 
+	}
+
+	/**
+	 * Show info of people
+	 * 
+	 * @param cl
+	 * @param crisId
+	 * @throws IOException
+	 */
+	private void findCurrentCareerByCris(String crisId) throws IOException {
+		
+		this.findPersonByCris(crisId);
+
+		ObjectMapper mapper = new ObjectMapper();
+		
 		System.out
 				.println("\n-----------------------------------------------------------");
 		System.out.println("All Positions by cris id: " + crisId);
-		response = cl.positionsByCris(crisId);
-		result = response.readEntity(String.class);
+		Response response = cl.positionsByCris(crisId);
+		String result = response.readEntity(String.class);
 		System.out.println("Positions JSON:" + result);
 		CareerItemsDTO career = mapper.readValue(result, CareerItemsDTO.class);
-		System.out.println("Matricola:" + Person.getMatricola(career));
+		System.out.println("Matricola:" + career.getMatricola());
 
 		System.out
 				.println("\n-----------------------------------------------------------");
@@ -889,7 +909,7 @@ public class Command {
 			result = response.readEntity(String.class);
 			System.out.println("Position Current JSON:" + result);
 			career = mapper.readValue(result, CareerItemsDTO.class);
-			System.out.println("Matricola:" + Person.getMatricola(career));
+			System.out.println("Matricola:" + career.getMatricola());
 		} catch (RuntimeException e) {
 			System.out.println("Position Current JSON:" + e.getMessage());
 			System.out.println("User has not current position");
@@ -951,6 +971,14 @@ public class Command {
 		return items;
 	}
 
+	/**
+	 * Test upload file
+	 * 
+	 * @param itemId
+	 * @throws JsonParseException
+	 * @throws JsonMappingException
+	 * @throws IOException
+	 */
 	private void testUpload(Integer itemId) throws JsonParseException,
 			JsonMappingException, IOException {
 		System.out
@@ -981,6 +1009,113 @@ public class Command {
 		}
 	}
 	
+	private void createNewItem(String authorityName, String localName) throws Exception { 
+		ObjectMapper mapper = new ObjectMapper();
+		CollectionRestDTO targetCollection = null;
+		Integer targetInputFormId = null;
+		Response response = null;  
+		
+		if (authorityName == null || localName == null) {
+
+			response =  cl.collections();
+	    	
+	    	String result = response.readEntity(String.class);
+	    	
+	    	CollectionRestPageDTO collection = mapper.readValue(result, CollectionRestPageDTO.class);
+	    	
+	    	if (collection != null && !collection.getRestResourseDTOList().isEmpty()) {
+	    		
+	    		int index = randInt(0, collection.getRestResourseDTOList().size() - 1);
+	    		
+	    		targetCollection = collection.getRestResourseDTOList().get(index);
+	    		targetInputFormId = collection.getRestResourseDTOList().get(index).getInputformActiveId();
+	    		System.out.println("Collections handle: " + targetCollection.getHandle());
+	    		System.out.println("Collections inputform: " + targetInputFormId);
+	    		
+	    	} else {
+	    		System.out.println("\nNo collection found...");
+	    		return;
+	    	}
+    	
+		} else {
+			
+			response =  cl.collection(authorityName, localName);
+			
+			String result = response.readEntity(String.class);
+	    	
+	    	targetCollection = mapper.readValue(result, CollectionRestDTO.class);
+	    	targetInputFormId = targetCollection.getInputformActiveId();
+		}
+    	
+    	if (targetCollection != null && targetCollection.getHandle() != null && !targetCollection.getHandle().isEmpty() && targetInputFormId != null && targetInputFormId>-1) {
+    		response = cl.inputFormAll(String.valueOf(targetInputFormId));
+    		String test = response.readEntity(String.class);
+    		System.out.println(test);
+    		
+    		DCInputSetRestDTO inputform = mapper.readValue(test,
+    				DCInputSetRestDTO.class);
+    		
+    		List<DCInputSetRowRestDTO> inputformRow = inputform.getRows();
+    		
+    		ItemRestWriteDTO itemToCreate = new ItemRestWriteDTO();
+    		itemToCreate.setCollection(targetCollection.getContainerDTO());
+    		
+    		String dcSchema = null, dcElement = null, dcQualifier = null, dcValue = null, dcAuthority = null;
+    		
+    		ChoiceAuthorityManager manager = ChoiceAuthorityManager.getManager();
+    		
+    		for (DCInputSetRowRestDTO dcInputSetRowRestDTO : inputformRow) {
+    			//Only required!!!
+    			if (dcInputSetRowRestDTO.isRequired()) {
+    				
+    				dcSchema = dcInputSetRowRestDTO.getDcSchema();
+    				dcElement = dcInputSetRowRestDTO.getDcElement();
+    				dcQualifier = dcInputSetRowRestDTO.getDcQualifier();
+    				
+    				if (manager.isAuthorityManaged(dcSchema, dcElement, dcQualifier, null, null)) {
+    					AbstractAuthorityResolver resolver = (AbstractAuthorityResolver) manager.getAuthorityResolver(dcSchema, dcElement, dcQualifier);
+    					resolver.setRestIRClient(this.cl);
+    					dcAuthority = resolver.resolve(this.authorCF);
+    				} else {
+    					dcValue = RandomStringUtils.randomAlphabetic(randInt(1, 40));
+    				}
+    				
+    				System.out.println("Type: " + dcInputSetRowRestDTO.getInputType());
+    				
+    				IInputformType typeEnum = AbstractInputformType.getInstance(dcInputSetRowRestDTO.getInputType());
+    				itemToCreate.addMetadata(typeEnum.build(dcSchema, dcElement, dcQualifier, dcValue, dcAuthority));
+    			}
+			}
+    		
+    		MultivaluedMap<String, Object> headers = new MultivaluedHashMap<String, Object>();
+    		headers.add("scope", "ROLE_ADMIN");
+    		headers.add("on-behalf-of", this.username);
+    		headers.add("target-state", "PUBLISH");
+    		
+			response = cl.createItem(itemToCreate, headers);
+    	}
+    }
+	
+	/*****************************************************************************************************************
+	 * UTILITY METHODS
+	 * ***************************************************************************************************************
+	 */
+	
+    public static int randInt(int min, int max) {
+        Random rand = new Random();
+
+        // nextInt is normally exclusive of the top value,
+        // so add 1 to make it inclusive
+        int randomNum = rand.nextInt((max - min) + 1) + min;
+
+        return randomNum;
+    }
+    
+	/**
+	 * Create file for test
+	 * 
+	 * @param fileName
+	 */
 	private void createTestFile(String fileName) {
 		PrintWriter writer = null;
 	    
@@ -988,7 +1123,7 @@ public class Command {
 			writer = new PrintWriter(fileName, "UTF-8");
 			
 			writer.println("This is a REST upload ...");
-			writer.println("....test");
+			writer.println("File text test....");
 			    
 	      }catch(Exception e){
 				System.out
@@ -1024,6 +1159,13 @@ public class Command {
 		return dateFormatted;
 	}
 
+	/**
+	 * Utiliy method
+	 * 
+	 * @param start
+	 * @param end
+	 * @return
+	 */
 	private static int randBetween(int start, int end) {
 		return start + (int) Math.round(Math.random() * (end - start));
 	}

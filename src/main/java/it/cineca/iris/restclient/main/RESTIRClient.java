@@ -25,18 +25,27 @@
 package it.cineca.iris.restclient.main;
 
 import it.cineca.iris.ir.rest.command.model.OptionBitStreamDTO;
+import it.cineca.iris.ir.rest.model.ItemRestWriteDTO;
 import it.cineca.iris.ir.rest.search.model.AnceSearchRestDTO;
 import it.cineca.iris.ir.rest.search.model.SearchIdsRestDTO;
 import it.cineca.iris.ir.rest.search.model.SearchRestDTO;
+import it.cineca.iris.restclient.secure.DummyX509TrustManager;
 
 import java.io.File;
 import java.io.IOException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.X509TrustManager;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 
 import org.codehaus.jackson.map.ObjectMapper;
@@ -47,7 +56,6 @@ import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 import org.glassfish.jersey.media.multipart.MultiPart;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
-
 /**
  * 
  * @author pmeriggi
@@ -56,7 +64,11 @@ import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
 public class RESTIRClient {
 
     private WebTarget webTarget;
-    private final Client client;
+    
+    private Client client;
+    
+    private final String username;
+    private final String password;
     private final String baseURI;
     private final String pathIR;
     private final String pathRM;
@@ -66,18 +78,64 @@ public class RESTIRClient {
     public static final Integer READ_TIMEOUT = 120000;
 
     public RESTIRClient(String baseURI, String pathIR, String pathRM, String username, String password) {
-        this.client = ClientBuilder.newClient().register(new Authenticator(username, password)).register(MultiPartFeature.class);
-        
-        //Connect timeout interval, in milliseconds.
-        this.client.property(ClientProperties.CONNECT_TIMEOUT, CONNECT_TIMEOUT);
-        //Read timeout interval, in milliseconds.
-        this.client.property(ClientProperties.READ_TIMEOUT, READ_TIMEOUT);
-        
+    	this.username = username;
+    	this.password = password;
+    	
         this.baseURI = baseURI;
         this.pathIR = pathIR;
         this.pathRM = pathRM;
     }
+    
+    public void buildUnsecureInstance() throws KeyManagementException, NoSuchAlgorithmException {
+    	this.client = ClientBuilder.newBuilder().sslContext(getSSLContext()).hostnameVerifier(getHostnameVerifier()).register(new Authenticator(username, password)).register(MultiPartFeature.class).build();
+        
+        //Connect timeout interval, in milliseconds.
+    	this.client.property(ClientProperties.CONNECT_TIMEOUT, CONNECT_TIMEOUT);
+        //Read timeout interval, in milliseconds.
+    	this.client.property(ClientProperties.READ_TIMEOUT, READ_TIMEOUT);
+        
+    }
+    
+    public void buildSecureInstance() {
+    	this.client = ClientBuilder.newBuilder().register(new Authenticator(username, password)).register(MultiPartFeature.class).build();
+        
+        //Connect timeout interval, in milliseconds.
+    	this.client.property(ClientProperties.CONNECT_TIMEOUT, CONNECT_TIMEOUT);
+        //Read timeout interval, in milliseconds.
+    	this.client.property(ClientProperties.READ_TIMEOUT, READ_TIMEOUT);
+        
+    }
+    
+    /**
+     * Bybass SSL verify
+     * @return
+     */
+	private HostnameVerifier getHostnameVerifier() {
+		HostnameVerifier hv = new HostnameVerifier() {
 
+			@Override
+			public boolean verify(String arg0, SSLSession arg1) {
+				return true;
+			}
+		};
+
+		return hv;
+	}
+	
+	/**
+	 * SSL Context Dummy
+	 * 
+	 * @return
+	 * @throws NoSuchAlgorithmException
+	 * @throws KeyManagementException
+	 */
+	private SSLContext getSSLContext() throws NoSuchAlgorithmException, KeyManagementException {
+    	SSLContext sslcontext = SSLContext.getInstance("TLS");    	
+        
+    	sslcontext.init(null, new X509TrustManager[]{new DummyX509TrustManager()}, new java.security.SecureRandom());
+   	 
+    	return sslcontext;
+	}
     /**
      * Echo IR test
      * 
@@ -162,6 +220,22 @@ public class RESTIRClient {
      */
     public Response collection(String collectionId) {
         this.webTarget = this.client.target(baseURI+pathIR).path("collections/" + collectionId);
+
+        Response response = this.webTarget.request(MediaType.APPLICATION_JSON).get();
+        if (response.getStatus() != 200) {
+            throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
+        }
+        return response;
+    }
+    
+    /**
+     * Get collection by handle
+     * 
+     * @param collectionId
+     * @return
+     */
+    public Response collection(String authorityName, String localName) {
+        this.webTarget = this.client.target(baseURI+pathIR).path("collections/" + authorityName + "/" + localName);
 
         Response response = this.webTarget.request(MediaType.APPLICATION_JSON).get();
         if (response.getStatus() != 200) {
@@ -289,6 +363,28 @@ public class RESTIRClient {
     }
     
     /**
+     * Search item by dto
+     * 
+     * @param searchDTO
+     * @return
+     * @throws IOException
+     */
+    public Response createItem(ItemRestWriteDTO itemDTO, MultivaluedMap<String, Object> headers) throws IOException {
+        this.webTarget = this.client.target(baseURI+pathIR).path("items");
+
+        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+        String jsonItemDTO = ow.writeValueAsString(itemDTO);
+
+        Response response = this.webTarget.request(MediaType.APPLICATION_JSON).headers(headers).post(Entity.entity(jsonItemDTO, MediaType.APPLICATION_JSON));
+        
+        if (response.getStatus() != 201) {
+            throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
+        }
+        
+        return response;
+    }
+    
+    /**
      * Get list item id by dto
      * 
      * @param searchDTO
@@ -345,7 +441,6 @@ public class RESTIRClient {
         return response;
     }
     
-    
     /**
      * Get person by id
      * 
@@ -355,6 +450,23 @@ public class RESTIRClient {
      */
     public Response personById(String personId) throws IOException {
         this.webTarget = this.client.target(baseURI+pathRM).path("personsbyid/" + personId);
+
+        Response response = this.webTarget.request(MediaType.APPLICATION_JSON).header("scope", "ROLE_ADMIN").get();
+        if (response.getStatus() != 200) {
+            throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
+        }
+        return response;
+    }
+    
+    /**
+     * Get person by cf
+     * 
+     * @param personId
+     * @return
+     * @throws IOException
+     */
+    public Response personByCF(String personId) throws IOException {
+        this.webTarget = this.client.target(baseURI+pathRM).path("personsbycf/" + personId);
 
         Response response = this.webTarget.request(MediaType.APPLICATION_JSON).header("scope", "ROLE_ADMIN").get();
         if (response.getStatus() != 200) {
@@ -509,7 +621,7 @@ public class RESTIRClient {
      * @throws IOException
      */
     public Response uploadStream(Integer itemId, OptionBitStreamDTO optionBitStreamDTO, String fileName) throws IOException {	    
-		WebTarget webTarget = client.target(baseURI+pathIR).path("items/"+itemId+"/streams/upload");
+		WebTarget webTarget = client.target(baseURI+pathIR).path("streams/items/"+itemId);
 	    
 		//Compose multipart request (multipart/form-data)
 		//See http://stackoverflow.com/questions/27609569/file-upload-along-with-other-object-in-jersey-restful-web-service/27614403#27614403

@@ -27,6 +27,8 @@ package it.cineca.iris.ir.rest.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 /**
  * 
  * @author pmeriggi
@@ -118,6 +120,17 @@ public class CollectionRestDTO extends DSpaceObject {
 
 	public void setInputformActiveId(Integer inputformActiveId) {
 		this.inputformActiveId = inputformActiveId;
+	}
+	
+	@JsonIgnore
+	public ContainerDTO getContainerDTO() {
+		ContainerDTO container = new ContainerDTO();
+		
+		container.setHandle(this.getHandle());
+		container.setId(this.getId());
+		container.setName(this.getName());
+		
+		return container;
 	}
 
 	public CollectionRestDTO() {

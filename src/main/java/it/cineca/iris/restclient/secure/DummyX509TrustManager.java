@@ -22,43 +22,41 @@
  *  51 Franklin Street, Fifth Floor
  *  Boston, MA  02110-1301  USA
  */
-package it.cineca.iris.ir.rest.model;
+package it.cineca.iris.restclient.secure;
 
-import org.codehaus.jackson.annotate.JsonCreator;
-import org.codehaus.jackson.annotate.JsonProperty;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+
+import javax.net.ssl.X509TrustManager;
 
 /**
  * 
- * 
  * @author pmeriggi
- * 
+ *
  */
-public class CareerItemsDTO {
-	
-	public final CareerItemDTO items[];
+public class DummyX509TrustManager implements X509TrustManager {
 
-    @JsonCreator
-    public CareerItemsDTO(@JsonProperty("items") CareerItemDTO[] items){
-        this.items = items;
+    @Override
+    public void checkClientTrusted(X509Certificate[] arg0, String arg1)
+            throws CertificateException {
     }
-    
-	public String getMatricola() {
-		String result = null;
-		boolean found = false;
-		int i = 0;
-		
-		while (!found && i<items.length) {
-			if ("research".equals(items[i].discriminator) 
-					&& "Matricola".equals(items[i].organizationUnit.organizationUnitType)
-					&& items[i].endDate == null) {
-				CareerItemDTO element =  items[i];
-				
-				result = element.organizationUnit.description;
-				found = true;
-			}
-			i++;
-		}
-		
-		return result;
-	}
+
+    @Override
+    public void checkServerTrusted(X509Certificate[] arg0, String arg1)
+            throws CertificateException {
+    }
+
+    @Override
+    public X509Certificate[] getAcceptedIssuers() {
+        return new X509Certificate[0];
+    }
+
+    public boolean isClientTrusted(X509Certificate[] arg0) {
+        return true;
+    }
+
+    public boolean isServerTrusted(X509Certificate[] arg0) {
+        return true;
+    }
 }
+

@@ -29,6 +29,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+/**
+ * 
+ * @author pmeriggi
+ * 
+ */
 public class PropertiesReader {
 	
 	private static final String PROPERTY_FILE_NAME = "application.properties";

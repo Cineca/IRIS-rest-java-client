@@ -92,7 +92,7 @@ public class Command {
 		try {
 			command.createClient();
 			
-			//command.runReadTest();
+			command.runReadTest();
 		
 			command.runWriteTest();
 			
@@ -153,6 +153,9 @@ public class Command {
 
 		this.cl = new RESTIRClient(restBaseURI, pathIR, pathRM, username,
 				password);
+		
+		this.cl.setConnectTimeOut(RESTIRClient.CONNECT_TIMEOUT);
+		this.cl.setReadTimeOut(RESTIRClient.READ_TIMEOUT);
 		
 		this.cl.buildUnsecureInstance();
 	}
@@ -224,7 +227,7 @@ public class Command {
 		
 		this.createNewItem("11368","2842417");
 		
-		//this.testUpload(null);
+		this.testUpload(null);
 
 	}
 
@@ -1093,6 +1096,10 @@ public class Command {
     		headers.add("target-state", "PUBLISH");
     		
 			response = cl.createItem(itemToCreate, headers);
+			
+			String uploadItem =  response.getHeaderString("Location");
+			
+			System.out.println("Location item: " + uploadItem);
     	}
     }
 	

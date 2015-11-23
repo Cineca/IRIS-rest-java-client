@@ -72,6 +72,8 @@ public class RESTIRClient {
     private final String baseURI;
     private final String pathIR;
     private final String pathRM;
+    private Integer connectTimeOut;
+    private Integer readTimeOut;
     
     //2 min
     public static final Integer CONNECT_TIMEOUT = 120000;
@@ -84,26 +86,85 @@ public class RESTIRClient {
         this.baseURI = baseURI;
         this.pathIR = pathIR;
         this.pathRM = pathRM;
+        
+        this.connectTimeOut = CONNECT_TIMEOUT;
+        this.readTimeOut = READ_TIMEOUT;
     }
     
+    public RESTIRClient(String baseURI, String pathIR, String pathRM, String username, String password, Integer connectTimeOut, Integer readTimeOut) {
+    	this.username = username;
+    	this.password = password;
+    	
+        this.baseURI = baseURI;
+        this.pathIR = pathIR;
+        this.pathRM = pathRM;
+        
+        this.connectTimeOut = connectTimeOut;
+        this.readTimeOut = readTimeOut;
+    }
+    
+    /**
+     * Build client for self-signed SSL certified
+     */
     public void buildUnsecureInstance() throws KeyManagementException, NoSuchAlgorithmException {
     	this.client = ClientBuilder.newBuilder().sslContext(getSSLContext()).hostnameVerifier(getHostnameVerifier()).register(new Authenticator(username, password)).register(MultiPartFeature.class).build();
-        
-        //Connect timeout interval, in milliseconds.
-    	this.client.property(ClientProperties.CONNECT_TIMEOUT, CONNECT_TIMEOUT);
-        //Read timeout interval, in milliseconds.
-    	this.client.property(ClientProperties.READ_TIMEOUT, READ_TIMEOUT);
-        
+    	setTimeout();
     }
     
+    /**
+     * Build client
+     */
     public void buildSecureInstance() {
     	this.client = ClientBuilder.newBuilder().register(new Authenticator(username, password)).register(MultiPartFeature.class).build();
-        
+    	setTimeout();
+    }
+    
+    /**
+     * Set time out
+     */
+    private void setTimeout() {
         //Connect timeout interval, in milliseconds.
-    	this.client.property(ClientProperties.CONNECT_TIMEOUT, CONNECT_TIMEOUT);
+        this.client.property(ClientProperties.CONNECT_TIMEOUT, this.connectTimeOut);
         //Read timeout interval, in milliseconds.
-    	this.client.property(ClientProperties.READ_TIMEOUT, READ_TIMEOUT);
-        
+        this.client.property(ClientProperties.READ_TIMEOUT, this.readTimeOut);
+    }
+    
+    /**
+     * Set connection timeout
+     * 
+     * @param connectTimeOut
+     */
+    public void setConnectTimeOut(Integer connectTimeOut) {
+    	this.connectTimeOut = connectTimeOut;
+    	this.client.property(ClientProperties.CONNECT_TIMEOUT, this.connectTimeOut);
+    }
+    
+    /**
+     * Set read timeout
+     * 
+     * @param readTimeOut
+     */
+    public void setReadTimeOut(Integer readTimeOut) {
+    	this.readTimeOut = readTimeOut;
+    	this.client.property(ClientProperties.READ_TIMEOUT, this.readTimeOut);
+    }
+    
+    /**
+     * Get connection timeout
+     * 
+     * @return
+     */
+    public Integer getConnectTimeOut() {
+    	return this.connectTimeOut;
+    }
+    
+    /**
+     * Get read timeout
+     * 
+     * @return
+     */
+    public Integer getReadTimeOut() {
+    	return this.readTimeOut;
     }
     
     /**
@@ -656,6 +717,9 @@ public class RESTIRClient {
 		}
 	}
     
+    /**
+     * Close client connection
+     */
     public void close() {
         this.client.close();
     }

@@ -154,10 +154,10 @@ public class Command {
 		this.cl = new RESTIRClient(restBaseURI, pathIR, pathRM, username,
 				password);
 		
+		this.cl.buildSecureInstance();
+		
 		this.cl.setConnectTimeOut(RESTIRClient.CONNECT_TIMEOUT);
 		this.cl.setReadTimeOut(RESTIRClient.READ_TIMEOUT);
-		
-		this.cl.buildUnsecureInstance();
 	}
 	
 	private void shutdownClient() {

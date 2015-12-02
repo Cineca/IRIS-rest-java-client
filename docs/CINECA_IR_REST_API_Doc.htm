@@ -327,8 +327,8 @@
                                 <div id="api/v1/items/search">
                                     <li><a href="#ditemssearch">https://unidemo.iris.cineca.it:443/rest/api/v1/items/search</a>[<a href="#ditemssearchpost">POST</a>] </li>
                                 </div>
-                                <div id="api/v1/items/ids">
-                                    <li><a href="#ditemsids">https://unidemo.iris.cineca.it:443/rest/api/v1/items/ids</a>[<a href="#ditemsidspost">POST</a>] </li>
+                                <div id="api/v1/items/ids/search">
+                                    <li><a href="#ditemsids">https://unidemo.iris.cineca.it:443/rest/api/v1/items/ids/search</a>[<a href="#ditemsidspost">POST</a>] </li>
                                 </div>								
                             </ul>
                         </li>
@@ -346,6 +346,12 @@
                                     <li><a href="#dcolsid">https://unidemo.iris.cineca.it:443/rest/api/v1/collections/{collectionid}</a>[<a href="#dcolsidget">GET</a>] </li>
                                     <div id="api/v1/collections/{collectionid}/items">
                                         <li><a href="#dcolsitems">https://unidemo.iris.cineca.it:443/rest/api/v1/collections/{collectionid}/items</a>[<a href="#dcolsitemsget">GET</a>] </li>
+                                    </div>
+									<div id="api/v1/collections/{collectionid}/licenseoptions">
+                                        <li><a href="#dcolslic">https://unidemo.iris.cineca.it:443/rest/api/v1/collections/{collectionid}/licenseoptions</a>[<a href="#dcolslicget">GET</a>] </li>
+                                    </div>
+									<div id="api/v1/collections/{collectionid}/embargoptions">
+                                        <li><a href="#dcolsemba">https://unidemo.iris.cineca.it:443/rest/api/v1/collections/{collectionid}/embargoptions</a>[<a href="#dcolsembaget">GET</a>] </li>
                                     </div>
                                 </div>
                             </ul>
@@ -423,6 +429,17 @@
                     </div>
                 </ul>
             </li>&nbsp;
+
+            <li>
+                <a href="#authority">Authority</a>
+                <ul>
+                    <div id="api/v1/authorities">&nbsp;
+						<div id="api/v1/authorities/{metadata_key}/">
+							<li><a href="#dauthid">https://unidemo.iris.cineca.it:443/rest/api/v1/authorities/{metadata_key}/</a>[<a href="#dauthidget">GET</a>] </li>                                    
+						</div>                             
+                    </div>
+                </ul>
+            </li>&nbsp;			
 			
 			<li>
                 <a href="#persons">Persons</a>
@@ -828,7 +845,7 @@
                             </div>
                         </li>
                         <li>
-                            <div>401 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('ditemsdet401'); return false;" href="#"><em><span id="link-ditemsdet401">expand</span></em></a>] </abbr></div>
+                            <div>401 - application/json [<a onclick="toggle('ditemsdet401'); return false;" href="#"><em><span id="link-ditemsdet401">expand</span></em></a>] </abbr></div>
                             <div style="display: none;" class="toggle" id="ditemsdet401">
                                 <p>Returned if the currently authenticated user does not have permission to view any item in the list.</p>
                                 <p/><h6>Example</h6>
@@ -841,7 +858,7 @@
                             </div>
                         </li>                      
                         <li>
-                            <div>500 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('ditemsdet500'); return false;" href="#"><em><span id="link-ditemsdet500">expand</span></em></a>] </abbr></div>
+                            <div>500 - application/json[<a onclick="toggle('ditemsdet500'); return false;" href="#"><em><span id="link-ditemsdet500">expand</span></em></a>] </abbr></div>
                             <div style="display: none;" class="toggle" id="ditemsdet500">
                                 <p>Returned if was any server error type.</p>
                                 <p/><h6>Example</h6>
@@ -958,7 +975,7 @@
                             </div>
                         </li>
                         <li>
-                            <div>401 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('ditemsiddet401'); return false;" href="#"><em><span id="link-ditemsiddet401">expand</span></em></a>] </abbr></div>
+                            <div>401 - application/json[<a onclick="toggle('ditemsiddet401'); return false;" href="#"><em><span id="link-ditemsiddet401">expand</span></em></a>] </abbr></div>
                             <div style="display: none;" class="toggle" id="ditemsiddet401">
                                 <p>Returned if the currently authenticated user does not have permission to view it.</p>
                                 <p/><h6>Example</h6>
@@ -971,7 +988,7 @@
                             </div>
                         </li>    
                         <li>
-                            <div>404 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('ditemsiddet404'); return false;" href="#"><em><span id="link-ditemsiddet404">expand</span></em></a>] </abbr></div>
+                            <div>404 - application/json[<a onclick="toggle('ditemsiddet404'); return false;" href="#"><em><span id="link-ditemsiddet404">expand</span></em></a>] </abbr></div>
                             <div style="display: none;" class="toggle" id="ditemsiddet404">
                                 <p>Returned if item does not exist.</p>
                                 <p/><h6>Example</h6>
@@ -984,7 +1001,7 @@
                             </div>
                         </li>                         
                         <li>
-                            <div>500 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('ditemsiddet500'); return false;" href="#"><em><span id="link-ditemsiddet500">expand</span></em></a>] </abbr></div>
+                            <div>500 - application/json[<a onclick="toggle('ditemsiddet500'); return false;" href="#"><em><span id="link-ditemsiddet500">expand</span></em></a>] </abbr></div>
                             <div style="display: none;" class="toggle" id="ditemsiddet500">
                                 <p>Returned if was any server error type.</p>
                                 <p/><h6>Example</h6>
@@ -1074,7 +1091,7 @@
                             </div>
                         </li>
                         <li>
-                            <div>401 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('ditemsmetadet401'); return false;" href="#"><em><span id="link-ditemsmetadet401">expand</span></em></a>] </abbr></div>
+                            <div>401 - application/json [<a onclick="toggle('ditemsmetadet401'); return false;" href="#"><em><span id="link-ditemsmetadet401">expand</span></em></a>] </abbr></div>
                             <div style="display: none;" class="toggle" id="ditemsmetadet401">
                                 <p>Returned if the currently authenticated user does not have permission to view it.</p>
                                 <p/><h6>Example</h6>
@@ -1087,7 +1104,7 @@
                             </div>
                         </li>    
                         <li>
-                            <div>404 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('ditemsmetadet404'); return false;" href="#"><em><span id="link-ditemsmetadet404">expand</span></em></a>] </abbr></div>
+                            <div>404 - application/json [<a onclick="toggle('ditemsmetadet404'); return false;" href="#"><em><span id="link-ditemsmetadet404">expand</span></em></a>] </abbr></div>
                             <div style="display: none;" class="toggle" id="ditemsmetadet404">
                                 <p>Returned if item does not exist.</p>
                                 <p/><h6>Example</h6>
@@ -1100,7 +1117,7 @@
                             </div>
                         </li>                         
                         <li>
-                            <div>500 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('ditemsmetadet500'); return false;" href="#"><em><span id="link-ditemsmetadet500">expand</span></em></a>] </abbr></div>
+                            <div>500 - application/json [<a onclick="toggle('ditemsmetadet500'); return false;" href="#"><em><span id="link-ditemsmetadet500">expand</span></em></a>] </abbr></div>
                             <div style="display: none;" class="toggle" id="ditemsmetadet500">
                                 <p>Returned if was any server error type.</p>
                                 <p/><h6>Example</h6>
@@ -1168,7 +1185,7 @@
                             </div>
                         </li>
                         <li>
-                            <div>401 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('ditemsmetakdet401'); return false;" href="#"><em><span id="link-ditemsmetakdet401">expand</span></em></a>] </abbr></div>
+                            <div>401 - application/json [<a onclick="toggle('ditemsmetakdet401'); return false;" href="#"><em><span id="link-ditemsmetakdet401">expand</span></em></a>] </abbr></div>
                             <div style="display: none;" class="toggle" id="ditemsmetakdet401">
                                 <p>Returned if the currently authenticated user does not have permission to view it.</p>
                                 <p/><h6>Example</h6>
@@ -1181,7 +1198,7 @@
                             </div>
                         </li>    
                         <li>
-                            <div>404 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('ditemsmetakdet404'); return false;" href="#"><em><span id="link-ditemsmetakdet404">expand</span></em></a>] </abbr></div>
+                            <div>404 - application/json [<a onclick="toggle('ditemsmetakdet404'); return false;" href="#"><em><span id="link-ditemsmetakdet404">expand</span></em></a>] </abbr></div>
                             <div style="display: none;" class="toggle" id="ditemsmetakdet404">
                                 <p>Returned if item does not exist.</p>
                                 <p/><h6>Example</h6>
@@ -1194,7 +1211,7 @@
                             </div>
                         </li>                         
                         <li>
-                            <div>500 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('ditemsmetakdet500'); return false;" href="#"><em><span id="link-ditemsmetakdet500">expand</span></em></a>] </abbr></div>
+                            <div>500 - application/json [<a onclick="toggle('ditemsmetakdet500'); return false;" href="#"><em><span id="link-ditemsmetakdet500">expand</span></em></a>] </abbr></div>
                             <div style="display: none;" class="toggle" id="ditemsmetakdet500">
                                 <p>Returned if was any server error type.</p>
                                 <p/><h6>Example</h6>
@@ -1279,7 +1296,7 @@
                             </div>
                         </li>
                         <li>
-                            <div>401 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('ditemsmetabsdet401'); return false;" href="#"><em><span id="link-ditemsmetabsdet401">expand</span></em></a>] </abbr></div>
+                            <div>401 - application/json [<a onclick="toggle('ditemsmetabsdet401'); return false;" href="#"><em><span id="link-ditemsmetabsdet401">expand</span></em></a>] </abbr></div>
                             <div style="display: none;" class="toggle" id="ditemsmetabsdet401">
                                 <p>Returned if the currently authenticated user does not have permission to view it.</p>
                                 <p/><h6>Example</h6>
@@ -1292,7 +1309,7 @@
                             </div>
                         </li>    
                         <li>
-                            <div>404 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('ditemsmetabsdet404'); return false;" href="#"><em><span id="link-ditemsmetabsdet404">expand</span></em></a>] </abbr></div>
+                            <div>404 - application/json [<a onclick="toggle('ditemsmetabsdet404'); return false;" href="#"><em><span id="link-ditemsmetabsdet404">expand</span></em></a>] </abbr></div>
                             <div style="display: none;" class="toggle" id="ditemsmetabsdet404">
                                 <p>Returned if item does not exist.</p>
                                 <p/><h6>Example</h6>
@@ -1305,7 +1322,7 @@
                             </div>
                         </li>                         
                         <li>
-                            <div>500 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('ditemsmetabsdet500'); return false;" href="#"><em><span id="link-ditemsmetabsdet500">expand</span></em></a>] </abbr></div>
+                            <div>500 - application/json [<a onclick="toggle('ditemsmetabsdet500'); return false;" href="#"><em><span id="link-ditemsmetabsdet500">expand</span></em></a>] </abbr></div>
                             <div style="display: none;" class="toggle" id="ditemsmetabsdet500">
                                 <p>Returned if was any server error type.</p>
                                 <p/><h6>Example</h6>
@@ -1356,7 +1373,7 @@
                             </div>
                         </li>
                         <li>
-                            <div>401 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('ditemshistdet401'); return false;" href="#"><em><span id="link-ditemshistdet401">expand</span></em></a>] </abbr></div>
+                            <div>401 - application/json [<a onclick="toggle('ditemshistdet401'); return false;" href="#"><em><span id="link-ditemshistdet401">expand</span></em></a>] </abbr></div>
                             <div style="display: none;" class="toggle" id="ditemshistdet401">
                                 <p>Returned if the currently authenticated user does not have permission to view it.</p>
                                 <p/><h6>Example</h6>
@@ -1369,7 +1386,7 @@
                             </div>
                         </li>    
                         <li>
-                            <div>404 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('ditemshistdet404'); return false;" href="#"><em><span id="link-ditemshistdet404">expand</span></em></a>] </abbr></div>
+                            <div>404 - application/json [<a onclick="toggle('ditemshistdet404'); return false;" href="#"><em><span id="link-ditemshistdet404">expand</span></em></a>] </abbr></div>
                             <div style="display: none;" class="toggle" id="ditemshistdet404">
                                 <p>Returned if item does not exist.</p>
                                 <p/><h6>Example</h6>
@@ -1382,7 +1399,7 @@
                             </div>
                         </li>                         
                         <li>
-                            <div>500 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('ditemshistdet500'); return false;" href="#"><em><span id="link-ditemshistdet500">expand</span></em></a>] </abbr></div>
+                            <div>500 - application/json [<a onclick="toggle('ditemshistdet500'); return false;" href="#"><em><span id="link-ditemshistdet500">expand</span></em></a>] </abbr></div>
                             <div style="display: none;" class="toggle" id="ditemshistdet500">
                                 <p>Returned if was any server error type.</p>
                                 <p/><h6>Example</h6>
@@ -1409,7 +1426,7 @@
                    
                     <ul>
                         <li>
-                            <div>application/json<abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('ditemssearchreq'); return false;" href="#"><em><span id="link-ditemssearchreq">expand</span></em></a>] </abbr></div>
+                            <div>application/json [<a onclick="toggle('ditemssearchreq'); return false;" href="#"><em><span id="link-ditemssearchreq">expand</span></em></a>] </abbr></div>
                             <div style="display: none;" class="toggle" id="ditemssearchreq">
                                 <p>
 								<div>Possible single clause value [<a onclick="toggle('dsearchdtoexp'); return false;" href="#"><em><span id="link-dsearchdtoexp">expand</span></em></a>] </div>
@@ -1681,7 +1698,7 @@
                             </div>
                         </li>
                         <li>
-                            <div>401 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('ditemssearchdet401'); return false;" href="#"><em><span id="link-ditemssearchdet401">expand</span></em></a>] </abbr></div>
+                            <div>401 - application/json [<a onclick="toggle('ditemssearchdet401'); return false;" href="#"><em><span id="link-ditemssearchdet401">expand</span></em></a>] </abbr></div>
                             <div style="display: none;" class="toggle" id="ditemssearchdet401">
                                 <p>Returned if the currently authenticated user does not have permission to view any item in the list.</p>
                                 <p/><h6>Example</h6>
@@ -1694,7 +1711,7 @@
                             </div>
                         </li>                      
                         <li>
-                            <div>500 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('ditemssearchdet500'); return false;" href="#"><em><span id="link-ditemssearchdet500">expand</span></em></a>] </abbr></div>
+                            <div>500 - application/json [<a onclick="toggle('ditemssearchdet500'); return false;" href="#"><em><span id="link-ditemssearchdet500">expand</span></em></a>] </abbr></div>
                             <div style="display: none;" class="toggle" id="ditemssearchdet500">
                                 <p>Returned if was any server error type.</p>
                                 <p/><h6>Example</h6>
@@ -1712,7 +1729,7 @@
         </div>      
             
         <div class="item">
-            <h3 id="ditemsids">rest/api/v1/items/ids</h3>
+            <h3 id="ditemsids">rest/api/v1/items/ids/search</h3>
             <h6>Methods</h6>
             <div class="methods">
                 <div class="method">
@@ -1721,7 +1738,7 @@
                    
                     <ul>
                         <li>
-                            <div>application/json<abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('ditemsidsreq'); return false;" href="#"><em><span id="link-ditemsidsreq">expand</span></em></a>] </abbr></div>
+                            <div>application/json [<a onclick="toggle('ditemsidsreq'); return false;" href="#"><em><span id="link-ditemsidsreq">expand</span></em></a>] </abbr></div>
                             <div style="display: none;" class="toggle" id="ditemsidsreq">
 								<p>
 								<div>Possible clause value [<a onclick="toggle('dsearchdtoidexp'); return false;" href="#"><em><span id="link-dsearchdtoidexp">expand</span></em></a>] </div>
@@ -1836,7 +1853,7 @@
                             </div>
                         </li>
                         <li>
-                            <div>401 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('ditemsidsdet401'); return false;" href="#"><em><span id="link-ditemsidsdet401">expand</span></em></a>] </abbr></div>
+                            <div>401 - application/json [<a onclick="toggle('ditemsidsdet401'); return false;" href="#"><em><span id="link-ditemsidsdet401">expand</span></em></a>] </abbr></div>
                             <div style="display: none;" class="toggle" id="ditemsidsdet401">
                                 <p>Returned if the currently authenticated user does not have permission to view any item in the list.</p>
                                 <p/><h6>Example</h6>
@@ -1849,7 +1866,7 @@
                             </div>
                         </li>                      
                         <li>
-                            <div>500 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('ditemsidsdet500'); return false;" href="#"><em><span id="link-ditemsidsdet500">expand</span></em></a>] </abbr></div>
+                            <div>500 - application/json [<a onclick="toggle('ditemsidsdet500'); return false;" href="#"><em><span id="link-ditemsidsdet500">expand</span></em></a>] </abbr></div>
                             <div style="display: none;" class="toggle" id="ditemsidsdet500">
                                 <p>Returned if was any server error type.</p>
                                 <p/><h6>Example</h6>
@@ -1967,7 +1984,7 @@
                             </div>
                         </li>
                         <li>
-                            <div>401 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('dcolsdet401'); return false;" href="#"><em><span id="link-dcolsdet401">expand</span></em></a>] </abbr></div>
+                            <div>401 - application/json [<a onclick="toggle('dcolsdet401'); return false;" href="#"><em><span id="link-dcolsdet401">expand</span></em></a>] </abbr></div>
                             <div style="display: none;" class="toggle" id="dcolsdet401">
                                 <p>Returned if the currently authenticated user does not have permission to view any collections in the list.</p>
                                 <p/><h6>Example</h6>
@@ -1980,7 +1997,7 @@
                             </div>
                         </li>                      
                         <li>
-                            <div>500 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('dcolsdet500'); return false;" href="#"><em><span id="link-dcolsdet500">expand</span></em></a>] </abbr></div>
+                            <div>500 - application/json [<a onclick="toggle('dcolsdet500'); return false;" href="#"><em><span id="link-dcolsdet500">expand</span></em></a>] </abbr></div>
                             <div style="display: none;" class="toggle" id="dcolsdet500">
                                 <p>Returned if was any server error type.</p>
                                 <p/><h6>Example</h6>
@@ -2059,7 +2076,7 @@
                             </div>
                         </li>
                         <li>
-                            <div>401 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('dcolsiddet401'); return false;" href="#"><em><span id="link-dcolsiddet401">expand</span></em></a>] </abbr></div>
+                            <div>401 - application/json [<a onclick="toggle('dcolsiddet401'); return false;" href="#"><em><span id="link-dcolsiddet401">expand</span></em></a>] </abbr></div>
                             <div style="display: none;" class="toggle" id="dcolsiddet401">
                                 <p>Returned if the currently authenticated user does not have permission to view it.</p>
                                 <p/><h6>Example</h6>
@@ -2072,7 +2089,7 @@
                             </div>
                         </li>    
                         <li>
-                            <div>404 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('dcolsiddet404'); return false;" href="#"><em><span id="link-dcolsiddet404">expand</span></em></a>] </abbr></div>
+                            <div>404 - application/json [<a onclick="toggle('dcolsiddet404'); return false;" href="#"><em><span id="link-dcolsiddet404">expand</span></em></a>] </abbr></div>
                             <div style="display: none;" class="toggle" id="dcolsiddet404">
                                 <p>Returned if item does not exist.</p>
                                 <p/><h6>Example</h6>
@@ -2085,7 +2102,7 @@
                             </div>
                         </li>                         
                         <li>
-                            <div>500 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('dcolsiddet500'); return false;" href="#"><em><span id="link-dcolsiddet500">expand</span></em></a>] </abbr></div>
+                            <div>500 - application/json [<a onclick="toggle('dcolsiddet500'); return false;" href="#"><em><span id="link-dcolsiddet500">expand</span></em></a>] </abbr></div>
                             <div style="display: none;" class="toggle" id="dcolsiddet500">
                                 <p>Returned if was any server error type.</p>
                                 <p/><h6>Example</h6>
@@ -2234,7 +2251,7 @@
                             </div>
                         </li>                         
                         <li>
-                            <div>500 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('ditemsmetadet500'); return false;" href="#"><em><span id="link-ditemsmetadet500">expand</span></em></a>] </abbr></div>
+                            <div>500 - application/json [<a onclick="toggle('ditemsmetadet500'); return false;" href="#"><em><span id="link-ditemsmetadet500">expand</span></em></a>] </abbr></div>
                             <div style="display: none;" class="toggle" id="ditemsmetadet500">
                                 <p>Returned if was any server error type.</p>
                                 <p/><h6>Example</h6>
@@ -2249,8 +2266,102 @@
                     </ul>
                 </div>
             </div>
-        </div>            
+        
+			<h3 id="dcolslic">rest/api/v1/collections/{colletionid}/licenceoptions</h3>
+			<h6>Methods</h6>
+			<div class="methods">
+                <div class="method">
+                    <h4 id="dcolslicget">GET&nbsp; </h4>
+                    <h6>rest/api/v1/collections/{colletionid}/licenceoptions</h6>
+                    <p>Returns a IRIS IR collection license options. Important field is <b>licenseTypeId</b></p>
+                    <h6>No request query parameters</h6>
+                   
+					<p><em>available response representations:</em></p>
+                    <ul>
+                        <li>
+                            <div>200 - application/json [<a onclick="toggle('dcolslicdet'); return false;" href="#"><em><span id="link-dcolslicdet">expand</span></em></a>] </div>
+                            <div style="display: none;" class="toggle" id="dcolslicdet">
+                                <p /><h6>Example</h6>
+                                <pre><code>   
+[
+  {
+    "licenseImage": "https://i.creativecommons.org/l/by-nc-sa/3.0/it/88x31.png",
+    "licenseId": "standard",
+    "licenseUri": "http://creativecommons.org/licenses/by-nc-sa/3.0/it/",
+    "licenseTypeId": 137,
+    "licenseTitle": "Attribuzione - Non commerciale - Condividi allo stesso modo 3.0 Italia"
+  },
+  {}
+]  
+                                </code></pre>
+                            </div>
+                        </li>                         
+                        <li>
+                            <div>500 - application/json [<a onclick="toggle('dcolslicdet500'); return false;" href="#"><em><span id="link-dcolslicdet500">expand</span></em></a>] </abbr></div>
+                            <div style="display: none;" class="toggle" id="dcolslicdet500">
+                                <p>Returned if was any server error type.</p>
+                                <p/><h6>Example</h6>
+                                <pre><code>
+{
+    "message": ".....",
+    "code": "...."
+}
+                                </code></pre>                                
+                            </div>
+                        </li>                        
+                    </ul>
+                </div>
+            </div>
+			
+			<h3 id="dcolsemba">rest/api/v1/collections/{colletionid}/embargoptions</h3>
+			<h6>Methods</h6>
+			<div class="methods">
+                <div class="method">
+                    <h4 id="dcolsembaget">GET&nbsp; </h4>
+                    <h6>rest/api/v1/collections/{colletionid}/embargoptions</h6>
+                    <p>Returns a IRIS IR collection embargo options. Important field is <b>optionName</b></p>
+                    <h6>No request query parameters</h6>
+                   
+					<p><em>available response representations:</em></p>
+                    <ul>
+                        <li>
+                            <div>200 - application/json [<a onclick="toggle('dcolsembadet'); return false;" href="#"><em><span id="link-dcolsembadet">expand</span></em></a>] </div>
+                            <div style="display: none;" class="toggle" id="dcolsembadet">
+                                <p /><h6>Example</h6>
+                                <pre><code>   
+[
+  {
+    "dropdownDate": null,
+    "requestedDate": false,
+    "groupName": "Anonymous",
+    "groupId": 0,
+    "optionName": "openAccess",
+    "dateLimit": null
+  },
+  {}
+]
+                                </code></pre>
+                            </div>
+                        </li>                         
+                        <li>
+                            <div>500 - application/json [<a onclick="toggle('dcolsembadet500'); return false;" href="#"><em><span id="link-dcolsembadet500">expand</span></em></a>] </abbr></div>
+                            <div style="display: none;" class="toggle" id="dcolsembadet500">
+                                <p>Returned if was any server error type.</p>
+                                <p/><h6>Example</h6>
+                                <pre><code>
+{
+    "message": ".....",
+    "code": "...."
+}
+                                </code></pre>                                
+                            </div>
+                        </li>                        
+                    </ul>
+                </div>
+            </div>			
 
+			
+		</div>
         <h2 id="communities">Communities</h2>
 
         <div class="community">
@@ -2351,7 +2462,7 @@
                             </div>
                         </li>
                         <li>
-                            <div>401 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('dcomsdet401'); return false;" href="#"><em><span id="link-dcomsdet401">expand</span></em></a>] </abbr></div>
+                            <div>401 - application/json [<a onclick="toggle('dcomsdet401'); return false;" href="#"><em><span id="link-dcomsdet401">expand</span></em></a>] </abbr></div>
                             <div style="display: none;" class="toggle" id="dcomsdet401">
                                 <p>Returned if the currently authenticated user does not have permission to view any collections in the list.</p>
                                 <p/><h6>Example</h6>
@@ -2364,7 +2475,7 @@
                             </div>
                         </li>                      
                         <li>
-                            <div>500 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('dcomsdet500'); return false;" href="#"><em><span id="link-dcomsdet500">expand</span></em></a>] </abbr></div>
+                            <div>500 - application/json [<a onclick="toggle('dcomsdet500'); return false;" href="#"><em><span id="link-dcomsdet500">expand</span></em></a>] </abbr></div>
                             <div style="display: none;" class="toggle" id="dcomsdet500">
                                 <p>Returned if was any server error type.</p>
                                 <p/><h6>Example</h6>
@@ -2443,7 +2554,7 @@
                             </div>
                         </li>
                         <li>
-                            <div>401 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('dcomsiddet401'); return false;" href="#"><em><span id="link-dcomsiddet401">expand</span></em></a>] </abbr></div>
+                            <div>401 - application/json [<a onclick="toggle('dcomsiddet401'); return false;" href="#"><em><span id="link-dcomsiddet401">expand</span></em></a>] </abbr></div>
                             <div style="display: none;" class="toggle" id="dcomsiddet401">
                                 <p>Returned if the currently authenticated user does not have permission to view it.</p>
                                 <p/><h6>Example</h6>
@@ -2456,7 +2567,7 @@
                             </div>
                         </li>    
                         <li>
-                            <div>404 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('dcomsiddet404'); return false;" href="#"><em><span id="link-dcomsiddet404">expand</span></em></a>] </abbr></div>
+                            <div>404 - application/json [<a onclick="toggle('dcomsiddet404'); return false;" href="#"><em><span id="link-dcomsiddet404">expand</span></em></a>] </abbr></div>
                             <div style="display: none;" class="toggle" id="dcomsiddet404">
                                 <p>Returned if item does not exist.</p>
                                 <p/><h6>Example</h6>
@@ -2469,7 +2580,7 @@
                             </div>
                         </li>                         
                         <li>
-                            <div>500 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('dcomsiddet500'); return false;" href="#"><em><span id="link-dcomsiddet500">expand</span></em></a>] </abbr></div>
+                            <div>500 - application/json [<a onclick="toggle('dcomsiddet500'); return false;" href="#"><em><span id="link-dcomsiddet500">expand</span></em></a>] </abbr></div>
                             <div style="display: none;" class="toggle" id="dcomsiddet500">
                                 <p>Returned if was any server error type.</p>
                                 <p/><h6>Example</h6>
@@ -2551,7 +2662,7 @@
                             </div>
                         </li>                         
                         <li>
-                            <div>500 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('dcomscolsdet500'); return false;" href="#"><em><span id="link-dcomscolsdet500">expand</span></em></a>] </abbr></div>
+                            <div>500 - application/json [<a onclick="toggle('dcomscolsdet500'); return false;" href="#"><em><span id="link-dcomscolsdet500">expand</span></em></a>] </abbr></div>
                             <div style="display: none;" class="toggle" id="dcomscolsdet500">
                                 <p>Returned if was any server error type.</p>
                                 <p/><h6>Example</h6>
@@ -2665,7 +2776,7 @@
                             </div>
                         </li>                         
                         <li>
-                            <div>500 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('dcomscomsdet500'); return false;" href="#"><em><span id="link-dcomscomsdet500">expand</span></em></a>] </abbr></div>
+                            <div>500 - application/json [<a onclick="toggle('dcomscomsdet500'); return false;" href="#"><em><span id="link-dcomscomsdet500">expand</span></em></a>] </abbr></div>
                             <div style="display: none;" class="toggle" id="dcomscomsdet500">
                                 <p>Returned if was any server error type.</p>
                                 <p/><h6>Example</h6>
@@ -2786,7 +2897,7 @@
                             </div>
                         </li>
                         <li>
-                            <div>401 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('dbitsdet401'); return false;" href="#"><em><span id="link-dbitsdet401">expand</span></em></a>] </abbr></div>
+                            <div>401 - application/json [<a onclick="toggle('dbitsdet401'); return false;" href="#"><em><span id="link-dbitsdet401">expand</span></em></a>] </abbr></div>
                             <div style="display: none;" class="toggle" id="dbitsdet401">
                                 <p>Returned if the currently authenticated user does not have permission to view any collections in the list.</p>
                                 <p/><h6>Example</h6>
@@ -2799,7 +2910,7 @@
                             </div>
                         </li>                      
                         <li>
-                            <div>500 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('dbitsdet500'); return false;" href="#"><em><span id="link-dbitsdet500">expand</span></em></a>] </abbr></div>
+                            <div>500 - application/json [<a onclick="toggle('dbitsdet500'); return false;" href="#"><em><span id="link-dbitsdet500">expand</span></em></a>] </abbr></div>
                             <div style="display: none;" class="toggle" id="dbitsdet500">
                                 <p>Returned if was any server error type.</p>
                                 <p/><h6>Example</h6>
@@ -2879,7 +2990,7 @@
                             </div>
                         </li>
                         <li>
-                            <div>401 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('dbitsiddet401'); return false;" href="#"><em><span id="link-dbitsiddet401">expand</span></em></a>] </abbr></div>
+                            <div>401 - application/json [<a onclick="toggle('dbitsiddet401'); return false;" href="#"><em><span id="link-dbitsiddet401">expand</span></em></a>] </abbr></div>
                             <div style="display: none;" class="toggle" id="dbitsiddet401">
                                 <p>Returned if the currently authenticated user does not have permission to view it.</p>
                                 <p/><h6>Example</h6>
@@ -2892,7 +3003,7 @@
                             </div>
                         </li>    
                         <li>
-                            <div>404 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('dbitsiddet404'); return false;" href="#"><em><span id="link-dbitsiddet404">expand</span></em></a>] </abbr></div>
+                            <div>404 - application/json [<a onclick="toggle('dbitsiddet404'); return false;" href="#"><em><span id="link-dbitsiddet404">expand</span></em></a>] </abbr></div>
                             <div style="display: none;" class="toggle" id="dbitsiddet404">
                                 <p>Returned if item does not exist.</p>
                                 <p/><h6>Example</h6>
@@ -2905,7 +3016,7 @@
                             </div>
                         </li>                         
                         <li>
-                            <div>500 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('dbitsiddet500'); return false;" href="#"><em><span id="link-dbitsiddet500">expand</span></em></a>] </abbr></div>
+                            <div>500 - application/json [<a onclick="toggle('dbitsiddet500'); return false;" href="#"><em><span id="link-dbitsiddet500">expand</span></em></a>] </abbr></div>
                             <div style="display: none;" class="toggle" id="dbitsiddet500">
                                 <p>Returned if was any server error type.</p>
                                 <p/><h6>Example</h6>
@@ -2937,7 +3048,7 @@
                             <div>200 - application/mimetype</div>
                         </li>   
                       <li>
-                            <div>401 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('dbitsattsdet401'); return false;" href="#"><em><span id="link-dbitsattsdet401">expand</span></em></a>] </abbr></div>
+                            <div>401 - application/json [<a onclick="toggle('dbitsattsdet401'); return false;" href="#"><em><span id="link-dbitsattsdet401">expand</span></em></a>] </abbr></div>
                             <div style="display: none;" class="toggle" id="dbitsattsdet401">
                                 <p>Returned if the currently authenticated user does not have permission to view it.</p>
                                 <p/><h6>Example</h6>
@@ -2950,7 +3061,7 @@
                             </div>
                         </li>    
                         <li>
-                            <div>404 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('dbitsattsdet404'); return false;" href="#"><em><span id="link-dbitsiddet404">expand</span></em></a>] </abbr></div>
+                            <div>404 - application/json [<a onclick="toggle('dbitsattsdet404'); return false;" href="#"><em><span id="link-dbitsiddet404">expand</span></em></a>] </abbr></div>
                             <div style="display: none;" class="toggle" id="dbitsattsdet404">
                                 <p>Returned if item does not exist.</p>
                                 <p/><h6>Example</h6>
@@ -2963,7 +3074,7 @@
                             </div>
                         </li>  						
                         <li>
-                            <div>500 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('dbitsattsdet500'); return false;" href="#"><em><span id="link-dbitsattsdet500">expand</span></em></a>] </abbr></div>
+                            <div>500 - application/json [<a onclick="toggle('dbitsattsdet500'); return false;" href="#"><em><span id="link-dbitsattsdet500">expand</span></em></a>] </abbr></div>
                             <div style="display: none;" class="toggle" id="dbitsattsdet500">
                                 <p>Returned if was any server error type.</p>
                                 <p/><h6>Example</h6>
@@ -3084,7 +3195,7 @@
                             </div>
                         </li>
                         <li>
-                            <div>401 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('dinpsiddet401'); return false;" href="#"><em><span id="link-dinpsiddet401">expand</span></em></a>] </abbr></div>
+                            <div>401 - application/json [<a onclick="toggle('dinpsiddet401'); return false;" href="#"><em><span id="link-dinpsiddet401">expand</span></em></a>] </abbr></div>
                             <div style="display: none;" class="toggle" id="dinpsiddet401">
                                 <p>Returned if the currently authenticated user does not have permission to view it.</p>
                                 <p/><h6>Example</h6>
@@ -3097,7 +3208,7 @@
                             </div>
                         </li>    
                         <li>
-                            <div>404 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('dinpsiddet404'); return false;" href="#"><em><span id="link-dinpsiddet404">expand</span></em></a>] </abbr></div>
+                            <div>404 - application/json [<a onclick="toggle('dinpsiddet404'); return false;" href="#"><em><span id="link-dinpsiddet404">expand</span></em></a>] </abbr></div>
                             <div style="display: none;" class="toggle" id="dinpsiddet404">
                                 <p>Returned if item does not exist.</p>
                                 <p/><h6>Example</h6>
@@ -3110,7 +3221,7 @@
                             </div>
                         </li>                         
                         <li>
-                            <div>500 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('dinpsiddet500'); return false;" href="#"><em><span id="link-dinpsiddet500">expand</span></em></a>] </abbr></div>
+                            <div>500 - application/json [<a onclick="toggle('dinpsiddet500'); return false;" href="#"><em><span id="link-dinpsiddet500">expand</span></em></a>] </abbr></div>
                             <div style="display: none;" class="toggle" id="dinpsiddet500">
                                 <p>Returned if was any server error type.</p>
                                 <p/><h6>Example</h6>
@@ -3172,7 +3283,7 @@
                             </div>
                         </li>
                         <li>
-                            <div>401 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('dinpsfrmdet401'); return false;" href="#"><em><span id="link-dinpsfrmdet401">expand</span></em></a>] </abbr></div>
+                            <div>401 - application/json [<a onclick="toggle('dinpsfrmdet401'); return false;" href="#"><em><span id="link-dinpsfrmdet401">expand</span></em></a>] </abbr></div>
                             <div style="display: none;" class="toggle" id="dinpsfrmdet401">
                                 <p>Returned if the currently authenticated user does not have permission to view it.</p>
                                 <p/><h6>Example</h6>
@@ -3185,7 +3296,7 @@
                             </div>
                         </li>    
                         <li>
-                            <div>404 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('dinpsfrmdet404'); return false;" href="#"><em><span id="link-dinpsfrmdet404">expand</span></em></a>] </abbr></div>
+                            <div>404 - application/json [<a onclick="toggle('dinpsfrmdet404'); return false;" href="#"><em><span id="link-dinpsfrmdet404">expand</span></em></a>] </abbr></div>
                             <div style="display: none;" class="toggle" id="dinpsfrmdet404">
                                 <p>Returned if item does not exist.</p>
                                 <p/><h6>Example</h6>
@@ -3198,7 +3309,7 @@
                             </div>
                         </li>                         
                         <li>
-                            <div>500 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('dinpsfrmdet500'); return false;" href="#"><em><span id="link-dinpsfrmdet500">expand</span></em></a>] </abbr></div>
+                            <div>500 - application/json [<a onclick="toggle('dinpsfrmdet500'); return false;" href="#"><em><span id="link-dinpsfrmdet500">expand</span></em></a>] </abbr></div>
                             <div style="display: none;" class="toggle" id="dinpsfrmdet500">
                                 <p>Returned if was any server error type.</p>
                                 <p/><h6>Example</h6>
@@ -3263,7 +3374,7 @@
                             </div>
                         </li>
                         <li>
-                            <div>401 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('dinpsvpdet401'); return false;" href="#"><em><span id="link-dinpsvpdet401">expand</span></em></a>] </abbr></div>
+                            <div>401 - application/json [<a onclick="toggle('dinpsvpdet401'); return false;" href="#"><em><span id="link-dinpsvpdet401">expand</span></em></a>] </abbr></div>
                             <div style="display: none;" class="toggle" id="dinpsvpdet401">
                                 <p>Returned if the currently authenticated user does not have permission to view it.</p>
                                 <p/><h6>Example</h6>
@@ -3276,7 +3387,7 @@
                             </div>
                         </li>    
                         <li>
-                            <div>404 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('dinpsvpdet404'); return false;" href="#"><em><span id="link-dinpsvpdet404">expand</span></em></a>] </abbr></div>
+                            <div>404 - application/json [<a onclick="toggle('dinpsvpdet404'); return false;" href="#"><em><span id="link-dinpsvpdet404">expand</span></em></a>] </abbr></div>
                             <div style="display: none;" class="toggle" id="dinpsvpdet404">
                                 <p>Returned if item does not exist.</p>
                                 <p/><h6>Example</h6>
@@ -3289,7 +3400,7 @@
                             </div>
                         </li>                         
                         <li>
-                            <div>500 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('dinpsvpdet500'); return false;" href="#"><em><span id="link-dinpsvpdet500">expand</span></em></a>] </abbr></div>
+                            <div>500 - application/json [<a onclick="toggle('dinpsvpdet500'); return false;" href="#"><em><span id="link-dinpsvpdet500">expand</span></em></a>] </abbr></div>
                             <div style="display: none;" class="toggle" id="dinpsvpdet500">
                                 <p>Returned if was any server error type.</p>
                                 <p/><h6>Example</h6>
@@ -3353,7 +3464,7 @@
                             </div>
                         </li>
                         <li>
-                            <div>401 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('danceiddet401'); return false;" href="#"><em><span id="link-danceiddet401">expand</span></em></a>] </abbr></div>
+                            <div>401 - application/json [<a onclick="toggle('danceiddet401'); return false;" href="#"><em><span id="link-danceiddet401">expand</span></em></a>] </abbr></div>
                             <div style="display: none;" class="toggle" id="danceiddet401">
                                 <p>Returned if the currently authenticated user does not have permission to view it.</p>
                                 <p/><h6>Example</h6>
@@ -3366,7 +3477,7 @@
                             </div>
                         </li>    
                         <li>
-                            <div>404 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('danceiddet404'); return false;" href="#"><em><span id="link-danceiddet404">expand</span></em></a>] </abbr></div>
+                            <div>404 - application/json [<a onclick="toggle('danceiddet404'); return false;" href="#"><em><span id="link-danceiddet404">expand</span></em></a>] </abbr></div>
                             <div style="display: none;" class="toggle" id="danceiddet404">
                                 <p>Returned if item does not exist.</p>
                                 <p/><h6>Example</h6>
@@ -3379,7 +3490,7 @@
                             </div>
                         </li>                         
                         <li>
-                            <div>500 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('danceiddet500'); return false;" href="#"><em><span id="link-danceiddet500">expand</span></em></a>] </abbr></div>
+                            <div>500 - application/json [<a onclick="toggle('danceiddet500'); return false;" href="#"><em><span id="link-danceiddet500">expand</span></em></a>] </abbr></div>
                             <div style="display: none;" class="toggle" id="danceiddet500">
                                 <p>Returned if was any server error type.</p>
                                 <p/><h6>Example</h6>
@@ -3406,7 +3517,7 @@
                    
                     <ul>
                         <li>
-                            <div>application/json<abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('dancesearchreq'); return false;" href="#"><em><span id="link-dancesearchreq">expand</span></em></a>] </abbr></div>
+                            <div>application/json [<a onclick="toggle('dancesearchreq'); return false;" href="#"><em><span id="link-dancesearchreq">expand</span></em></a>] </abbr></div>
                             <div style="display: none;" class="toggle" id="dancesearchreq">
                                 <p></p><h6>Example</h6>
                                 <pre><code>
@@ -3462,7 +3573,7 @@
                             </div>
                         </li>
                         <li>
-                            <div>401 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('dancesearchdet401'); return false;" href="#"><em><span id="link-dancesearchdet401">expand</span></em></a>] </abbr></div>
+                            <div>401 - application/json [<a onclick="toggle('dancesearchdet401'); return false;" href="#"><em><span id="link-dancesearchdet401">expand</span></em></a>] </abbr></div>
                             <div style="display: none;" class="toggle" id="dancesearchdet401">
                                 <p>Returned if the currently authenticated user does not have permission to view any item in the list.</p>
                                 <p/><h6>Example</h6>
@@ -3475,7 +3586,7 @@
                             </div>
                         </li>                      
                         <li>
-                            <div>500 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('dancesearchdet500'); return false;" href="#"><em><span id="link-dancesearchdet500">expand</span></em></a>] </abbr></div>
+                            <div>500 - application/json [<a onclick="toggle('dancesearchdet500'); return false;" href="#"><em><span id="link-dancesearchdet500">expand</span></em></a>] </abbr></div>
                             <div style="display: none;" class="toggle" id="dancesearchdet500">
                                 <p>Returned if was any server error type.</p>
                                 <p/><h6>Example</h6>
@@ -3490,7 +3601,118 @@
                     </ul>
                 </div>
             </div>
-        </div>     
+        </div>  
+
+        <h2 id="authority">Authority</h2>
+		
+	<div class="authority">
+            <h3 id="dauthid">rest/api/v1/authorities/{metadata_key}/</h3>
+            <h6>Methods</h6>
+            <div class="methods">
+                <div class="method">
+                    <h4 id="dauthidget">GET&nbsp; </h4>
+                    <h6>rest/api/v1/ance/{metadata_key}/</h6>
+                    <p>Returns a IRIS IR decode authority values</p>
+                    <h6>request query parameters</h6>
+                    <table>
+                      <tbody>
+                        <tr>
+                          <th>parameter</th>
+                          <th>value</th>
+                          <th>description</th>
+                        </tr>
+                        <tr>
+                          <td>
+                          <p><strong>value</strong></p>
+                          </td>
+                          <td>
+                          <p><em><a href="http://www.w3.org/TR/xmlschema-2/#string">string</a></em></p>
+                          </td>
+                          <td>
+                          <p>a String for value search</p>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                          <p><strong>strategy</strong></p>
+                          </td>
+                          <td>
+                          <p><em><a href="http://www.w3.org/TR/xmlschema-2/#enum">enum</a></em></p>
+                          </td>
+                          <td>
+                          <p>BEST|MATCH</p>
+                          </td>
+                        </tr>						
+					  </tbody>
+					</table>
+					
+					<br>
+
+                    <p><em>available response representations:</em></p>
+                    <ul>
+                        <li>
+                            <div>200 - application/json [<a onclick="toggle('dauthiddet'); return false;" href="#"><em><span id="link-dauthiddet">expand</span></em></a>] </div>
+                            <div style="display: none;" class="toggle" id="dauthiddet">
+                                <p /><h6>Example</h6>
+                                <pre><code>   
+[
+  {
+    "value": "Settore MAT/03 - Geometria",
+    "authority": "academicField200022180",
+    "label": "Settore MAT/03 - Geometria"
+  }
+]
+                                </code></pre>
+                                <p />
+                                <p>Returned a list of possible value match for {metadata_key} authority name</p>
+                                <div class="representation" />
+                            </div>
+                        </li>
+                        <li>
+                            <div>401 - application/json [<a onclick="toggle('dauthiddet401'); return false;" href="#"><em><span id="link-dauthiddet401">expand</span></em></a>] </abbr></div>
+                            <div style="display: none;" class="toggle" id="dauthiddet401">
+                                <p>Returned if the currently authenticated user does not have permission to view it.</p>
+                                <p/><h6>Example</h6>
+                                <pre><code>
+{
+    "message": "Unauthorized attempt to access ....",
+    "code": "UNAUTHORIZED"
+}
+                                </code></pre>
+                            </div>
+                        </li>    
+                        <li>
+                            <div>404 - application/json [<a onclick="toggle('dauthiddet404'); return false;" href="#"><em><span id="link-dauthiddet404">expand</span></em></a>] </abbr></div>
+                            <div style="display: none;" class="toggle" id="dauthiddet404">
+                                <p>Returned if authority is not valid.</p>
+                                <p/><h6>Example</h6>
+                                <pre><code>
+{
+    "message": "...",
+    "code": "..."
+}
+                                </code></pre>
+                            </div>
+                        </li>                         
+                        <li>
+                            <div>500 - application/json [<a onclick="toggle('dauthiddet500'); return false;" href="#"><em><span id="link-dauthiddet500">expand</span></em></a>] </abbr></div>
+                            <div style="display: none;" class="toggle" id="dauthiddet500">
+                                <p>Returned if was any server error type.</p>
+                                <p/><h6>Example</h6>
+                                <pre><code>
+{
+    "message": ".....",
+    "code": "...."
+}
+                                </code></pre>                                
+                            </div>
+                        </li>                        
+                    </ul>
+                </div>
+            </div>
+        </div>            
+
+		
 		
 		
     <h2 id="persons">Persons</h2>
@@ -3612,7 +3834,7 @@
                             </div>
                         </li>
 						<li>
-                            <div>404 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('ditemsiddet404'); return false;" href="#"><em><span id="link-ditemsiddet404">expand</span></em></a>] </abbr></div>
+                            <div>404 - application/json [<a onclick="toggle('ditemsiddet404'); return false;" href="#"><em><span id="link-ditemsiddet404">expand</span></em></a>] </abbr></div>
                             <div style="display: none;" class="toggle" id="ditemsiddet404">
                                 <p>Returned if person does not exist.</p>
                             </div>
@@ -3696,7 +3918,7 @@
                             </div>
                         </li>
 						<li>
-                            <div>404 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('ditemsiddet404'); return false;" href="#"><em><span id="link-ditemsiddet404">expand</span></em></a>] </abbr></div>
+                            <div>404 - application/json [<a onclick="toggle('ditemsiddet404'); return false;" href="#"><em><span id="link-ditemsiddet404">expand</span></em></a>] </abbr></div>
                             <div style="display: none;" class="toggle" id="ditemsiddet404">
                                 <p>Returned if person does not exist or does not have a careers.</p>
                             </div>
@@ -3779,7 +4001,7 @@
                             </div>
                         </li>
 						<li>
-                            <div>404 - application/json <abbr title="{http://research.sun.com/wadl/2006/10} "> [<a onclick="toggle('ditemsiddet404'); return false;" href="#"><em><span id="link-ditemsiddet404">expand</span></em></a>] </abbr></div>
+                            <div>404 - application/json [<a onclick="toggle('ditemsiddet404'); return false;" href="#"><em><span id="link-ditemsiddet404">expand</span></em></a>] </abbr></div>
                             <div style="display: none;" class="toggle" id="ditemsiddet404">
                                 <p>Returned if person does not have a current career.</p>
                             </div>

@@ -24,8 +24,9 @@
  */
 package it.cineca.iris.restclient.main;
 
-import it.cineca.iris.ir.rest.command.model.OptionBitStreamDTO;
+import it.cineca.iris.ir.rest.command.model.BitstreamOptionsDTO;
 import it.cineca.iris.ir.rest.model.ItemRestWriteDTO;
+import it.cineca.iris.ir.rest.model.utils.HeaderScopeEnum;
 import it.cineca.iris.ir.rest.search.model.AnceSearchRestDTO;
 import it.cineca.iris.ir.rest.search.model.SearchIdsRestDTO;
 import it.cineca.iris.ir.rest.search.model.SearchRestDTO;
@@ -33,6 +34,7 @@ import it.cineca.iris.restclient.secure.DummyX509TrustManager;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 
@@ -56,6 +58,7 @@ import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 import org.glassfish.jersey.media.multipart.MultiPart;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
+import org.glassfish.jersey.media.multipart.file.StreamDataBodyPart;
 /**
  * 
  * @author pmeriggi
@@ -78,8 +81,20 @@ public class RESTIRClient {
     //2 min
     public static final Integer CONNECT_TIMEOUT = 120000;
     public static final Integer READ_TIMEOUT = 120000;
+    
+    public String getBaseURI() {
+		return baseURI;
+	}
 
-    public RESTIRClient(String baseURI, String pathIR, String pathRM, String username, String password) {
+	public String getPathIR() {
+		return pathIR;
+	}
+
+	public String getPathRM() {
+		return pathRM;
+	}
+
+	public RESTIRClient(String baseURI, String pathIR, String pathRM, String username, String password) {
     	this.username = username;
     	this.password = password;
     	
@@ -314,7 +329,7 @@ public class RESTIRClient {
     public Response item(String itemId) {
         this.webTarget = this.client.target(baseURI+pathIR).path("items/" + itemId);
 
-        Response response = this.webTarget.request(MediaType.APPLICATION_JSON).header("scope", "ROLE_ADMIN").get();
+        Response response = this.webTarget.request(MediaType.APPLICATION_JSON).header(HeaderScopeEnum.getHeaderTag(), HeaderScopeEnum.ROLE_ADMIN.getHeaderValue()).get();
         if (response.getStatus() != 200) {
             throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
         }
@@ -330,7 +345,7 @@ public class RESTIRClient {
     public Response itemAll(String itemId) {
         this.webTarget = this.client.target(baseURI+pathIR).path("items/" + itemId).queryParam("expand", "all");
 
-        Response response = this.webTarget.request(MediaType.APPLICATION_JSON).header("scope", "ROLE_ADMIN").get();
+        Response response = this.webTarget.request(MediaType.APPLICATION_JSON).header(HeaderScopeEnum.getHeaderTag(), HeaderScopeEnum.ROLE_ADMIN.getHeaderValue()).get();
         if (response.getStatus() != 200) {
             throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
         }
@@ -347,7 +362,7 @@ public class RESTIRClient {
     public Response itemsAll(Integer limit, Integer offset) {
         this.webTarget = this.client.target(baseURI+pathIR).path("items/").queryParam("expand", "all").queryParam("limit", limit).queryParam("offset", offset);
 
-        Response response = this.webTarget.request(MediaType.APPLICATION_JSON).header("scope", "ROLE_ADMIN").get();
+        Response response = this.webTarget.request(MediaType.APPLICATION_JSON).header(HeaderScopeEnum.getHeaderTag(), HeaderScopeEnum.ROLE_ADMIN.getHeaderValue()).get();
         if (response.getStatus() != 200) {
             throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
         }
@@ -364,7 +379,7 @@ public class RESTIRClient {
     public Response items(Integer limit, Integer offset) {
         this.webTarget = this.client.target(baseURI+pathIR).path("items/").queryParam("limit", limit).queryParam("offset", offset);
 
-        Response response = this.webTarget.request(MediaType.APPLICATION_JSON).header("scope", "ROLE_ADMIN").get();
+        Response response = this.webTarget.request(MediaType.APPLICATION_JSON).header(HeaderScopeEnum.getHeaderTag(), HeaderScopeEnum.ROLE_ADMIN.getHeaderValue()).get();
         if (response.getStatus() != 200) {
             throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
         }
@@ -380,7 +395,7 @@ public class RESTIRClient {
     public Response itemWithMetadata(String itemId) {
         this.webTarget = this.client.target(baseURI+pathIR).path("items/" + itemId).queryParam("expand", "metadata");
 
-        Response response = this.webTarget.request(MediaType.APPLICATION_JSON).header("scope", "ROLE_ADMIN").get();
+        Response response = this.webTarget.request(MediaType.APPLICATION_JSON).header(HeaderScopeEnum.getHeaderTag(), HeaderScopeEnum.ROLE_ADMIN.getHeaderValue()).get();
         if (response.getStatus() != 200) {
             throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
         }
@@ -416,7 +431,7 @@ public class RESTIRClient {
         ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
         String jsonSearchDTO = ow.writeValueAsString(searchDTO);
 
-        Response response = this.webTarget.request(MediaType.APPLICATION_JSON).header("scope", "ROLE_ADMIN").post(Entity.entity(jsonSearchDTO, MediaType.APPLICATION_JSON));
+        Response response = this.webTarget.request(MediaType.APPLICATION_JSON).header(HeaderScopeEnum.getHeaderTag(), HeaderScopeEnum.ROLE_ADMIN.getHeaderValue()).post(Entity.entity(jsonSearchDTO, MediaType.APPLICATION_JSON));
         if (response.getStatus() != 200) {
             throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
         }
@@ -458,7 +473,7 @@ public class RESTIRClient {
         ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
         String jsonSearchDTO = ow.writeValueAsString(searchDTO);
 
-        Response response = this.webTarget.request(MediaType.APPLICATION_JSON).header("scope", "ROLE_ADMIN").post(Entity.entity(jsonSearchDTO, MediaType.APPLICATION_JSON));
+        Response response = this.webTarget.request(MediaType.APPLICATION_JSON).header(HeaderScopeEnum.getHeaderTag(), HeaderScopeEnum.ROLE_ADMIN.getHeaderValue()).post(Entity.entity(jsonSearchDTO, MediaType.APPLICATION_JSON));
         if (response.getStatus() != 200) {
             throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
         }
@@ -478,7 +493,7 @@ public class RESTIRClient {
         ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
         String jsonSearchDTO = ow.writeValueAsString(searchDTO);
 
-        Response response = this.webTarget.request(MediaType.APPLICATION_JSON).header("scope", "ROLE_ADMIN").post(Entity.entity(jsonSearchDTO, MediaType.APPLICATION_JSON));
+        Response response = this.webTarget.request(MediaType.APPLICATION_JSON).header(HeaderScopeEnum.getHeaderTag(), HeaderScopeEnum.ROLE_ADMIN.getHeaderValue()).post(Entity.entity(jsonSearchDTO, MediaType.APPLICATION_JSON));
         if (response.getStatus() != 200) {
             throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
         }
@@ -495,7 +510,7 @@ public class RESTIRClient {
     public Response journal(String anceId) throws IOException {
         this.webTarget = this.client.target(baseURI+pathIR).path("ance/" + anceId);
 
-        Response response = this.webTarget.request(MediaType.APPLICATION_JSON).header("scope", "ROLE_ADMIN").get();
+        Response response = this.webTarget.request(MediaType.APPLICATION_JSON).header(HeaderScopeEnum.getHeaderTag(), HeaderScopeEnum.ROLE_ADMIN.getHeaderValue()).get();
         if (response.getStatus() != 200) {
             throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
         }
@@ -512,7 +527,7 @@ public class RESTIRClient {
     public Response personById(String personId) throws IOException {
         this.webTarget = this.client.target(baseURI+pathRM).path("personsbyid/" + personId);
 
-        Response response = this.webTarget.request(MediaType.APPLICATION_JSON).header("scope", "ROLE_ADMIN").get();
+        Response response = this.webTarget.request(MediaType.APPLICATION_JSON).header(HeaderScopeEnum.getHeaderTag(), HeaderScopeEnum.ROLE_ADMIN.getHeaderValue()).get();
         if (response.getStatus() != 200) {
             throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
         }
@@ -529,7 +544,7 @@ public class RESTIRClient {
     public Response personByCF(String personId) throws IOException {
         this.webTarget = this.client.target(baseURI+pathRM).path("personsbycf/" + personId);
 
-        Response response = this.webTarget.request(MediaType.APPLICATION_JSON).header("scope", "ROLE_ADMIN").get();
+        Response response = this.webTarget.request(MediaType.APPLICATION_JSON).header(HeaderScopeEnum.getHeaderTag(), HeaderScopeEnum.ROLE_ADMIN.getHeaderValue()).get();
         if (response.getStatus() != 200) {
             throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
         }
@@ -546,7 +561,7 @@ public class RESTIRClient {
     public Response personByCris(String crisId) throws IOException {
         this.webTarget = this.client.target(baseURI+pathRM).path("personsbyrpid/" + crisId);
 
-        Response response = this.webTarget.request(MediaType.APPLICATION_JSON).header("scope", "ROLE_ADMIN").get();
+        Response response = this.webTarget.request(MediaType.APPLICATION_JSON).header(HeaderScopeEnum.getHeaderTag(), HeaderScopeEnum.ROLE_ADMIN.getHeaderValue()).get();
         if (response.getStatus() != 200) {
             throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
         }
@@ -563,7 +578,7 @@ public class RESTIRClient {
     public Response positionsById(String personId) throws IOException {
         this.webTarget = this.client.target(baseURI+pathRM).path("personsbyid/" + personId + "/positions");
 
-        Response response = this.webTarget.request(MediaType.APPLICATION_JSON).header("scope", "ROLE_ADMIN").get();
+        Response response = this.webTarget.request(MediaType.APPLICATION_JSON).header(HeaderScopeEnum.getHeaderTag(), HeaderScopeEnum.ROLE_ADMIN.getHeaderValue()).get();
         if (response.getStatus() != 200) {
             throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
         }
@@ -580,7 +595,7 @@ public class RESTIRClient {
     public Response positionsByCris(String crisId) throws IOException {
         this.webTarget = this.client.target(baseURI+pathRM).path("personsbyrpid/" + crisId + "/positions");
 
-        Response response = this.webTarget.request(MediaType.APPLICATION_JSON).header("scope", "ROLE_ADMIN").get();
+        Response response = this.webTarget.request(MediaType.APPLICATION_JSON).header(HeaderScopeEnum.getHeaderTag(), HeaderScopeEnum.ROLE_ADMIN.getHeaderValue()).get();
         if (response.getStatus() != 200) {
             throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
         }
@@ -597,7 +612,7 @@ public class RESTIRClient {
     public Response positioncurrentById(String personId) throws IOException {
         this.webTarget = this.client.target(baseURI+pathRM).path("personsbyid/" + personId + "/positioncurrent");
 
-        Response response = this.webTarget.request(MediaType.APPLICATION_JSON).header("scope", "ROLE_ADMIN").get();
+        Response response = this.webTarget.request(MediaType.APPLICATION_JSON).header(HeaderScopeEnum.getHeaderTag(), HeaderScopeEnum.ROLE_ADMIN.getHeaderValue()).get();
         if (response.getStatus() != 200) {
             throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
         }
@@ -614,7 +629,7 @@ public class RESTIRClient {
     public Response positioncurrentByCris(String crisId) throws IOException {
         this.webTarget = this.client.target(baseURI+pathRM).path("personsbyrpid/" + crisId + "/positioncurrent");
 
-        Response response = this.webTarget.request(MediaType.APPLICATION_JSON).header("scope", "ROLE_ADMIN").get();
+        Response response = this.webTarget.request(MediaType.APPLICATION_JSON).header(HeaderScopeEnum.getHeaderTag(), HeaderScopeEnum.ROLE_ADMIN.getHeaderValue()).get();
         if (response.getStatus() != 200) {
             throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
         }
@@ -631,7 +646,7 @@ public class RESTIRClient {
     public Response person(String id) throws IOException {
         this.webTarget = this.client.target(baseURI+pathRM).path("persons/" + id);
 
-        Response response = this.webTarget.request(MediaType.APPLICATION_JSON).header("scope", "ROLE_ADMIN").get();
+        Response response = this.webTarget.request(MediaType.APPLICATION_JSON).header(HeaderScopeEnum.getHeaderTag(), HeaderScopeEnum.ROLE_ADMIN.getHeaderValue()).get();
         if (response.getStatus() != 200) {
             throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
         }
@@ -648,7 +663,7 @@ public class RESTIRClient {
     public Response positions(String id) throws IOException {
         this.webTarget = this.client.target(baseURI+pathRM).path("persons/" + id + "/positions");
 
-        Response response = this.webTarget.request(MediaType.APPLICATION_JSON).header("scope", "ROLE_ADMIN").get();
+        Response response = this.webTarget.request(MediaType.APPLICATION_JSON).header(HeaderScopeEnum.getHeaderTag(), HeaderScopeEnum.ROLE_ADMIN.getHeaderValue()).get();
         if (response.getStatus() != 200) {
             throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
         }
@@ -665,7 +680,7 @@ public class RESTIRClient {
     public Response positioncurrent(String id) throws IOException {
         this.webTarget = this.client.target(baseURI+pathRM).path("persons/" + id + "/positioncurrent");
 
-        Response response = this.webTarget.request(MediaType.APPLICATION_JSON).header("scope", "ROLE_ADMIN").get();
+        Response response = this.webTarget.request(MediaType.APPLICATION_JSON).header(HeaderScopeEnum.getHeaderTag(), HeaderScopeEnum.ROLE_ADMIN.getHeaderValue()).get();
         if (response.getStatus() != 200) {
             throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
         }
@@ -681,7 +696,7 @@ public class RESTIRClient {
      * @return
      * @throws IOException
      */
-    public Response uploadStream(Integer itemId, OptionBitStreamDTO optionBitStreamDTO, String fileName) throws IOException {	    
+    public Response uploadStream(Integer itemId, BitstreamOptionsDTO bitstreamOptionsDTO, String fileName) throws IOException {	    
 		WebTarget webTarget = client.target(baseURI+pathIR).path("streams/items/"+itemId);
 	    
 		//Compose multipart request (multipart/form-data)
@@ -696,16 +711,110 @@ public class RESTIRClient {
 		    fileDataBodyPart.setContentDisposition(FormDataContentDisposition.name("file").fileName(fileName).build());
 		   	
 	        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-	        String jsonOptionBitStreamDTO = ow.writeValueAsString(optionBitStreamDTO);
+	        String jsonBitstreamOptionsDTO = ow.writeValueAsString(bitstreamOptionsDTO);
 		    
 		    multipartEntity = new FormDataMultiPart()
-		    .field("optionBitStreamDTO", jsonOptionBitStreamDTO, MediaType.APPLICATION_JSON_TYPE)
+		    .field("bitstreamOptionsDTO", jsonBitstreamOptionsDTO, MediaType.APPLICATION_JSON_TYPE)
 	        .bodyPart(fileDataBodyPart);
 		    	    
-		    Response response = webTarget.request(MediaType.APPLICATION_JSON).header("scope", "ROLE_ADMIN")
+		    Response response = webTarget.request(MediaType.APPLICATION_JSON).header(HeaderScopeEnum.getHeaderTag(), HeaderScopeEnum.ROLE_ADMIN.getHeaderValue())
 		            .post(Entity.entity(multipartEntity, MediaType.MULTIPART_FORM_DATA_TYPE));
 	        
-		    if (response.getStatus() != 200) {
+		    if (response.getStatus() != 201) {
+	            throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
+	        }
+        	
+		    response.getHeaderString("location");
+		    
+		    return response;
+		} finally {
+			if (multipartEntity != null) {
+				multipartEntity.close();
+			}
+		}
+	}
+    
+    /**
+     * Upload attachment with licence metadata for item 
+     * 
+     * @param itemId
+     * @param bitstreamOptionsDTO
+     * @param inputstream
+     * @param fileName
+     * @return
+     * @throws IOException
+     */
+    public Response uploadStream(Integer itemId, BitstreamOptionsDTO bitstreamOptionsDTO, InputStream inputstream, String attachFileName) throws IOException {	    
+		WebTarget webTarget = client.target(baseURI+pathIR).path("streams/items/"+itemId);
+	    
+		//Compose multipart request (multipart/form-data)
+		//See http://stackoverflow.com/questions/27609569/file-upload-along-with-other-object-in-jersey-restful-web-service/27614403#27614403
+		//See https://jersey.java.net/documentation/latest/media.html#multipart
+	    
+		MultiPart multipartEntity = null;
+		try {
+			StreamDataBodyPart fileDataBodyPart = new StreamDataBodyPart("file", inputstream);
+			
+		    fileDataBodyPart.setContentDisposition(FormDataContentDisposition.name("file").fileName(attachFileName).build());
+		   	
+	        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+	        String jsonBitstreamOptionsDTO = ow.writeValueAsString(bitstreamOptionsDTO);
+		    
+		    multipartEntity = new FormDataMultiPart()
+		    .field("bitstreamOptionsDTO", jsonBitstreamOptionsDTO, MediaType.APPLICATION_JSON_TYPE)
+	        .bodyPart(fileDataBodyPart);
+		    	    
+		    Response response = webTarget.request(MediaType.APPLICATION_JSON).header(HeaderScopeEnum.getHeaderTag(), HeaderScopeEnum.ROLE_ADMIN.getHeaderValue())
+		            .post(Entity.entity(multipartEntity, MediaType.MULTIPART_FORM_DATA_TYPE));
+	        
+		    if (response.getStatus() != 201) {
+	            throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
+	        }
+        	
+		    response.getHeaderString("location");
+		    
+		    return response;
+		} finally {
+			if (multipartEntity != null) {
+				multipartEntity.close();
+			}
+		}
+	}
+
+    
+    /**
+     * Upload attachment with licence metadata for item
+     * 
+     * @param itemId
+     * @param optionBitStreamDTO
+     * @param fileName
+     * @return
+     * @throws IOException
+     */
+    public Response uploadStream(String handle, BitstreamOptionsDTO bitstreamOptionsDTO, InputStream inputstream, String attachFileName) throws IOException {	    
+		WebTarget webTarget = client.target(baseURI+pathIR).path("streams/items/"+handle);
+	    
+		//Compose multipart request (multipart/form-data)
+		//See http://stackoverflow.com/questions/27609569/file-upload-along-with-other-object-in-jersey-restful-web-service/27614403#27614403
+		//See https://jersey.java.net/documentation/latest/media.html#multipart
+	    
+		MultiPart multipartEntity = null;
+		try {
+			StreamDataBodyPart fileDataBodyPart = new StreamDataBodyPart("file", inputstream);
+			
+		    fileDataBodyPart.setContentDisposition(FormDataContentDisposition.name("file").fileName(attachFileName).build());
+		   	
+	        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+	        String jsonBitstreamOptionsDTO = ow.writeValueAsString(bitstreamOptionsDTO);
+		    
+		    multipartEntity = new FormDataMultiPart()
+		    .field("bitstreamOptionsDTO", jsonBitstreamOptionsDTO, MediaType.APPLICATION_JSON_TYPE)
+	        .bodyPart(fileDataBodyPart);
+		    	    
+		    Response response = webTarget.request(MediaType.APPLICATION_JSON).header(HeaderScopeEnum.getHeaderTag(), HeaderScopeEnum.ROLE_ADMIN.getHeaderValue())
+		            .post(Entity.entity(multipartEntity, MediaType.MULTIPART_FORM_DATA_TYPE));
+	        
+		    if (response.getStatus() != 201) {
 	            throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
 	        }
         	

@@ -24,7 +24,7 @@
  */
 package it.cineca.iris.restclient.main;
 
-import it.cineca.iris.ir.rest.command.model.OptionBitStreamDTO;
+import it.cineca.iris.ir.rest.command.model.BitstreamOptionsDTO;
 import it.cineca.iris.ir.rest.model.CareerItemsDTO;
 import it.cineca.iris.ir.rest.model.CollectionRestDTO;
 import it.cineca.iris.ir.rest.model.CollectionRestPageDTO;
@@ -42,6 +42,11 @@ import it.cineca.iris.ir.rest.model.RmPersonRestDTO;
 import it.cineca.iris.ir.rest.model.utils.AbstractAuthorityResolver;
 import it.cineca.iris.ir.rest.model.utils.AbstractInputformType;
 import it.cineca.iris.ir.rest.model.utils.ChoiceAuthorityManager;
+import it.cineca.iris.ir.rest.model.utils.HeaderActAsBatchUserEnum;
+import it.cineca.iris.ir.rest.model.utils.HeaderDisseminationOptionsEnum;
+import it.cineca.iris.ir.rest.model.utils.HeaderScopeEnum;
+import it.cineca.iris.ir.rest.model.utils.HeaderTagNameEnum;
+import it.cineca.iris.ir.rest.model.utils.HeaderTargetStateEnum;
 import it.cineca.iris.ir.rest.model.utils.IInputformType;
 import it.cineca.iris.ir.rest.search.model.AnceSearchRestDTO;
 import it.cineca.iris.ir.rest.search.model.RestSearchCriteria;
@@ -50,7 +55,9 @@ import it.cineca.iris.ir.rest.search.model.SearchIdsRestDTO;
 import it.cineca.iris.ir.rest.search.model.SearchRestDTO;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.SocketTimeoutException;
@@ -86,6 +93,7 @@ public class Command {
 	private String authorAuthority;
 	private String authorCF;
 	private String username;
+	private String locationItem;
 
 	public static void main(String[] argv) {
 		Command command = new Command();
@@ -154,7 +162,7 @@ public class Command {
 		this.cl = new RESTIRClient(restBaseURI, pathIR, pathRM, username,
 				password);
 		
-		this.cl.buildSecureInstance();
+		this.cl.buildUnsecureInstance();
 		
 		this.cl.setConnectTimeOut(RESTIRClient.CONNECT_TIMEOUT);
 		this.cl.setReadTimeOut(RESTIRClient.READ_TIMEOUT);
@@ -225,9 +233,9 @@ public class Command {
 		
 		this.findPersonByCris(this.authorAuthority);
 		
-		this.createNewItem("11368","2842417");
+		this.createNewItem("11368","2836211");
 		
-		this.testUpload(null);
+		this.testUpload(this.locationItem, "prova.txt");
 
 	}
 
@@ -982,7 +990,7 @@ public class Command {
 	 * @throws JsonMappingException
 	 * @throws IOException
 	 */
-	private void testUpload(Integer itemId) throws JsonParseException,
+	private void testUpload(String location, String fileName) throws JsonParseException,
 			JsonMappingException, IOException {
 		System.out
 				.println("\n-----------------------------------------------------------");
@@ -990,7 +998,28 @@ public class Command {
 		System.out
 				.println("-----------------------------------------------------------");
 
-		if (itemId == null && !itemsDTO.isEmpty()) {
+		String type = "items/";
+		
+		Integer itemId = null;
+		String handle = null;
+		
+		createTestFile(fileName);
+		
+		InputStream targetStream = new FileInputStream(fileName);
+		
+		BitstreamOptionsDTO bitstreamOptionsDTO = new BitstreamOptionsDTO();
+		bitstreamOptionsDTO.setDescription("Test file");
+		bitstreamOptionsDTO.setPolicyKey("openAccess");
+		
+		if (location != null) {
+			location = location.substring(location.indexOf(type)+type.length());
+			
+			if (location.indexOf("/")<0) {
+				itemId = Integer.getInteger(location);
+			} else {
+				handle = location;
+			}
+		} else if (!itemsDTO.isEmpty()){
 			itemId = itemsDTO.get(0).getId();
 		}
 
@@ -998,15 +1027,19 @@ public class Command {
 			System.out.println("\nItem: " + String.valueOf(itemId));
 			System.out.println("\nUpload file...");
 			
-			createTestFile("test.txt");
+			Response response = cl.uploadStream(itemId, bitstreamOptionsDTO, targetStream, fileName);
 			
-			OptionBitStreamDTO optionBitStreamDTO = new OptionBitStreamDTO();
-			optionBitStreamDTO.setDescription("Test file");
-			optionBitStreamDTO.setOptionName("openAccess");
+			System.out.println("Location: " + response.getHeaderString("location"));
+		}
+		
+		if (handle != null){
+			System.out.println("\nHandle: " + handle);
+			System.out.println("\nUpload file...");
 			
-			Response response = cl.uploadStream(itemId, optionBitStreamDTO, "test.txt");
-			String test = response.readEntity(String.class);
-			System.out.println("Result JSON: " + test);
+			Response response = cl.uploadStream(handle, bitstreamOptionsDTO, targetStream, fileName);
+			
+			System.out.println("Location: " + response.getHeaderString("location"));
+
 		} else {
 			System.out.println("No Item");
 		}
@@ -1091,15 +1124,17 @@ public class Command {
 			}
     		
     		MultivaluedMap<String, Object> headers = new MultivaluedHashMap<String, Object>();
-    		headers.add("scope", "ROLE_ADMIN");
-    		headers.add("on-behalf-of", this.username);
-    		headers.add("target-state", "PUBLISH");
-    		
+    		headers.add(HeaderScopeEnum.getHeaderTag(), HeaderScopeEnum.ROLE_ADMIN.getHeaderValue());
+    		headers.add(HeaderTagNameEnum.ON_BEHALF_OF.getHeaderTag(), this.username);
+    		headers.add(HeaderTargetStateEnum.getHeaderTag(), HeaderTargetStateEnum.PUBLISH.getHeaderValue());
+    		headers.add(HeaderDisseminationOptionsEnum.getHeaderTag(), HeaderDisseminationOptionsEnum.VISIBLE.getHeaderValue());
+    		headers.add(HeaderActAsBatchUserEnum.getHeaderTag(), HeaderActAsBatchUserEnum.TRUE.getHeaderValue());
+
 			response = cl.createItem(itemToCreate, headers);
 			
-			String uploadItem =  response.getHeaderString("Location");
+			this.locationItem =  response.getHeaderString("Location");
 			
-			System.out.println("Location item: " + uploadItem);
+			System.out.println("Location item: " + locationItem);
     	}
     }
 	

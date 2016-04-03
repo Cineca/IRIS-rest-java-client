@@ -100,9 +100,11 @@ public class Command {
 		try {
 			command.createClient();
 			
+			//command.simpleTest();
+			
 			command.runReadTest();
 		
-			command.runWriteTest();
+			//command.runWriteTest();
 			
 		} catch (SocketTimeoutException e) {
 			System.out
@@ -111,6 +113,10 @@ public class Command {
 			System.out
 			.println("\n-----------------------------------------------------------");
 		} catch (Exception e) {
+			System.out
+			.println("\n-----------------------------------------------------------");
+			System.out
+			.println(e.getMessage());
 			System.out
 			.println("\n-----------------------------------------------------------");
 			e.printStackTrace();
@@ -181,7 +187,13 @@ public class Command {
 	 * @throws NoSuchAlgorithmException
 	 * @throws KeyManagementException
 	 */
-	private void simpleTest() {}
+	private void simpleTest() throws IOException {
+		
+		this.echo();
+		
+		this.testReadItem("60140");
+		
+	}
 
 	/**
 	 * Long test...
@@ -233,7 +245,7 @@ public class Command {
 		
 		this.findPersonByCris(this.authorAuthority);
 		
-		this.createNewItem("11368","2836211");
+		this.createNewItem("1234","1109423");
 		
 		this.testUpload(this.locationItem, "prova.txt");
 
@@ -415,6 +427,44 @@ public class Command {
 		}
 
 	}
+	
+	private void testReadItem(String itemId) throws JsonParseException,
+			JsonMappingException, IOException {
+		ObjectMapper mapper = new ObjectMapper();
+
+		System.out
+				.println("\n-----------------------------------------------------------");
+		System.out.println("Retrieve item from id from REST API");
+		System.out
+				.println("-----------------------------------------------------------");
+
+		System.out.println("Read Item : " + itemId);
+		Response response = cl.itemAll(itemId);
+		String test = response.readEntity(String.class);
+		System.out.println("Item JSON: " + test);
+		ItemRestDTO item = mapper.readValue(test, ItemRestDTO.class);
+		System.out.println("Item Handle: " + item.getHandle());
+		System.out.println("Item last modify date: " + item.getLastModified());
+		System.out.println("Collection Id: " + item.getCollection().getId());
+		System.out.println("ISSN: " + item.getLookupValues().get("jissn"));
+
+		System.out.println("\nRead Item with METADATA: " + itemId);
+		response = cl.itemWithMetadata(itemId);
+		test = response.readEntity(String.class);
+		System.out.println("Item + metadata JSON: " + test);
+		item = mapper.readValue(test, ItemRestDTO.class);
+		System.out.println("Item handle: " + item.getHandle());
+		System.out.println("Item title: "
+				+ item.getMetadata().get("dc.title").get(0).getValue());
+
+		System.out.println("\nRead Item with no extra: " + itemId);
+		response = cl.item(itemId);
+		test = response.readEntity(String.class);
+		System.out.println("Item JSON: " + test);
+		item = mapper.readValue(test, ItemRestDTO.class);
+		System.out.println("Item Handle: " + item.getHandle());
+
+	}
 
 	/**
 	 * Test search method based on DTO:
@@ -578,6 +628,61 @@ public class Command {
 			}
 		}
 	}
+	
+	private void testSearchAuthor(String rp) throws IOException {
+		System.out
+				.println("\n-----------------------------------------------------------");
+		System.out.println("Search Item from author...");
+		System.out
+				.println("-----------------------------------------------------------");
+
+		
+		ObjectMapper mapper = new ObjectMapper();
+
+		System.out.println("\nGet items from authors " + rp);
+		System.out
+				.println("-----------------------------------------------------------");
+
+		SearchRestDTO itemSearchDTO = new SearchRestDTO();
+		itemSearchDTO.setOffset(0);
+		itemSearchDTO.setLimit(50);
+		itemSearchDTO.setExpand("");
+
+		RestSearchCriteria searchCriteriaLM = new RestSearchCriteria();
+		searchCriteriaLM.setColumn("lookupValues_contextuser");
+		searchCriteriaLM.setOperation("=");
+		searchCriteriaLM.setValue(rp);
+
+		RestSearchCriteria searchCriteriaSnap = new RestSearchCriteria();
+		searchCriteriaSnap.setColumn("snapshot");
+		searchCriteriaSnap.setOperation("=");
+		searchCriteriaSnap.setValue("0");
+
+		ArrayList<RestSearchCriteria> searchList = new ArrayList<>();
+		searchList.add(searchCriteriaLM);
+		searchList.add(searchCriteriaSnap);
+		itemSearchDTO.setSearchColsCriteria(searchList);
+
+		Response response = cl.items(itemSearchDTO);
+		String test = response.readEntity(String.class);
+		ItemRestPageDTO items = mapper.readValue(test,
+				ItemRestPageDTO.class);
+
+		if (items.getRestResourseDTOList().size() > 0) {
+			System.out.println("id:"
+					+ items.getRestResourseDTOList().get(0).getId());
+			System.out.println("next:" + items.getNext());
+
+			for (ItemRestDTO itemRestDTO : items
+					.getRestResourseDTOList()) {
+				System.out.println("id:" + itemRestDTO.getId());
+			}
+		} else {
+			System.out.println("No Item retrieved");
+		}
+		
+	}
+
 
 	/**
 	 * Test input form read method
@@ -1101,12 +1206,12 @@ public class Command {
     		ChoiceAuthorityManager manager = ChoiceAuthorityManager.getManager();
     		
     		for (DCInputSetRowRestDTO dcInputSetRowRestDTO : inputformRow) {
+				dcSchema = dcInputSetRowRestDTO.getDcSchema();
+				dcElement = dcInputSetRowRestDTO.getDcElement();
+				dcQualifier = dcInputSetRowRestDTO.getDcQualifier();
+
     			//Only required!!!
     			if (dcInputSetRowRestDTO.isRequired()) {
-    				
-    				dcSchema = dcInputSetRowRestDTO.getDcSchema();
-    				dcElement = dcInputSetRowRestDTO.getDcElement();
-    				dcQualifier = dcInputSetRowRestDTO.getDcQualifier();
     				
     				if (manager.isAuthorityManaged(dcSchema, dcElement, dcQualifier, null, null)) {
     					AbstractAuthorityResolver resolver = (AbstractAuthorityResolver) manager.getAuthorityResolver(dcSchema, dcElement, dcQualifier);
@@ -1120,6 +1225,9 @@ public class Command {
     				
     				IInputformType typeEnum = AbstractInputformType.getInstance(dcInputSetRowRestDTO.getInputType());
     				itemToCreate.addMetadata(typeEnum.build(dcSchema, dcElement, dcQualifier, dcValue, dcAuthority));
+    			} else if ("year".equals(dcInputSetRowRestDTO.getInputType())) {
+    				IInputformType typeEnum = AbstractInputformType.getInstance(dcInputSetRowRestDTO.getInputType());
+    				itemToCreate.addMetadata(typeEnum.build(dcSchema, dcElement, dcQualifier, "2015", null));
     			}
 			}
     		

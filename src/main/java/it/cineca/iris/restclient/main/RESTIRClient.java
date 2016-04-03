@@ -78,9 +78,9 @@ public class RESTIRClient {
     private Integer connectTimeOut;
     private Integer readTimeOut;
     
-    //2 min
-    public static final Integer CONNECT_TIMEOUT = 120000;
-    public static final Integer READ_TIMEOUT = 120000;
+    //20 min
+    public static final Integer CONNECT_TIMEOUT = 1200000;
+    public static final Integer READ_TIMEOUT = 1200000;
     
     public String getBaseURI() {
 		return baseURI;

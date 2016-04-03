@@ -60,6 +60,7 @@ public class ItemRestDTO extends DSpaceObject {
     private List<BitstreamRestDTO> bitstreams;
     private List<EventLogRestDTO> historyLog;
     private Map<String, String> lookupValues;
+    private List<InternalAuthorRestDTO> internalAuthors;
 
     public ContainerDTO getCollection() {
         return collection;
@@ -302,4 +303,13 @@ public class ItemRestDTO extends DSpaceObject {
     public void setLookupValues(Map<String, String> lookupValues) {
         this.lookupValues = lookupValues;
     }
+    
+    public List<InternalAuthorRestDTO> getInternalAuthors() {
+    	return internalAuthors;
+    }
+    
+    public void setInternalAuthors(List<InternalAuthorRestDTO> internalAuthors) {
+    	this.internalAuthors = internalAuthors;
+    }
+    
 }

@@ -239,7 +239,7 @@
 
         <pre><span class="external-link">https://unidemo.iris.cineca.it:443/rest/api/v1/items/328325<br /></span></pre>
 		
-		<p><b>Due to negative performance each request has a limit for retrived object set to 50 elements</b></p>
+		<p><b>Due to negative performance each request has a limit for retrived object set to 50 elements and set to MAX java int for public items (SOLR)</b></p>
 
         <h2 id="expansion">Expansion in the REST APIs</h2>
 
@@ -332,6 +332,7 @@
                                 </div>								
                             </ul>
                         </li>
+						<li><a href="#dpubitemssearch">https://unidemo.iris.cineca.it:443/rest/api/v1/public/items/search</a>[<a href="#dpubitemssearchpost">POST</a>]</li>
                     </div>
                 </ul>
             </li>&nbsp;
@@ -1451,9 +1452,78 @@
                             <div>application/json [<a onclick="toggle('ditemssearchreq'); return false;" href="#"><em><span id="link-ditemssearchreq">expand</span></em></a>] </abbr></div>
                             <div style="display: none;" class="toggle" id="ditemssearchreq">
                                 <p>
-								<div>Possible single clause value [<a onclick="toggle('dsearchdtoexp'); return false;" href="#"><em><span id="link-dsearchdtoexp">expand</span></em></a>] </div>
+								<div>Sort and search Criteria DTO [<a onclick="toggle('dsearchdtoexp'); return false;" href="#"><em><span id="link-dsearchdtoexp">expand</span></em></a>] </div>
 								<div style="display: none;" class="toggle" id="dsearchdtoexp">
+								
 									</br>
+									<h6>Search DTO</h6>
+									<table>
+									  <tbody>
+										<tr>
+										  <th>name</th>
+										  <th>value</th>
+										  <th>description</th>
+										</tr>
+										<tr>
+										  <td>
+										  <p><strong>expand</strong></p>
+										  </td>
+										  <td>
+										  <p><em><a href="http://www.w3.org/TR/xmlschema-2/#string">string</a></em></p>
+										  </td>
+										  <td>
+										  <p>a String containing acceptable expand list (separated by comma). See response for values</p>
+										  </td>
+										</tr>
+										<tr>
+										  <td>
+										  <p><strong>limit</strong></p>
+										  </td>
+										  <td>
+										  <p><em><a href="http://www.w3.org/TR/xmlschema-2/#int">int</a></em></p>
+										  </td>
+										  <td>
+											<p>a hint as to the the maximum number of items to return in each call (max value=MAX JAVA INT). Note that the IRIS server reserves the right to impose a maxResults limit that is lower than the value that a client provides, dues to lack or resources or any other condition. When this happens, your results will be truncated.</p>
+										  </td>
+										</tr>
+										<tr>
+										  <td>
+											<p><strong>offset</strong></p>
+										  </td>
+										  <td>
+											<p><em><a href="http://www.w3.org/TR/xmlschema-2/#int">int</a></em></p>
+										  </td>
+										  <td>
+											<p>the index of the first item to return (0-based). must be 0 or any positive value</p>
+										  </td>
+										</tr>
+										<tr>
+										  <td>
+											<p><strong>searchColsCriteria</strong></p>
+										  </td>
+										  <td>
+											<p><em><a href="http://www.w3.org/TR/xmlschema-2/#string">string</a></em></p>
+										  </td>
+										  <td>
+											<p>Search query build with following DTO criteria (values array in AND operation): [{"column","operation","value"}]. See table for values</p>
+										  </td>
+										</tr>	
+										<tr>
+										  <td>
+											<p><strong>sortingColsCriteria</strong></p>
+										  </td>
+										  <td>
+											<p><em><a href="http://www.w3.org/TR/xmlschema-2/#string">string</a></em></p>
+										  </td>
+										  <td>
+											<p>Sort criteria DTO: {"column","asc":<true|false>}. See table for column value</p>
+										  </td>
+										</tr>											
+									  </tbody>
+									</table>
+
+									</br>
+									<h6>Possible single clause value</h6>
 										<table>
 											<tbody>
 												<tr>
@@ -1763,8 +1833,56 @@
                             <div>application/json [<a onclick="toggle('ditemsidsreq'); return false;" href="#"><em><span id="link-ditemsidsreq">expand</span></em></a>] </abbr></div>
                             <div style="display: none;" class="toggle" id="ditemsidsreq">
 								<p>
-								<div>Possible clause value [<a onclick="toggle('dsearchdtoidexp'); return false;" href="#"><em><span id="link-dsearchdtoidexp">expand</span></em></a>] </div>
+								<div>Search DTO syntax[<a onclick="toggle('dsearchdtoidexp'); return false;" href="#"><em><span id="link-dsearchdtoidexp">expand</span></em></a>] </div>
 								<div style="display: none;" class="toggle" id="dsearchdtoidexp">
+																	</br>
+									<h6>Search DTO</h6>
+									<table>
+									  <tbody>
+										<tr>
+										  <th>name</th>
+										  <th>value</th>
+										  <th>description</th>
+										</tr>
+										<tr>
+										  <td>
+										  <p><strong>startId</strong></p>
+										  </td>
+										  <td>
+										  <p><em><a href="http://www.w3.org/TR/xmlschema-2/#int">int</a></em></p>
+										  </td>
+										  <td>
+											<p>Start item id</p>
+										  </td>
+										</tr>
+										<tr>
+										  <td>
+											<p><strong>count</strong></p>
+										  </td>
+										  <td>
+											<p><em><a href="http://www.w3.org/TR/xmlschema-2/#int">int</a></em></p>
+										  </td>
+										  <td>
+											<p>Counter element (result cardinality)</p>
+										  </td>
+										</tr>
+										<tr>
+										  <td>
+											<p><strong>searchColsCriteria</strong></p>
+										  </td>
+										  <td>
+											<p><em><a href="http://www.w3.org/TR/xmlschema-2/#string">string</a></em></p>
+										  </td>
+										  <td>
+											<p>Search query build with following DTO criteria (values array in AND operation): [{"column","operation","value"}]. See table for values</p>
+										  </td>
+										</tr>											
+									  </tbody>
+									</table>
+
+									</br>
+									<h6>Possible single clause value</h6>
+	
 									</br>
 										<table>
 											<tbody>
@@ -2139,7 +2257,200 @@
                     </ul>
                 </div>
             </div>
-        </div>            
+        </div>
+
+        <div class="item">
+            <h3 id="dpubitemssearch">rest/api/v1/public/items/search</h3>
+            <h6>Methods</h6>
+            <div class="methods">
+                <div class="method">
+                    <h4 id="dpubitemssearchpost">POST&nbsp;</h4>
+                    <p>Search a public item (hosted in SOLR b.e.) by JSON search DTO with SOLR query</p>
+                   
+                    <ul>
+                        <li>
+                            <div>application/json [<a onclick="toggle('dpubitemssearchpostreq'); return false;" href="#"><em><span id="link-dpubitemssearchpostreq">expand</span></em></a>] </abbr></div>
+                            <div style="display: none;" class="toggle" id="dpubitemssearchpostreq">
+							<h6>Search DTO</h6>
+								<table>
+								  <tbody>
+									<tr>
+									  <th>name</th>
+									  <th>value</th>
+									  <th>description</th>
+									</tr>
+									<tr>
+									  <td>
+									  <p><strong>expand</strong></p>
+									  </td>
+									  <td>
+									  <p><em><a href="http://www.w3.org/TR/xmlschema-2/#string">string</a></em></p>
+									  </td>
+									  <td>
+									  <p>a String containing acceptable expand list (separated by comma). See response for values</p>
+									  </td>
+									</tr>
+									<tr>
+									  <td>
+									  <p><strong>limit</strong></p>
+									  </td>
+									  <td>
+									  <p><em><a href="http://www.w3.org/TR/xmlschema-2/#int">int</a></em></p>
+									  </td>
+									  <td>
+										<p>a hint as to the the maximum number of items to return in each call (max value=MAX JAVA INT). Note that the IRIS server reserves the right to impose a maxResults limit that is lower than the value that a client provides, dues to lack or resources or any other condition. When this happens, your results will be truncated.</p>
+									  </td>
+									</tr>
+									<tr>
+									  <td>
+										<p><strong>offset</strong></p>
+									  </td>
+									  <td>
+										<p><em><a href="http://www.w3.org/TR/xmlschema-2/#int">int</a></em></p>
+									  </td>
+									  <td>
+										<p>the index of the first item to return (0-based). must be 0 or any positive value</p>
+									  </td>
+									</tr>
+									<tr>
+									  <td>
+										<p><strong>solrQuery</strong></p>
+									  </td>
+									  <td>
+										<p><em><a href="http://www.w3.org/TR/xmlschema-2/#string">string</a></em></p>
+									  </td>
+									  <td>
+										<p>Solr Query written in solr syntax</p>
+									  </td>
+									</tr>									
+								  </tbody>
+								</table>
+
+ 								<h6>Use Case 1: obtains paginated items selected by rp02822</h6>
+                                <pre><code>
+{
+    "offset": 0,
+    "limit": 100,
+    "expand": "all",
+    "solrQuery": "item.selected:rp02822"
+}
+								</code></pre>
+								<h6>Use Case 2: obtains paginated deleted items in iso lang = eng</h6>
+                                <pre><code>
+{
+    "offset": 0,
+    "limit": 100,
+    "expand": "all",
+    "solrQuery": "dc.language.iso:\"eng\"+withdrawn:true"
+}
+                                </code></pre>
+								<h6>Use Case 3: obtains paginated items published by ROSSI PAOLO</h6>
+                                <pre><code>
+{
+    "offset": 0,
+    "limit": 100,
+    "expand": "all",
+    "solrQuery": "dc.authority.people:\"ROSSI, PAOLO\"
+}
+                                </code></pre>
+                                <p></p>
+                            </div>
+                        </li>
+                    </ul>
+                    <p><em>available response representations:</em></p>
+                    <ul>
+                        <li>
+                            <div>200 - application/json [<a onclick="toggle('dpubitemssearchpostdet'); return false;" href="#"><em><span id="link-dpubitemssearchpostdet">expand</span></em></a>] </div>
+                            <div style="display: none;" class="toggle" id="dpubitemssearchpostdet">
+                                <p>
+                                </p><h6>Example</h6>
+                                <pre><code>
+{
+    "next": "offset=4&limit=2",
+    "prev": "offset=0&limit=2",
+    "restResourseDTOList": [
+        {
+            "itemId": 1,
+            "owner": {
+                "id": -1,
+                "lastName": null,
+                "firstName": null,
+                "netid": null,
+                "email": null
+            },
+            "lastModified": 1300185331000,
+            "collection": {
+                "name": "01.a Pubblicazione su Rivista",
+                "id": 58,
+                "type": 3,
+                "handle": "123456789/1"
+            },
+			"lookupValues":{
+				"summary":"2014",
+				"spage":"13",
+				"contextidab":null,
+				"contextdept":"|734|1210|",
+				"isbn":"9788878709706",
+				......
+			}			
+            "submitterID": 574,
+            "submitterNetID": "19838",
+            "identifierToDisseminate": -1,
+            "workFlowValidationStatus": -1,
+            "simpleItemStatus": 0,
+            "workFlowValidationRule": -1,
+            "collectionHandle": "123456789/1",
+            "inputFormId": 1,
+            "withdrawn": false,
+            "archived": false,
+            "snapshot": false,
+            "inWorkFlow": false,
+            "inWorkspace": true,
+            "earlyDraft": true,
+            "submitter": {
+                "id": 574,
+                "lastName": "PAI NOTA",
+                "firstName": "AN MAIA",
+                "netid": "19838",
+                "email": "user@email.it"
+            },
+			"reopened": false,
+            "name": "",
+            "type": "items",
+            "self": "/rest/api/v1/items/1",
+            "expand": [
+                "metadata",
+                "bitstreams",
+                "history",
+                "all"
+            ]
+        },
+        { … }
+    ]
+}
+                                </code></pre>
+                                <p />
+                                <p>Returned item lists according query parameter if the currently authenticated user has permission to view it. Contains a partial representation of the item.</p>
+                                <div class="representation" />
+                            </div>
+                        </li>                    
+                        <li>
+                            <div>500 - application/json [<a onclick="toggle('dpubitemssearchpost500'); return false;" href="#"><em><span id="link-dpubitemssearchpost500">expand</span></em></a>] </abbr></div>
+                            <div style="display: none;" class="toggle" id="dpubitemssearchpost500">
+                                <p>Returned if was any server error type.</p>
+                                <p/><h6>Example</h6>
+                                <pre><code>
+{
+    "message": ".....",
+    "code": "...."
+}
+                                </code></pre>                                
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>		
 
         <div class="collection">
             <h3 id="dcolsitems">rest/api/v1/collections/{colletionid}/items</h3>

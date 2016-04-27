@@ -2,9 +2,11 @@ package it.cineca.iris.ir.rest.model;
 
 public class InternalAuthorRestDTO {
     private String author;
-    private int share;
-    private int order;
     private String authority;
+    
+    private int share;
+    private int order;    
+    private int confidence;
     
 	public String getAuthor() {
         return author;
@@ -31,16 +33,24 @@ public class InternalAuthorRestDTO {
 	public void setAuthority(String authority) {
 		this.authority = authority;
 	}
+	
+    public int getConfidence() {
+        return confidence;
+    }
+    public void setConfidence(int confidence) {
+        this.confidence = confidence;
+    }
 
     public InternalAuthorRestDTO() {
         super();
     }
     
-    public InternalAuthorRestDTO(String author, int share,int order, String authority){
+    public InternalAuthorRestDTO(String author, int share,int order, String authority, int confidence){
         super();
         this.author = author;
         this.share = share;
         this.order = order;
         this.authority = authority;
+        this.confidence = confidence;
     }
 }

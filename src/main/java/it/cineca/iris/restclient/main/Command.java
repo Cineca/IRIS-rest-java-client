@@ -24,6 +24,35 @@
  */
 package it.cineca.iris.restclient.main;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.SocketTimeoutException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.GregorianCalendar;
+import java.util.List;
+import java.util.Properties;
+import java.util.Random;
+
+import javax.ws.rs.core.MultivaluedHashMap;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
+
+import org.apache.commons.lang.RandomStringUtils;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.DeserializationConfig;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.TypeReference;
+
+import com.fasterxml.jackson.databind.DeserializationFeature;
+
 import it.cineca.iris.ir.rest.command.model.BitstreamOptionsDTO;
 import it.cineca.iris.ir.rest.model.CareerItemsDTO;
 import it.cineca.iris.ir.rest.model.CollectionRestDTO;
@@ -53,32 +82,6 @@ import it.cineca.iris.ir.rest.search.model.RestSearchCriteria;
 import it.cineca.iris.ir.rest.search.model.RestSortCriteria;
 import it.cineca.iris.ir.rest.search.model.SearchIdsRestDTO;
 import it.cineca.iris.ir.rest.search.model.SearchRestDTO;
-
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.SocketTimeoutException;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.Properties;
-import java.util.Random;
-
-import javax.ws.rs.core.MultivaluedHashMap;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
-
-import org.apache.commons.lang.RandomStringUtils;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.type.TypeReference;
 
 /**
  * 
@@ -209,6 +212,8 @@ public class Command {
 
 		this.echo();
 
+		this.testSearchWithOrOperator();
+		
 		this.testReadItems();
 
 		this.testCollection();
@@ -268,8 +273,7 @@ public class Command {
 		response = cl.echoRM();
 		test = response.readEntity(String.class);
 		System.out.println("Check: " + test);
-		System.out
-				.println("-----------------------------------------------------------");
+		System.out.println("-----------------------------------------------------------");
 	}
 
 	/**
@@ -282,7 +286,7 @@ public class Command {
 	private void testCommunities() throws JsonParseException,
 			JsonMappingException, IOException {
 		ObjectMapper mapper = new ObjectMapper();
-
+		mapper.disable(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES);
 		System.out
 				.println("\n-----------------------------------------------------------");
 		System.out.println("Read Communities");
@@ -335,7 +339,7 @@ public class Command {
 
 		if (!itemsDTO.isEmpty()) {
 			ObjectMapper mapper = new ObjectMapper();
-
+			mapper.disable(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES);
 			int itemId = itemsDTO.get(0).getId();
 
 			System.out.println("\nItem: " + String.valueOf(itemId));
@@ -377,7 +381,7 @@ public class Command {
 	private void testReadItems() throws JsonParseException,
 			JsonMappingException, IOException {
 		ObjectMapper mapper = new ObjectMapper();
-
+		mapper.disable(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES);
 		System.out
 				.println("\n-----------------------------------------------------------");
 		System.out.println("Retrieve items from REST API (first 4)");
@@ -431,7 +435,7 @@ public class Command {
 	private void testReadItem(String itemId) throws JsonParseException,
 			JsonMappingException, IOException {
 		ObjectMapper mapper = new ObjectMapper();
-
+		mapper.disable(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES);
 		System.out
 				.println("\n-----------------------------------------------------------");
 		System.out.println("Retrieve item from id from REST API");
@@ -479,7 +483,7 @@ public class Command {
 	 */
 	private void testSearchLastModified() throws IOException {
 		ObjectMapper mapper = new ObjectMapper();
-
+		mapper.disable(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES);
 		System.out
 				.println("\n-----------------------------------------------------------");
 		System.out
@@ -532,6 +536,63 @@ public class Command {
 
 	}
 
+	
+	private void testSearchWithOrOperator() throws IOException {
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.disable(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES);
+		System.out
+				.println("\n-----------------------------------------------------------");
+		System.out
+				.println("Search the first 2 item in OR");
+		System.out
+				.println("-----------------------------------------------------------");
+
+		SearchRestDTO itemSearchDTO = new SearchRestDTO();
+		itemSearchDTO.setOffset(0);
+		itemSearchDTO.setLimit(5);
+		itemSearchDTO.setExpand("");
+		itemSearchDTO.setOperator("OR");
+
+		RestSearchCriteria searchCriteriaLM = new RestSearchCriteria();
+		searchCriteriaLM.setColumn("handle");
+		searchCriteriaLM.setOperation("=");
+		searchCriteriaLM.setValue("1234/534332");
+
+		RestSearchCriteria searchCriteriaSnap = new RestSearchCriteria();
+		searchCriteriaSnap.setColumn("handle");
+		searchCriteriaSnap.setOperation("=");
+		searchCriteriaSnap.setValue("11585/527306");
+
+		ArrayList<RestSearchCriteria> searchList = new ArrayList<>();
+		searchList.add(searchCriteriaLM);
+		searchList.add(searchCriteriaSnap);
+		itemSearchDTO.setSearchColsCriteria(searchList);
+
+		RestSortCriteria sortCriteria = new RestSortCriteria();
+		sortCriteria.setAsc(true);
+		sortCriteria.setColumn("lastModified");
+
+		ArrayList<RestSortCriteria> sortList = new ArrayList<>();
+		sortList.add(sortCriteria);
+		itemSearchDTO.setSortingColsCriteria(sortList);
+
+		Response response = cl.items(itemSearchDTO);
+		String test = response.readEntity(String.class);
+		ItemRestPageDTO items = mapper.readValue(test, ItemRestPageDTO.class);
+
+		if (items.getRestResourseDTOList().size() > 0) {
+			System.out.println("prev:" + items.getPrev());
+			System.out.println("next:" + items.getNext());
+
+			for (ItemRestDTO itemRestDTO : items.getRestResourseDTOList()) {
+				System.out.println("Item ids:" + itemRestDTO.getId());
+			}
+		} else {
+			System.out.println("No Item retrieved");
+		}
+
+	}
+	
 	/**
 	 * Test search method based on DTO:
 	 * 
@@ -552,7 +613,7 @@ public class Command {
 
 		if (!itemsDTO.isEmpty()) {
 			ObjectMapper mapper = new ObjectMapper();
-
+			mapper.disable(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES);
 			boolean found = false;
 			int index = 0;
 
@@ -638,7 +699,7 @@ public class Command {
 
 		
 		ObjectMapper mapper = new ObjectMapper();
-
+		mapper.disable(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES);
 		System.out.println("\nGet items from authors " + rp);
 		System.out
 				.println("-----------------------------------------------------------");
@@ -696,7 +757,7 @@ public class Command {
 	private void testInputForm() throws JsonParseException,
 			JsonMappingException, IOException {
 		ObjectMapper mapper = new ObjectMapper();
-
+		mapper.disable(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES);
 		System.out
 				.println("\n-----------------------------------------------------------");
 		System.out.println("Read inputform from item...");
@@ -757,7 +818,7 @@ public class Command {
 	private void testAnce() {
 		try {
 			ObjectMapper mapper = new ObjectMapper();
-
+			mapper.disable(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES);
 			System.out
 					.println("\n-----------------------------------------------------------");
 			System.out.println("Ance search: journal76139");
@@ -799,7 +860,7 @@ public class Command {
 	 */
 	private void testDBDownloadLastModified() throws IOException {
 		ObjectMapper mapper = new ObjectMapper();
-
+		mapper.disable(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES);
 		System.out
 				.println("\n-----------------------------------------------------------");
 		System.out.println("Start Sequencial random Items on Last Modified");
@@ -861,7 +922,7 @@ public class Command {
 
 	private void testDBDownloadPublishDate() throws IOException {
 		ObjectMapper mapper = new ObjectMapper();
-
+		mapper.disable(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES);
 		System.out
 				.println("\n-----------------------------------------------------------");
 		System.out.println("Start Sequencial random Items on Publish Date");
@@ -980,6 +1041,7 @@ public class Command {
 		System.out.println("Author by cris id: " + crisId);
 
 		ObjectMapper mapper = new ObjectMapper();
+		mapper.disable(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES);
 		Response response = cl.personByCris(crisId);
 		String result = response.readEntity(String.class);
 		System.out.println("Person JSON:" + result);
@@ -1006,7 +1068,7 @@ public class Command {
 		this.findPersonByCris(crisId);
 
 		ObjectMapper mapper = new ObjectMapper();
-		
+		mapper.disable(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES);
 		System.out
 				.println("\n-----------------------------------------------------------");
 		System.out.println("All Positions by cris id: " + crisId);
@@ -1044,7 +1106,7 @@ public class Command {
 	private ItemRestPageDTO getRandomItem(int factor, String expand)
 			throws IOException {
 		ObjectMapper mapper = new ObjectMapper();
-
+		mapper.disable(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES);
 		System.out
 				.println("\n-----------------------------------------------------------");
 		System.out.println("Start Search random Items");
@@ -1152,6 +1214,7 @@ public class Command {
 	
 	private void createNewItem(String authorityName, String localName) throws Exception { 
 		ObjectMapper mapper = new ObjectMapper();
+		mapper.disable(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES);
 		CollectionRestDTO targetCollection = null;
 		Integer targetInputFormId = null;
 		Response response = null;  

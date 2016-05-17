@@ -38,6 +38,7 @@ public class SearchRestDTO {
     private Integer offset;
     private Integer limit;
     private String expand;
+    private String operator;
 
     public List<RestSearchCriteria> getSearchColsCriteria() {
         return searchColsCriteria;
@@ -79,6 +80,17 @@ public class SearchRestDTO {
         this.expand = expand;
     }
 
+	public String getOperator() {
+		if (operator == null) {
+			operator = "AND";
+		}
+		return operator;
+	}
+
+	public void setOperator(String operator) {
+		this.operator = operator;
+	}
+	
     public SearchRestDTO() {
         super();
     }
@@ -91,5 +103,24 @@ public class SearchRestDTO {
         this.offset = offset;
         this.limit = limit;
         this.expand = expand == null ? "" : expand;
+    }
+    
+    public SearchRestDTO(List<RestSearchCriteria> searchColsCriteria, List<RestSortCriteria> sortingColsCriteria,
+            Integer offset, Integer limit, String expand, String operator) {
+        super();
+        this.searchColsCriteria = searchColsCriteria;
+        this.sortingColsCriteria = sortingColsCriteria;
+        this.offset = offset;
+        this.limit = limit;
+        this.expand = expand == null ? "" : expand;
+        if (operator!=null) {
+	        if (operator.equalsIgnoreCase("or")) {
+				this.operator = "OR";
+			} else {
+				this.operator = "AND";
+			}
+        } else {
+        	this.operator = "AND";
+        }
     }
 }

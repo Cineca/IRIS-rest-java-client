@@ -27,11 +27,14 @@ package it.cineca.iris.ir.rest.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+
 /**
  * 
  * @author pmeriggi
  *
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class CommunityRestDTO extends DSpaceObject {
 
     private BitstreamRestDTO logo;

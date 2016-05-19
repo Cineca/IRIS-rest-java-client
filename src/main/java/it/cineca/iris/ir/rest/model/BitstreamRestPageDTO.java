@@ -26,12 +26,15 @@ package it.cineca.iris.ir.rest.model;
 
 import java.util.List;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+
 /**
  * 
  * 
  * @author pmeriggi
  * 
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class BitstreamRestPageDTO {
     
     private String next;

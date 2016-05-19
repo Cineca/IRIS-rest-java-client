@@ -286,7 +286,7 @@ public class Command {
 	private void testCommunities() throws JsonParseException,
 			JsonMappingException, IOException {
 		ObjectMapper mapper = new ObjectMapper();
-		mapper.disable(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES);
+		
 		System.out
 				.println("\n-----------------------------------------------------------");
 		System.out.println("Read Communities");
@@ -339,7 +339,7 @@ public class Command {
 
 		if (!itemsDTO.isEmpty()) {
 			ObjectMapper mapper = new ObjectMapper();
-			mapper.disable(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES);
+			
 			int itemId = itemsDTO.get(0).getId();
 
 			System.out.println("\nItem: " + String.valueOf(itemId));
@@ -381,7 +381,7 @@ public class Command {
 	private void testReadItems() throws JsonParseException,
 			JsonMappingException, IOException {
 		ObjectMapper mapper = new ObjectMapper();
-		mapper.disable(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES);
+		
 		System.out
 				.println("\n-----------------------------------------------------------");
 		System.out.println("Retrieve items from REST API (first 4)");
@@ -435,7 +435,7 @@ public class Command {
 	private void testReadItem(String itemId) throws JsonParseException,
 			JsonMappingException, IOException {
 		ObjectMapper mapper = new ObjectMapper();
-		mapper.disable(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES);
+		
 		System.out
 				.println("\n-----------------------------------------------------------");
 		System.out.println("Retrieve item from id from REST API");
@@ -483,7 +483,7 @@ public class Command {
 	 */
 	private void testSearchLastModified() throws IOException {
 		ObjectMapper mapper = new ObjectMapper();
-		mapper.disable(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES);
+		
 		System.out
 				.println("\n-----------------------------------------------------------");
 		System.out
@@ -539,7 +539,6 @@ public class Command {
 	
 	private void testSearchWithOrOperator() throws IOException {
 		ObjectMapper mapper = new ObjectMapper();
-		mapper.disable(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES);
 		System.out
 				.println("\n-----------------------------------------------------------");
 		System.out
@@ -586,6 +585,7 @@ public class Command {
 
 			for (ItemRestDTO itemRestDTO : items.getRestResourseDTOList()) {
 				System.out.println("Item ids:" + itemRestDTO.getId());
+				System.out.println("Item data:" + itemRestDTO.toString());
 			}
 		} else {
 			System.out.println("No Item retrieved");
@@ -613,7 +613,7 @@ public class Command {
 
 		if (!itemsDTO.isEmpty()) {
 			ObjectMapper mapper = new ObjectMapper();
-			mapper.disable(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES);
+			
 			boolean found = false;
 			int index = 0;
 
@@ -699,7 +699,7 @@ public class Command {
 
 		
 		ObjectMapper mapper = new ObjectMapper();
-		mapper.disable(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES);
+		
 		System.out.println("\nGet items from authors " + rp);
 		System.out
 				.println("-----------------------------------------------------------");
@@ -757,7 +757,7 @@ public class Command {
 	private void testInputForm() throws JsonParseException,
 			JsonMappingException, IOException {
 		ObjectMapper mapper = new ObjectMapper();
-		mapper.disable(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES);
+		
 		System.out
 				.println("\n-----------------------------------------------------------");
 		System.out.println("Read inputform from item...");
@@ -818,7 +818,7 @@ public class Command {
 	private void testAnce() {
 		try {
 			ObjectMapper mapper = new ObjectMapper();
-			mapper.disable(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES);
+			
 			System.out
 					.println("\n-----------------------------------------------------------");
 			System.out.println("Ance search: journal76139");
@@ -860,7 +860,7 @@ public class Command {
 	 */
 	private void testDBDownloadLastModified() throws IOException {
 		ObjectMapper mapper = new ObjectMapper();
-		mapper.disable(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES);
+		
 		System.out
 				.println("\n-----------------------------------------------------------");
 		System.out.println("Start Sequencial random Items on Last Modified");
@@ -922,7 +922,7 @@ public class Command {
 
 	private void testDBDownloadPublishDate() throws IOException {
 		ObjectMapper mapper = new ObjectMapper();
-		mapper.disable(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES);
+		
 		System.out
 				.println("\n-----------------------------------------------------------");
 		System.out.println("Start Sequencial random Items on Publish Date");
@@ -1041,7 +1041,7 @@ public class Command {
 		System.out.println("Author by cris id: " + crisId);
 
 		ObjectMapper mapper = new ObjectMapper();
-		mapper.disable(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES);
+		
 		Response response = cl.personByCris(crisId);
 		String result = response.readEntity(String.class);
 		System.out.println("Person JSON:" + result);
@@ -1068,7 +1068,7 @@ public class Command {
 		this.findPersonByCris(crisId);
 
 		ObjectMapper mapper = new ObjectMapper();
-		mapper.disable(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES);
+		
 		System.out
 				.println("\n-----------------------------------------------------------");
 		System.out.println("All Positions by cris id: " + crisId);
@@ -1106,7 +1106,7 @@ public class Command {
 	private ItemRestPageDTO getRandomItem(int factor, String expand)
 			throws IOException {
 		ObjectMapper mapper = new ObjectMapper();
-		mapper.disable(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES);
+		
 		System.out
 				.println("\n-----------------------------------------------------------");
 		System.out.println("Start Search random Items");
@@ -1214,7 +1214,7 @@ public class Command {
 	
 	private void createNewItem(String authorityName, String localName) throws Exception { 
 		ObjectMapper mapper = new ObjectMapper();
-		mapper.disable(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES);
+		
 		CollectionRestDTO targetCollection = null;
 		Integer targetInputFormId = null;
 		Response response = null;  

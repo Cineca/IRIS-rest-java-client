@@ -28,6 +28,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ItemRestDTO extends DSpaceObject {
      
     private ContainerDTO collection;
@@ -43,6 +47,7 @@ public class ItemRestDTO extends DSpaceObject {
     private boolean inarchive;
     private boolean earlyDraft;
     private int itemId;
+    private String identifier;
     private int wrapperId;
     private Date lastModified;
     private String lastModifiedISO;
@@ -311,5 +316,29 @@ public class ItemRestDTO extends DSpaceObject {
     public void setInternalAuthors(List<InternalAuthorRestDTO> internalAuthors) {
     	this.internalAuthors = internalAuthors;
     }
-    
+
+	public String getIdentifier() {
+		return identifier;
+	}
+
+	public void setIdentifier(String identifier) {
+		this.identifier = identifier;
+	}
+
+	@Override
+	public String toString() {
+		return "ItemRestDTO [collection=" + collection + ", collectionHandle=" + collectionHandle
+				+ ", simpleItemStatus=" + simpleItemStatus + ", submitterID=" + submitterID + ", submitterNetID="
+				+ submitterNetID + ", archived=" + archived + ", inWorkFlow=" + inWorkFlow + ", inWorkspace="
+				+ inWorkspace + ", snapshot=" + snapshot + ", withdrawn=" + withdrawn + ", inarchive=" + inarchive
+				+ ", earlyDraft=" + earlyDraft + ", itemId=" + itemId + ", identifier=" + identifier 
+				+ ", wrapperId=" + wrapperId + ", lastModified=" + lastModified + ", lastModifiedISO=" + lastModifiedISO
+				+ ", submitter=" + submitter + ", owner=" + owner + ", workflowState=" + workflowState + ", actions="
+				+ actions + ", workFlowValidationRule=" + workFlowValidationRule + ", reopened=" + reopened
+				+ ", workFlowValidationStatus=" + workFlowValidationStatus + ", identifierToDisseminate="
+				+ identifierToDisseminate + ", inputFormId=" + inputFormId + ", metadata=" + metadata + ", bitstreams="
+				+ bitstreams + ", historyLog=" + historyLog + ", lookupValues=" + lookupValues + ", internalAuthors="
+				+ internalAuthors + "]";
+	}
+	
 }

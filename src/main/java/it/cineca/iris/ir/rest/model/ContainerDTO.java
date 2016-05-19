@@ -24,6 +24,9 @@
  */
 package it.cineca.iris.ir.rest.model;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ContainerDTO {
 
     private String name;

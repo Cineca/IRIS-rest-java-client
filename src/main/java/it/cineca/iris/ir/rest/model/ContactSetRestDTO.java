@@ -25,6 +25,7 @@
 package it.cineca.iris.ir.rest.model;
 
 import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
@@ -32,6 +33,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
  * @author pmeriggi
  *
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ContactSetRestDTO {
 
     public final boolean temporary;

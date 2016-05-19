@@ -26,11 +26,14 @@ package it.cineca.iris.ir.rest.search.model;
 
 import java.util.List;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+
 /**
  * 
  * @author pmeriggi
  *
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class SearchRestDTO {
 
     private List<RestSearchCriteria> searchColsCriteria;

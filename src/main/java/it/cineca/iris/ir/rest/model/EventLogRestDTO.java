@@ -26,6 +26,9 @@ package it.cineca.iris.ir.rest.model;
 
 import java.util.Date;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class EventLogRestDTO {
     
     private String eventType;

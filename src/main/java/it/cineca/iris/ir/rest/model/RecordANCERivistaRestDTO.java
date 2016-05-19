@@ -26,11 +26,14 @@ package it.cineca.iris.ir.rest.model;
 
 import java.util.Date;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+
 /**
  * 
  * @author pmeriggi
  *
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class RecordANCERivistaRestDTO extends ResourceObject {
 
     private TitoliRivistaANCE titoli = new TitoliRivistaANCE();

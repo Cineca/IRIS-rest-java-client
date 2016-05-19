@@ -24,11 +24,14 @@
  */
 package it.cineca.iris.ir.rest.search.model;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+
 /**
  * 
  * @author pmeriggi
  *
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class AnceSearchRestDTO {
 
     private String anceId;

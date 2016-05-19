@@ -26,6 +26,9 @@ package it.cineca.iris.ir.rest.model;
 
 import java.util.List;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class DCInputSetRowRestDTO extends DSpaceObject {
 
     private Integer pageNumber;

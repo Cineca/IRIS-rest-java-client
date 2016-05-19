@@ -28,12 +28,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
 /**
  * 
  * @author pmeriggi
  *
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class CollectionRestDTO extends DSpaceObject {
 
     //Relationships
@@ -136,4 +138,12 @@ public class CollectionRestDTO extends DSpaceObject {
 	public CollectionRestDTO() {
     }
 
+	@Override
+	public String toString() {
+		return "CollectionRestDTO [logo=" + logo + ", parentCommunities=" + parentCommunities + ", license=" + license
+				+ ", copyrightText=" + copyrightText + ", introductoryText=" + introductoryText + ", shortDescription="
+				+ shortDescription + ", sidebarText=" + sidebarText + ", numberItems=" + numberItems
+				+ ", inputformActiveId=" + inputformActiveId + "]";
+	}
+	
 }

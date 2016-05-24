@@ -24,35 +24,6 @@
  */
 package it.cineca.iris.restclient.main;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.SocketTimeoutException;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.Properties;
-import java.util.Random;
-
-import javax.ws.rs.core.MultivaluedHashMap;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
-
-import org.apache.commons.lang.RandomStringUtils;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.DeserializationConfig;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.type.TypeReference;
-
-import com.fasterxml.jackson.databind.DeserializationFeature;
-
 import it.cineca.iris.ir.rest.command.model.BitstreamOptionsDTO;
 import it.cineca.iris.ir.rest.model.CareerItemsDTO;
 import it.cineca.iris.ir.rest.model.CollectionRestDTO;
@@ -82,6 +53,33 @@ import it.cineca.iris.ir.rest.search.model.RestSearchCriteria;
 import it.cineca.iris.ir.rest.search.model.RestSortCriteria;
 import it.cineca.iris.ir.rest.search.model.SearchIdsRestDTO;
 import it.cineca.iris.ir.rest.search.model.SearchRestDTO;
+
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.SocketTimeoutException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.GregorianCalendar;
+import java.util.List;
+import java.util.Properties;
+import java.util.Random;
+
+import javax.ws.rs.core.MultivaluedHashMap;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
+
+import org.apache.commons.lang.RandomStringUtils;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * 
@@ -978,8 +976,8 @@ public class Command {
 
 				ItemRestDTO item = mapper.readValue(test, ItemRestDTO.class);
 				System.out.println("Item handle: " + item.getHandle());
-				System.out.println("Item title: "
-						+ item.getMetadata().get("dc.title").get(0).getValue());
+				// System.out.println("Item title: "
+				// + item.getMetadata().get("dc.title").get(0).getValue());
 			}
 			startId = idsPage.getNext();
 

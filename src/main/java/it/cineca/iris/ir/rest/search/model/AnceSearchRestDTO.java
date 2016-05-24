@@ -24,7 +24,7 @@
  */
 package it.cineca.iris.ir.rest.search.model;
 
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
  * 

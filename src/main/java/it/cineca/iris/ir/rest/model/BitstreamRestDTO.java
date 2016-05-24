@@ -24,7 +24,10 @@
  */
 package it.cineca.iris.ir.rest.model;
 
-import org.codehaus.jackson.map.annotate.JsonSerialize;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+
 
 /**
  * 
@@ -32,7 +35,8 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
  * @author pmeriggi
  * 
  */
-@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class BitstreamRestDTO extends DSpaceObject {
 
     private Integer sequenceId;

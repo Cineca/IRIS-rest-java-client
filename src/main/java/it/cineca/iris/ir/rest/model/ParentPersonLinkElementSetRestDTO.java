@@ -24,7 +24,7 @@
  */
 package it.cineca.iris.ir.rest.model;
 
-import org.codehaus.jackson.annotate.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonCreator;
 
 /**
  *

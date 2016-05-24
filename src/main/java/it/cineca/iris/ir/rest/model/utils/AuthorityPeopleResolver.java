@@ -4,7 +4,7 @@ import it.cineca.iris.ir.rest.model.RmPersonRestDTO;
 
 import javax.ws.rs.core.Response;
 
-import org.codehaus.jackson.map.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 public class AuthorityPeopleResolver extends AbstractAuthorityResolver {

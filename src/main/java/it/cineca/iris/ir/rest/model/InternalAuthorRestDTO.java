@@ -1,6 +1,6 @@
 package it.cineca.iris.ir.rest.model;
 
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class InternalAuthorRestDTO {

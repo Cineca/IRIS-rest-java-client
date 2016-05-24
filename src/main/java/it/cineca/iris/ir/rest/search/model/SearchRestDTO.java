@@ -26,7 +26,7 @@ package it.cineca.iris.ir.rest.search.model;
 
 import java.util.List;
 
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
  * 
@@ -36,7 +36,8 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SearchRestDTO {
 
-    private List<RestSearchCriteria> searchColsCriteria;
+	private RestSearchElement advancedSearchCriteria;
+	private List<RestSearchCriteria> searchColsCriteria;
     private List<RestSortCriteria> sortingColsCriteria;
     private Integer offset;
     private Integer limit;
@@ -126,4 +127,12 @@ public class SearchRestDTO {
         	this.operator = "AND";
         }
     }
+
+	public RestSearchElement getAdvancedSearchCriteria() {
+		return advancedSearchCriteria;
+	}
+
+	public void setAdvancedSearchCriteria(RestSearchElement advancedSearchCriteria) {
+		this.advancedSearchCriteria = advancedSearchCriteria;
+	}
 }

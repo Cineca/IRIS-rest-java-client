@@ -24,9 +24,9 @@
  */
 package it.cineca.iris.ir.rest.model;
 
-import org.codehaus.jackson.annotate.JsonCreator;
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
-import org.codehaus.jackson.annotate.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  *
@@ -62,6 +62,7 @@ public class PersonElementSetRestDTO {
         this.clobMap = clobMap;
     }
 
+	@JsonIgnoreProperties(ignoreUnknown = true)
     public static final class OrganizationUnitMap {
 
         @JsonCreator
@@ -69,6 +70,7 @@ public class PersonElementSetRestDTO {
         }
     }
 
+	@JsonIgnoreProperties(ignoreUnknown = true)
     public static final class PersonMap {
 
         @JsonCreator
@@ -76,6 +78,7 @@ public class PersonElementSetRestDTO {
         }
     }
 
+	@JsonIgnoreProperties(ignoreUnknown = true)
     public static final class StringMap {
 
         public final String key;
@@ -88,6 +91,7 @@ public class PersonElementSetRestDTO {
         }
     }
 
+	@JsonIgnoreProperties(ignoreUnknown = true)
     public static final class BooleanMap {
 
         public final String key;
@@ -100,6 +104,7 @@ public class PersonElementSetRestDTO {
         }
     }
 
+	@JsonIgnoreProperties(ignoreUnknown = true)
     public static final class IntegerMap {
     	
         public final String key;
@@ -112,6 +117,7 @@ public class PersonElementSetRestDTO {
         }
     }
 
+	@JsonIgnoreProperties(ignoreUnknown = true)
     public static final class NumberMap {
 
         @JsonCreator
@@ -119,6 +125,7 @@ public class PersonElementSetRestDTO {
         }
     }
 
+	@JsonIgnoreProperties(ignoreUnknown = true)
     public static final class DateMap {
 
         public final String key;
@@ -131,6 +138,7 @@ public class PersonElementSetRestDTO {
         }
     }
 
+	@JsonIgnoreProperties(ignoreUnknown = true)
     public static final class ClobMap {
 
         @JsonCreator

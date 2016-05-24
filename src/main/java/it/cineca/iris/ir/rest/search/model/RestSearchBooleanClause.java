@@ -20,7 +20,7 @@ public class RestSearchBooleanClause extends RestSearchElement {
 	}
 	
 	public static enum BooleanOperatorEnum {
-		AND, OR, NOT
+		AND, OR
 	}
 
 	public List<? extends RestSearchElement> getRestSearchElementList() {

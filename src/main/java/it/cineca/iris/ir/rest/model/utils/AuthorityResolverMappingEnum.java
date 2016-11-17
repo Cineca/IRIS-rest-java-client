@@ -1,7 +1,11 @@
 package it.cineca.iris.ir.rest.model.utils;
 
 public enum AuthorityResolverMappingEnum {
-	dc_authority_people(AuthorityPeopleResolver.class);
+	
+	dc_authority_people(AuthorityPeopleResolver.class),
+	dc_authority_advisor(AuthorityPeopleResolver.class),
+	dc_authority_otherpeople(AuthorityPeopleResolver.class);
+	
 	
 	private Class<? extends IAuthorityResolver> clazz;
 	

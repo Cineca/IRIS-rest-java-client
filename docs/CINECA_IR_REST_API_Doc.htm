@@ -4048,7 +4048,7 @@
             <div class="methods">
                 <div class="method">
                     <h4 id="dauthidget">GET&nbsp; </h4>
-                    <h6>rest/api/v1/ance/{metadata_key}/</h6>
+                    <h6>rest/api/v1/authorities/{metadata_key}/?value={value}</h6>
                     <p>Returns a IRIS IR decode authority values</p>
                     <h6>request query parameters</h6>
                     <table>
@@ -4057,6 +4057,17 @@
                           <th>parameter</th>
                           <th>value</th>
                           <th>description</th>
+                        </tr>
+						 <tr>
+                          <td>
+                          <p><strong>metadata_key</strong></p>
+                          </td>
+                          <td>
+                          <p><em><a href="http://www.w3.org/TR/xmlschema-2/#string">string</a></em></p>
+                          </td>
+                          <td>
+                          <p>the name of the authority metadata (Examples: dc.authority.people, dc.authority.project, dc.authority.ancejournal, dc.authority.academicField2000, dc.authority.anceserie, dc.authority.orgunit, dc.authority.advisor, dc.authority.researchcenter, dc.authority.phdCourse, dc.authority.isicrui)</p>
+                          </td>
                         </tr>
                         <tr>
                           <td>
@@ -4085,6 +4096,12 @@
 					
 					<br>
 
+					<h6>Example</h6>
+					https://unidemo.iris.cineca.it:443/rest/api/v1/authorities/dc.authority.people/?value=ROSSI<br/>
+					https://unidemo.iris.cineca.it:443/rest/api/v1/authorities/dc.authority.academicField2000/?value=CHIM/05<br/>
+					https://unidemo.iris.cineca.it:443/rest/api/v1/authorities/dc.authority.academicField2000/?value=Scienza%20E%20Tecnologia%20Dei%20Materiali<br/>
+					https://unidemo.iris.cineca.it:443/rest/api/v1/authorities/dc.authority.phdCourse/?value=87R<br/>
+					
                     <p><em>available response representations:</em></p>
                     <ul>
                         <li>

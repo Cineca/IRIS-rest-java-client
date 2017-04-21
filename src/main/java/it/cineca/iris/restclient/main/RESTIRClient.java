@@ -24,19 +24,14 @@
  */
 package it.cineca.iris.restclient.main;
 
-import it.cineca.iris.ir.rest.command.model.BitstreamOptionsDTO;
-import it.cineca.iris.ir.rest.model.ItemRestWriteDTO;
-import it.cineca.iris.ir.rest.model.utils.HeaderScopeEnum;
-import it.cineca.iris.ir.rest.search.model.AnceSearchRestDTO;
-import it.cineca.iris.ir.rest.search.model.SearchIdsRestDTO;
-import it.cineca.iris.ir.rest.search.model.SearchRestDTO;
-import it.cineca.iris.restclient.secure.DummyX509TrustManager;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
@@ -47,6 +42,7 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 
@@ -60,6 +56,18 @@ import org.glassfish.jersey.media.multipart.file.StreamDataBodyPart;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+
+import it.cineca.iris.ir.rest.command.model.BitstreamOptionsDTO;
+import it.cineca.iris.ir.rest.model.AuthorityRestDTO;
+import it.cineca.iris.ir.rest.model.ErrorResponse;
+import it.cineca.iris.ir.rest.model.ItemRestWriteDTO;
+import it.cineca.iris.ir.rest.model.utils.AuthorityEnum;
+import it.cineca.iris.ir.rest.model.utils.HeaderScopeEnum;
+import it.cineca.iris.ir.rest.search.model.AnceSearchRestDTO;
+import it.cineca.iris.ir.rest.search.model.SearchIdsRestDTO;
+import it.cineca.iris.ir.rest.search.model.SearchRestDTO;
+import it.cineca.iris.restclient.secure.DummyX509TrustManager;
+
 /**
  * 
  * @author pmeriggi
@@ -67,23 +75,24 @@ import com.fasterxml.jackson.databind.ObjectWriter;
  */
 public class RESTIRClient {
 
-    private WebTarget webTarget;
-    
-    private Client client;
-    
-    private final String username;
-    private final String password;
-    private final String baseURI;
-    private final String pathIR;
-    private final String pathRM;
-    private Integer connectTimeOut;
-    private Integer readTimeOut;
-    
-    //20 min
-    public static final Integer CONNECT_TIMEOUT = 1200000;
-    public static final Integer READ_TIMEOUT = 1200000;
-    
-    public String getBaseURI() {
+	private WebTarget webTarget;
+
+	private Client client;
+
+	ObjectMapper mapper;
+	private final String username;
+	private final String password;
+	private final String baseURI;
+	private final String pathIR;
+	private final String pathRM;
+	private Integer connectTimeOut;
+	private Integer readTimeOut;
+
+	// 20 min
+	public static final Integer CONNECT_TIMEOUT = 1200000;
+	public static final Integer READ_TIMEOUT = 1200000;
+
+	public String getBaseURI() {
 		return baseURI;
 	}
 
@@ -96,97 +105,105 @@ public class RESTIRClient {
 	}
 
 	public RESTIRClient(String baseURI, String pathIR, String pathRM, String username, String password) {
-    	this.username = username;
-    	this.password = password;
-    	
-        this.baseURI = baseURI;
-        this.pathIR = pathIR;
-        this.pathRM = pathRM;
-        
-        this.connectTimeOut = CONNECT_TIMEOUT;
-        this.readTimeOut = READ_TIMEOUT;
-    }
-    
-    public RESTIRClient(String baseURI, String pathIR, String pathRM, String username, String password, Integer connectTimeOut, Integer readTimeOut) {
-    	this.username = username;
-    	this.password = password;
-    	
-        this.baseURI = baseURI;
-        this.pathIR = pathIR;
-        this.pathRM = pathRM;
-        
-        this.connectTimeOut = connectTimeOut;
-        this.readTimeOut = readTimeOut;
-    }
-    
-    /**
-     * Build client for self-signed SSL certified
-     */
-    public void buildUnsecureInstance() throws KeyManagementException, NoSuchAlgorithmException {
-    	this.client = ClientBuilder.newBuilder().sslContext(getSSLContext()).hostnameVerifier(getHostnameVerifier()).register(new Authenticator(username, password)).register(MultiPartFeature.class).build();
-    	setTimeout();
-    }
-    
-    /**
-     * Build client
-     */
-    public void buildSecureInstance() {
-    	this.client = ClientBuilder.newBuilder().register(new Authenticator(username, password)).register(MultiPartFeature.class).build();
-    	setTimeout();
-    }
-    
-    /**
-     * Set time out
-     */
-    private void setTimeout() {
-        //Connect timeout interval, in milliseconds.
-        this.client.property(ClientProperties.CONNECT_TIMEOUT, this.connectTimeOut);
-        //Read timeout interval, in milliseconds.
-        this.client.property(ClientProperties.READ_TIMEOUT, this.readTimeOut);
-    }
-    
-    /**
-     * Set connection timeout
-     * 
-     * @param connectTimeOut
-     */
-    public void setConnectTimeOut(Integer connectTimeOut) {
-    	this.connectTimeOut = connectTimeOut;
-    	this.client.property(ClientProperties.CONNECT_TIMEOUT, this.connectTimeOut);
-    }
-    
-    /**
-     * Set read timeout
-     * 
-     * @param readTimeOut
-     */
-    public void setReadTimeOut(Integer readTimeOut) {
-    	this.readTimeOut = readTimeOut;
-    	this.client.property(ClientProperties.READ_TIMEOUT, this.readTimeOut);
-    }
-    
-    /**
-     * Get connection timeout
-     * 
-     * @return
-     */
-    public Integer getConnectTimeOut() {
-    	return this.connectTimeOut;
-    }
-    
-    /**
-     * Get read timeout
-     * 
-     * @return
-     */
-    public Integer getReadTimeOut() {
-    	return this.readTimeOut;
-    }
-    
-    /**
-     * Bybass SSL verify
-     * @return
-     */
+		this.username = username;
+		this.password = password;
+
+		this.baseURI = baseURI;
+		this.pathIR = pathIR;
+		this.pathRM = pathRM;
+
+		this.connectTimeOut = CONNECT_TIMEOUT;
+		this.readTimeOut = READ_TIMEOUT;
+		
+		mapper = new ObjectMapper();
+	}
+
+	public RESTIRClient(String baseURI, String pathIR, String pathRM, String username, String password,
+			Integer connectTimeOut, Integer readTimeOut) {
+		this.username = username;
+		this.password = password;
+
+		this.baseURI = baseURI;
+		this.pathIR = pathIR;
+		this.pathRM = pathRM;
+
+		this.connectTimeOut = connectTimeOut;
+		this.readTimeOut = readTimeOut;
+		
+		mapper = new ObjectMapper();
+	}
+
+	/**
+	 * Build client for self-signed SSL certified
+	 */
+	public void buildUnsecureInstance() throws KeyManagementException, NoSuchAlgorithmException {
+		this.client = ClientBuilder.newBuilder().sslContext(getSSLContext()).hostnameVerifier(getHostnameVerifier())
+				.register(new Authenticator(username, password)).register(MultiPartFeature.class).build();
+		setTimeout();
+	}
+
+	/**
+	 * Build client
+	 */
+	public void buildSecureInstance() {
+		this.client = ClientBuilder.newBuilder().register(new Authenticator(username, password))
+				.register(MultiPartFeature.class).build();
+		setTimeout();
+	}
+
+	/**
+	 * Set time out
+	 */
+	private void setTimeout() {
+		// Connect timeout interval, in milliseconds.
+		this.client.property(ClientProperties.CONNECT_TIMEOUT, this.connectTimeOut);
+		// Read timeout interval, in milliseconds.
+		this.client.property(ClientProperties.READ_TIMEOUT, this.readTimeOut);
+	}
+
+	/**
+	 * Set connection timeout
+	 * 
+	 * @param connectTimeOut
+	 */
+	public void setConnectTimeOut(Integer connectTimeOut) {
+		this.connectTimeOut = connectTimeOut;
+		this.client.property(ClientProperties.CONNECT_TIMEOUT, this.connectTimeOut);
+	}
+
+	/**
+	 * Set read timeout
+	 * 
+	 * @param readTimeOut
+	 */
+	public void setReadTimeOut(Integer readTimeOut) {
+		this.readTimeOut = readTimeOut;
+		this.client.property(ClientProperties.READ_TIMEOUT, this.readTimeOut);
+	}
+
+	/**
+	 * Get connection timeout
+	 * 
+	 * @return
+	 */
+	public Integer getConnectTimeOut() {
+		return this.connectTimeOut;
+	}
+
+	/**
+	 * Get read timeout
+	 * 
+	 * @return
+	 */
+	public Integer getReadTimeOut() {
+		return this.readTimeOut;
+	}
+
+	/**
+	 * Bybass SSL verify
+	 * 
+	 * @return
+	 */
 	private HostnameVerifier getHostnameVerifier() {
 		HostnameVerifier hv = new HostnameVerifier() {
 
@@ -198,7 +215,7 @@ public class RESTIRClient {
 
 		return hv;
 	}
-	
+
 	/**
 	 * SSL Context Dummy
 	 * 
@@ -207,574 +224,702 @@ public class RESTIRClient {
 	 * @throws KeyManagementException
 	 */
 	private SSLContext getSSLContext() throws NoSuchAlgorithmException, KeyManagementException {
-    	SSLContext sslcontext = SSLContext.getInstance("TLS");    	
-        
-    	sslcontext.init(null, new X509TrustManager[]{new DummyX509TrustManager()}, new java.security.SecureRandom());
-   	 
-    	return sslcontext;
+		SSLContext sslcontext = SSLContext.getInstance("TLS");
+		sslcontext.init(null, new X509TrustManager[] { new DummyX509TrustManager() }, new java.security.SecureRandom());
+		return sslcontext;
 	}
-    /**
-     * Echo IR test
-     * 
-     * @return
-     */
-    public Response echoIR() {
-        this.webTarget = this.client.target(baseURI+pathIR).path("echo");
 
-        Response response = this.webTarget.request(MediaType.APPLICATION_JSON).get();
-        if (response.getStatus() != 200) {
-            throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
-        }
-        return response;
-    }
-    
-    /**
-     * Echo RM test
-     * 
-     * @return
-     */
-    public Response echoRM() {
-        this.webTarget = this.client.target(baseURI+pathRM).path("echo");
+	/**
+	 * Echo IR test
+	 * 
+	 * @return
+	 */
+	public Response echoIR() throws IOException {
+		this.webTarget = this.client.target(baseURI + pathIR).path("echo");
 
-        Response response = this.webTarget.request(MediaType.APPLICATION_JSON).get();
-        if (response.getStatus() != 200) {
-            throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
-        }
-        return response;
-    }
-    
-    /**
-     * Get all communities
-     * 
-     * @return
-     */
-    public Response communities() {
-        this.webTarget = this.client.target(baseURI+pathIR).path("communities");
+		Response response = this.webTarget.request(MediaType.APPLICATION_JSON).get();
+		if (response.getStatus() != 200) {
+			ErrorResponse error = mapper.readValue(response.readEntity(String.class), ErrorResponse.class);
+			throw new RuntimeException("Failed : HTTP error code : " + response.getStatus() + " - "+ error.getMessage());
+		}
+		return response;
+	}
 
-        Response response = this.webTarget.request(MediaType.APPLICATION_JSON).get();
-        if (response.getStatus() != 200) {
-            throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
-        }
-        return response;
-    }
+	/**
+	 * Echo RM test
+	 * 
+	 * @return
+	 */
+	public Response echoRM() throws IOException {
+		this.webTarget = this.client.target(baseURI + pathRM).path("echo");
 
-    /**
-     * Get community give id
-     * 
-     * @param communityId
-     * @return
-     */
-    public Response community(String communityId) {
-        this.webTarget = this.client.target(baseURI+pathIR).path("communities/" + communityId);
+		Response response = this.webTarget.request(MediaType.APPLICATION_JSON).get();
+		if (response.getStatus() != 200) {
+			ErrorResponse error = mapper.readValue(response.readEntity(String.class), ErrorResponse.class);
+			throw new RuntimeException("Failed : HTTP error code : " + response.getStatus() + " - "+ error.getMessage());
+		}
+		return response;
+	}
 
-        Response response = this.webTarget.request(MediaType.APPLICATION_JSON).get();
-        if (response.getStatus() != 200) {
-            throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
-        }
-        return response;
-    }
-    
-    /**
-     * Get all collection
-     * 
-     * @return
-     */
-    public Response collections() {
-        this.webTarget = this.client.target(baseURI+pathIR).path("collections");
+	/**
+	 * Get all communities
+	 * 
+	 * @return
+	 */
+	public Response communities() throws IOException {
+		this.webTarget = this.client.target(baseURI + pathIR).path("communities");
 
-        Response response = this.webTarget.request(MediaType.APPLICATION_JSON).get();
-        if (response.getStatus() != 200) {
-            throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
-        }
-        return response;
-    }
-    
-    /**
-     * Get collection by id
-     * 
-     * @param collectionId
-     * @return
-     */
-    public Response collection(String collectionId) {
-        this.webTarget = this.client.target(baseURI+pathIR).path("collections/" + collectionId);
+		Response response = this.webTarget.request(MediaType.APPLICATION_JSON).get();
+		if (response.getStatus() != 200) {
+			ErrorResponse error = mapper.readValue(response.readEntity(String.class), ErrorResponse.class);
+			throw new RuntimeException("Failed : HTTP error code : " + response.getStatus() + " - "+ error.getMessage());
+		}
+		return response;
+	}
 
-        Response response = this.webTarget.request(MediaType.APPLICATION_JSON).get();
-        if (response.getStatus() != 200) {
-            throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
-        }
-        return response;
-    }
-    
-    /**
-     * Get collection by handle
-     * 
-     * @param collectionId
-     * @return
-     */
-    public Response collection(String authorityName, String localName) {
-        this.webTarget = this.client.target(baseURI+pathIR).path("collections/" + authorityName + "/" + localName);
+	/**
+	 * Get community give id
+	 * 
+	 * @param communityId
+	 * @return
+	 */
+	public Response community(String communityId) throws IOException {
+		this.webTarget = this.client.target(baseURI + pathIR).path("communities/" + communityId);
 
-        Response response = this.webTarget.request(MediaType.APPLICATION_JSON).get();
-        if (response.getStatus() != 200) {
-            throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
-        }
-        return response;
-    }
-  
-    /**
-     * Get item by Id
-     * 
-     * @param itemId
-     * @return
-     */
-    public Response item(String itemId) {
-        this.webTarget = this.client.target(baseURI+pathIR).path("items/" + itemId);
+		Response response = this.webTarget.request(MediaType.APPLICATION_JSON).get();
+		if (response.getStatus() != 200) {
+			ErrorResponse error = mapper.readValue(response.readEntity(String.class), ErrorResponse.class);
+			throw new RuntimeException("Failed : HTTP error code : " + response.getStatus() + " - "+ error.getMessage());
+		}
+		return response;
+	}
 
-        Response response = this.webTarget.request(MediaType.APPLICATION_JSON).header(HeaderScopeEnum.getHeaderTag(), HeaderScopeEnum.ROLE_ADMIN.getHeaderValue()).get();
-        if (response.getStatus() != 200) {
-            throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
-        }
-        return response;
-    }
+	/**
+	 * Get all collection
+	 * 
+	 * @return
+	 */
+	public Response collections() throws IOException {
+		this.webTarget = this.client.target(baseURI + pathIR).path("collections");
 
-    /**
-     * Get all item data by Id
-     * 
-     * @param itemId
-     * @return
-     */
-    public Response itemAll(String itemId) {
-        this.webTarget = this.client.target(baseURI+pathIR).path("items/" + itemId).queryParam("expand", "all");
+		Response response = this.webTarget.request(MediaType.APPLICATION_JSON).get();
+		if (response.getStatus() != 200) {
+			ErrorResponse error = mapper.readValue(response.readEntity(String.class), ErrorResponse.class);
+			throw new RuntimeException("Failed : HTTP error code : " + response.getStatus() + " - "+ error.getMessage());
+		}
+		return response;
+	}
 
-        Response response = this.webTarget.request(MediaType.APPLICATION_JSON).header(HeaderScopeEnum.getHeaderTag(), HeaderScopeEnum.ROLE_ADMIN.getHeaderValue()).get();
-        if (response.getStatus() != 200) {
-            throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
-        }
-        return response;
-    }
-    
-    /**
-     * Get all items data by Id
-     * 
-     * @param limit
-     * @param offset
-     * @return
-     */
-    public Response itemsAll(Integer limit, Integer offset) {
-        this.webTarget = this.client.target(baseURI+pathIR).path("items/").queryParam("expand", "all").queryParam("limit", limit).queryParam("offset", offset);
+	/**
+	 * Get collection by id
+	 * 
+	 * @param collectionId
+	 * @return
+	 */
+	public Response collection(String collectionId) throws IOException {
+		this.webTarget = this.client.target(baseURI + pathIR).path("collections/" + collectionId);
 
-        Response response = this.webTarget.request(MediaType.APPLICATION_JSON).header(HeaderScopeEnum.getHeaderTag(), HeaderScopeEnum.ROLE_ADMIN.getHeaderValue()).get();
-        if (response.getStatus() != 200) {
-            throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
-        }
-        return response;
-    }
-    
-    /**
-     * Get all items by Id
-     * 
-     * @param limit
-     * @param offset
-     * @return
-     */
-    public Response items(Integer limit, Integer offset) {
-        this.webTarget = this.client.target(baseURI+pathIR).path("items/").queryParam("limit", limit).queryParam("offset", offset);
+		Response response = this.webTarget.request(MediaType.APPLICATION_JSON).get();
+		if (response.getStatus() != 200) {
+			ErrorResponse error = mapper.readValue(response.readEntity(String.class), ErrorResponse.class);
+			throw new RuntimeException("Failed : HTTP error code : " + response.getStatus() + " - "+ error.getMessage());
+		}
+		return response;
+	}
 
-        Response response = this.webTarget.request(MediaType.APPLICATION_JSON).header(HeaderScopeEnum.getHeaderTag(), HeaderScopeEnum.ROLE_ADMIN.getHeaderValue()).get();
-        if (response.getStatus() != 200) {
-            throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
-        }
-        return response;
-    }
+	/**
+	 * Get collection by handle
+	 * 
+	 * @param collectionId
+	 * @return
+	 */
+	public Response collection(String authorityName, String localName) throws IOException {
+		this.webTarget = this.client.target(baseURI + pathIR).path("collections/" + authorityName + "/" + localName);
 
-    /**
-     * Get item metadata by item id
-     * 
-     * @param itemId
-     * @return
-     */
-    public Response itemWithMetadata(String itemId) {
-        this.webTarget = this.client.target(baseURI+pathIR).path("items/" + itemId).queryParam("expand", "metadata");
+		Response response = this.webTarget.request(MediaType.APPLICATION_JSON).get();
+		if (response.getStatus() != 200) {
+			ErrorResponse error = mapper.readValue(response.readEntity(String.class), ErrorResponse.class);
+			throw new RuntimeException("Failed : HTTP error code : " + response.getStatus() + " - "+ error.getMessage());
+		}
+		return response;
+	}
 
-        Response response = this.webTarget.request(MediaType.APPLICATION_JSON).header(HeaderScopeEnum.getHeaderTag(), HeaderScopeEnum.ROLE_ADMIN.getHeaderValue()).get();
-        if (response.getStatus() != 200) {
-            throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
-        }
-        return response;
-    }
+	/**
+	 * Get item by Id
+	 * 
+	 * @param itemId
+	 * @return
+	 */
+	public Response item(String itemId) throws IOException {
+		this.webTarget = this.client.target(baseURI + pathIR).path("items/" + itemId);
 
-    /**
-     * Get input form by id
-     * 
-     * @param inputFormId
-     * @return
-     */
-    public Response inputFormAll(String inputFormId) {
-        this.webTarget = this.client.target(baseURI+pathIR).path("inputforms/" + inputFormId).queryParam("expand", "all");
+		Response response = this.webTarget.request(MediaType.APPLICATION_JSON)
+				.header(HeaderScopeEnum.getHeaderTag(), HeaderScopeEnum.ROLE_ADMIN.getHeaderValue()).get();
+		if (response.getStatus() != 200) {
+			ErrorResponse error = mapper.readValue(response.readEntity(String.class), ErrorResponse.class);
+			throw new RuntimeException("Failed : HTTP error code : " + response.getStatus() + " - "+ error.getMessage());
+		}
+		return response;
+	}
 
-        Response response = this.webTarget.request(MediaType.APPLICATION_JSON).get();
-        if (response.getStatus() != 200) {
-            throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
-        }
-        return response;
-    }
+	/**
+	 * Get all item data by Id
+	 * 
+	 * @param itemId
+	 * @return
+	 */
+	public Response itemAll(String itemId) throws IOException {
+		this.webTarget = this.client.target(baseURI + pathIR).path("items/" + itemId).queryParam("expand", "all");
 
-    /**
-     * Search item by dto
-     * 
-     * @param searchDTO
-     * @return
-     * @throws IOException
-     */
-    public Response items(SearchRestDTO searchDTO) throws IOException {
-        this.webTarget = this.client.target(baseURI+pathIR).path("items/search");
+		Response response = this.webTarget.request(MediaType.APPLICATION_JSON)
+				.header(HeaderScopeEnum.getHeaderTag(), HeaderScopeEnum.ROLE_ADMIN.getHeaderValue()).get();
+		if (response.getStatus() != 200) {
+			ErrorResponse error = mapper.readValue(response.readEntity(String.class), ErrorResponse.class);
+			throw new RuntimeException("Failed : HTTP error code : " + response.getStatus() + " - "+ error.getMessage());
+		}
+		return response;
+	}
 
-        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-        String jsonSearchDTO = ow.writeValueAsString(searchDTO);
+	/**
+	 * Get all items data by Id
+	 * 
+	 * @param limit
+	 * @param offset
+	 * @return
+	 */
+	public Response itemsAll(Integer limit, Integer offset) throws IOException {
+		this.webTarget = this.client.target(baseURI + pathIR).path("items/").queryParam("expand", "all")
+				.queryParam("limit", limit).queryParam("offset", offset);
 
-        Response response = this.webTarget.request(MediaType.APPLICATION_JSON).header(HeaderScopeEnum.getHeaderTag(), HeaderScopeEnum.ROLE_ADMIN.getHeaderValue()).post(Entity.entity(jsonSearchDTO, MediaType.APPLICATION_JSON));
-        if (response.getStatus() != 200) {
-            throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
-        }
-        return response;
-    }
-    
-    /**
-     * Search item by dto
-     * 
-     * @param searchDTO
-     * @return
-     * @throws IOException
-     */
-    public Response createItem(ItemRestWriteDTO itemDTO, MultivaluedMap<String, Object> headers) throws IOException {
-        this.webTarget = this.client.target(baseURI+pathIR).path("items");
+		Response response = this.webTarget.request(MediaType.APPLICATION_JSON)
+				.header(HeaderScopeEnum.getHeaderTag(), HeaderScopeEnum.ROLE_ADMIN.getHeaderValue()).get();
+		if (response.getStatus() != 200) {
+			ErrorResponse error = mapper.readValue(response.readEntity(String.class), ErrorResponse.class);
+			throw new RuntimeException("Failed : HTTP error code : " + response.getStatus() + " - "+ error.getMessage());
+		}
+		return response;
+	}
 
-        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-        String jsonItemDTO = ow.writeValueAsString(itemDTO);
+	/**
+	 * Get all items by Id
+	 * 
+	 * @param limit
+	 * @param offset
+	 * @return
+	 */
+	public Response items(Integer limit, Integer offset) throws IOException {
+		this.webTarget = this.client.target(baseURI + pathIR).path("items/").queryParam("limit", limit)
+				.queryParam("offset", offset);
 
-        Response response = this.webTarget.request(MediaType.APPLICATION_JSON).headers(headers).post(Entity.entity(jsonItemDTO, MediaType.APPLICATION_JSON));
-        
-        if (response.getStatus() != 201) {
-            throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
-        }
-        
-        return response;
-    }
-    
-    /**
-     * Get list item id by dto
-     * 
-     * @param searchDTO
-     * @return
-     * @throws IOException
-     */
-    public Response itemIds(SearchIdsRestDTO searchDTO) throws IOException {
-        this.webTarget = this.client.target(baseURI+pathIR).path("items/ids/search");
+		Response response = this.webTarget.request(MediaType.APPLICATION_JSON)
+				.header(HeaderScopeEnum.getHeaderTag(), HeaderScopeEnum.ROLE_ADMIN.getHeaderValue()).get();
+		if (response.getStatus() != 200) {
+			ErrorResponse error = mapper.readValue(response.readEntity(String.class), ErrorResponse.class);
+			throw new RuntimeException("Failed : HTTP error code : " + response.getStatus() + " - "+ error.getMessage());
+		}
+		return response;
+	}
 
-        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-        String jsonSearchDTO = ow.writeValueAsString(searchDTO);
+	/**
+	 * Get item metadata by item id
+	 * 
+	 * @param itemId
+	 * @return
+	 */
+	public Response itemWithMetadata(String itemId) throws IOException {
+		this.webTarget = this.client.target(baseURI + pathIR).path("items/" + itemId).queryParam("expand", "metadata");
 
-        Response response = this.webTarget.request(MediaType.APPLICATION_JSON).header(HeaderScopeEnum.getHeaderTag(), HeaderScopeEnum.ROLE_ADMIN.getHeaderValue()).post(Entity.entity(jsonSearchDTO, MediaType.APPLICATION_JSON));
-        if (response.getStatus() != 200) {
-            throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
-        }
-        return response;
-    }
+		Response response = this.webTarget.request(MediaType.APPLICATION_JSON)
+				.header(HeaderScopeEnum.getHeaderTag(), HeaderScopeEnum.ROLE_ADMIN.getHeaderValue()).get();
+		if (response.getStatus() != 200) {
+			ErrorResponse error = mapper.readValue(response.readEntity(String.class), ErrorResponse.class);
+			throw new RuntimeException("Failed : HTTP error code : " + response.getStatus() + " - "+ error.getMessage());
+		}
+		return response;
+	}
 
-    /**
-     * Get ance journal by dto
-     * 
-     * @param searchDTO
-     * @return
-     * @throws IOException
-     */
-    public Response journals(AnceSearchRestDTO searchDTO) throws IOException {
-        this.webTarget = this.client.target(baseURI+pathIR).path("ance/search");
+	/**
+	 * Get input form by id
+	 * 
+	 * @param inputFormId
+	 * @return
+	 */
+	public Response inputFormAll(String inputFormId) throws IOException {
+		this.webTarget = this.client.target(baseURI + pathIR).path("inputforms/" + inputFormId).queryParam("expand",
+				"all");
 
-        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-        String jsonSearchDTO = ow.writeValueAsString(searchDTO);
+		Response response = this.webTarget.request(MediaType.APPLICATION_JSON).get();
+		if (response.getStatus() != 200) {
+			ErrorResponse error = mapper.readValue(response.readEntity(String.class), ErrorResponse.class);
+			throw new RuntimeException("Failed : HTTP error code : " + response.getStatus() + " - "+ error.getMessage());
+		}
+		return response;
+	}
 
-        Response response = this.webTarget.request(MediaType.APPLICATION_JSON).header(HeaderScopeEnum.getHeaderTag(), HeaderScopeEnum.ROLE_ADMIN.getHeaderValue()).post(Entity.entity(jsonSearchDTO, MediaType.APPLICATION_JSON));
-        if (response.getStatus() != 200) {
-            throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
-        }
-        return response;
-    }
+	/**
+	 * Search item by dto
+	 * 
+	 * @param searchDTO
+	 * @return
+	 * @throws IOException
+	 */
+	public Response items(SearchRestDTO searchDTO) throws IOException {
+		this.webTarget = this.client.target(baseURI + pathIR).path("items/search");
 
-    /**
-     * Get ance journal by id
-     * 
-     * @param anceId
-     * @return
-     * @throws IOException
-     */
-    public Response journal(String anceId) throws IOException {
-        this.webTarget = this.client.target(baseURI+pathIR).path("ance/" + anceId);
+		ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+		String jsonSearchDTO = ow.writeValueAsString(searchDTO);
 
-        Response response = this.webTarget.request(MediaType.APPLICATION_JSON).header(HeaderScopeEnum.getHeaderTag(), HeaderScopeEnum.ROLE_ADMIN.getHeaderValue()).get();
-        if (response.getStatus() != 200) {
-            throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
-        }
-        return response;
-    }
-    
-    /**
-     * Get person by id
-     * 
-     * @param personId
-     * @return
-     * @throws IOException
-     */
-    public Response personById(String personId) throws IOException {
-        this.webTarget = this.client.target(baseURI+pathRM).path("personsbyid/" + personId);
+		Response response = this.webTarget.request(MediaType.APPLICATION_JSON)
+				.header(HeaderScopeEnum.getHeaderTag(), HeaderScopeEnum.ROLE_ADMIN.getHeaderValue())
+				.post(Entity.entity(jsonSearchDTO, MediaType.APPLICATION_JSON));
+		if (response.getStatus() != 200) {
+			ErrorResponse error = mapper.readValue(response.readEntity(String.class), ErrorResponse.class);
+			throw new RuntimeException("Failed : HTTP error code : " + response.getStatus() + " - "+ error.getMessage());
+		}
+		return response;
+	}
 
-        Response response = this.webTarget.request(MediaType.APPLICATION_JSON).header(HeaderScopeEnum.getHeaderTag(), HeaderScopeEnum.ROLE_ADMIN.getHeaderValue()).get();
-        if (response.getStatus() != 200) {
-            throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
-        }
-        return response;
-    }
-    
-    /**
-     * Get person by cf
-     * 
-     * @param personId
-     * @return
-     * @throws IOException
-     */
-    public Response personByCF(String personId) throws IOException {
-        this.webTarget = this.client.target(baseURI+pathRM).path("personsbycf/" + personId);
+	/**
+	 * Search item by dto
+	 * 
+	 * @param searchDTO
+	 * @return
+	 * @throws IOException
+	 */
+	public Response createItem(ItemRestWriteDTO itemDTO, MultivaluedMap<String, Object> headers) throws IOException {
+		this.webTarget = this.client.target(baseURI + pathIR).path("items");
 
-        Response response = this.webTarget.request(MediaType.APPLICATION_JSON).header(HeaderScopeEnum.getHeaderTag(), HeaderScopeEnum.ROLE_ADMIN.getHeaderValue()).get();
-        if (response.getStatus() != 200) {
-            throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
-        }
-        return response;
-    }
-    
-    /**
-     * Get person by cris id
-     * 
-     * @param crisId
-     * @return
-     * @throws IOException
-     */
-    public Response personByCris(String crisId) throws IOException {
-        this.webTarget = this.client.target(baseURI+pathRM).path("personsbyrpid/" + crisId);
+		ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+		String jsonItemDTO = ow.writeValueAsString(itemDTO);
+		
+		//test
+		System.out.println(Entity.entity(jsonItemDTO, MediaType.APPLICATION_JSON).toString());
+		
+		Response response = this.webTarget.request(MediaType.APPLICATION_JSON).headers(headers)
+				.post(Entity.entity(jsonItemDTO, MediaType.APPLICATION_JSON));
+		
+		if (response.getStatus() != 201) {
+			ErrorResponse error = mapper.readValue(response.readEntity(String.class), ErrorResponse.class);
+			throw new RuntimeException("Failed : HTTP error code : " + response.getStatus() + " - "+ error.getMessage());
+		}
 
-        Response response = this.webTarget.request(MediaType.APPLICATION_JSON).header(HeaderScopeEnum.getHeaderTag(), HeaderScopeEnum.ROLE_ADMIN.getHeaderValue()).get();
-        if (response.getStatus() != 200) {
-            throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
-        }
-        return response;
-    }
-    
-    /**
-     * Get person position by person id
-     * 
-     * @param personId
-     * @return
-     * @throws IOException
-     */
-    public Response positionsById(String personId) throws IOException {
-        this.webTarget = this.client.target(baseURI+pathRM).path("personsbyid/" + personId + "/positions");
+		return response;
+	}
 
-        Response response = this.webTarget.request(MediaType.APPLICATION_JSON).header(HeaderScopeEnum.getHeaderTag(), HeaderScopeEnum.ROLE_ADMIN.getHeaderValue()).get();
-        if (response.getStatus() != 200) {
-            throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
-        }
-        return response;
-    }
-    
-    /**
-     * Get person position by cris id
-     * 
-     * @param crisId
-     * @return
-     * @throws IOException
-     */
-    public Response positionsByCris(String crisId) throws IOException {
-        this.webTarget = this.client.target(baseURI+pathRM).path("personsbyrpid/" + crisId + "/positions");
+	/**
+	 * Get list item id by dto
+	 * 
+	 * @param searchDTO
+	 * @return
+	 * @throws IOException
+	 */
+	public Response itemIds(SearchIdsRestDTO searchDTO) throws IOException {
+		this.webTarget = this.client.target(baseURI + pathIR).path("items/ids/search");
 
-        Response response = this.webTarget.request(MediaType.APPLICATION_JSON).header(HeaderScopeEnum.getHeaderTag(), HeaderScopeEnum.ROLE_ADMIN.getHeaderValue()).get();
-        if (response.getStatus() != 200) {
-            throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
-        }
-        return response;
-    }
-    
-    /**
-     * Get current person position by person id
-     * 
-     * @param personId
-     * @return
-     * @throws IOException
-     */
-    public Response positioncurrentById(String personId) throws IOException {
-        this.webTarget = this.client.target(baseURI+pathRM).path("personsbyid/" + personId + "/positioncurrent");
+		ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+		String jsonSearchDTO = ow.writeValueAsString(searchDTO);
 
-        Response response = this.webTarget.request(MediaType.APPLICATION_JSON).header(HeaderScopeEnum.getHeaderTag(), HeaderScopeEnum.ROLE_ADMIN.getHeaderValue()).get();
-        if (response.getStatus() != 200) {
-            throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
-        }
-        return response;
-    }
-    
-    /**
-     * Get current person position by cris id
-     * 
-     * @param crisId
-     * @return
-     * @throws IOException
-     */
-    public Response positioncurrentByCris(String crisId) throws IOException {
-        this.webTarget = this.client.target(baseURI+pathRM).path("personsbyrpid/" + crisId + "/positioncurrent");
+		Response response = this.webTarget.request(MediaType.APPLICATION_JSON)
+				.header(HeaderScopeEnum.getHeaderTag(), HeaderScopeEnum.ROLE_ADMIN.getHeaderValue())
+				.post(Entity.entity(jsonSearchDTO, MediaType.APPLICATION_JSON));
+		if (response.getStatus() != 200) {
+			ErrorResponse error = mapper.readValue(response.readEntity(String.class), ErrorResponse.class);
+			throw new RuntimeException("Failed : HTTP error code : " + response.getStatus() + " - "+ error.getMessage());
+		}
+		return response;
+	}
 
-        Response response = this.webTarget.request(MediaType.APPLICATION_JSON).header(HeaderScopeEnum.getHeaderTag(), HeaderScopeEnum.ROLE_ADMIN.getHeaderValue()).get();
-        if (response.getStatus() != 200) {
-            throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
-        }
-        return response;
-    }
-    
-    /**
-     * Get person by id (person or cris)
-     * 
-     * @param id
-     * @return
-     * @throws IOException
-     */
-    public Response person(String id) throws IOException {
-        this.webTarget = this.client.target(baseURI+pathRM).path("persons/" + id);
+	/**
+	 * Search the authority provider for the given authority
+	 * 
+	 * @param authority
+	 * @param searchPhrase
+	 * @return
+	 * @throws IOException
+	 */
+	public Response resolveAuthority(String authority, String searchPhrase) throws IOException {
+		this.webTarget = this.client.target(baseURI + pathIR).path("authorities/" + authority + "/").queryParam("value", searchPhrase);
 
-        Response response = this.webTarget.request(MediaType.APPLICATION_JSON).header(HeaderScopeEnum.getHeaderTag(), HeaderScopeEnum.ROLE_ADMIN.getHeaderValue()).get();
-        if (response.getStatus() != 200) {
-            throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
-        }
-        return response;
-    }
-    
-    /**
-     * Get person position by id (person or cris)
-     * 
-     * @param id
-     * @return
-     * @throws IOException
-     */
-    public Response positions(String id) throws IOException {
-        this.webTarget = this.client.target(baseURI+pathRM).path("persons/" + id + "/positions");
+		Response response = this.webTarget.request(MediaType.APPLICATION_JSON)
+				.header(HeaderScopeEnum.getHeaderTag(), HeaderScopeEnum.ROLE_ADMIN.getHeaderValue()).get();
+		if (response.getStatus() != 200) {
+			ErrorResponse error = mapper.readValue(response.readEntity(String.class), ErrorResponse.class);
+			throw new RuntimeException("Failed : HTTP error code : " + response.getStatus() + " - "+ error.getMessage());
+		}
+		return response;
+	}
 
-        Response response = this.webTarget.request(MediaType.APPLICATION_JSON).header(HeaderScopeEnum.getHeaderTag(), HeaderScopeEnum.ROLE_ADMIN.getHeaderValue()).get();
-        if (response.getStatus() != 200) {
-            throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
-        }
-        return response;
-    }
-    
-    /**
-     * Get current person position by id (person or cris)
-     * 
-     * @param id
-     * @return
-     * @throws IOException
-     */
-    public Response positioncurrent(String id) throws IOException {
-        this.webTarget = this.client.target(baseURI+pathRM).path("persons/" + id + "/positioncurrent");
+	/** 
+	 * Search the authority provider for the given authority
+	 * 
+	 * @param authority
+	 * @param searchValue
+	 * @return
+	 * @throws Exception
+	 */
+	public List<AuthorityRestDTO> searchAuthority(AuthorityEnum authority, String searchValue) throws Exception {
+		List<AuthorityRestDTO> authorities = new ArrayList<AuthorityRestDTO>();
+		if (authority!=null) {
+			Response response = this.resolveAuthority(authority.getValue(), searchValue);
+			String result = response.readEntity(String.class);
+			ObjectMapper mapper = new ObjectMapper();
+			authorities = Arrays.asList(mapper.readValue(result, AuthorityRestDTO[].class));
+			return authorities;
+		} else {
+			throw new Exception("You have to specify the authority for the AuthorityResolver");
+		}
+	}
+	
+	/**
+	 * Get ance journal by dto
+	 * 
+	 * @param searchDTO
+	 * @return
+	 * @throws IOException
+	 */
+	public Response journals(AnceSearchRestDTO searchDTO) throws IOException {
+		this.webTarget = this.client.target(baseURI + pathIR).path("ance/search");
 
-        Response response = this.webTarget.request(MediaType.APPLICATION_JSON).header(HeaderScopeEnum.getHeaderTag(), HeaderScopeEnum.ROLE_ADMIN.getHeaderValue()).get();
-        if (response.getStatus() != 200) {
-            throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
-        }
-        return response;
-    }
-    
-    /**
-     * Upload attachment with licence metadata for item
-     * 
-     * @param itemId
-     * @param optionBitStreamDTO
-     * @param fileName
-     * @return
-     * @throws IOException
-     */
-    public Response uploadStream(Integer itemId, BitstreamOptionsDTO bitstreamOptionsDTO, String fileName) throws IOException {	    
-		WebTarget webTarget = client.target(baseURI+pathIR).path("streams/items/"+itemId);
-	    
-		//Compose multipart request (multipart/form-data)
-		//See http://stackoverflow.com/questions/27609569/file-upload-along-with-other-object-in-jersey-restful-web-service/27614403#27614403
-		//See https://jersey.java.net/documentation/latest/media.html#multipart
-	    
+		ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+		String jsonSearchDTO = ow.writeValueAsString(searchDTO);
+
+		Response response = this.webTarget.request(MediaType.APPLICATION_JSON)
+				.header(HeaderScopeEnum.getHeaderTag(), HeaderScopeEnum.ROLE_ADMIN.getHeaderValue())
+				.post(Entity.entity(jsonSearchDTO, MediaType.APPLICATION_JSON));
+		if (response.getStatus() != 200) {
+			ErrorResponse error = mapper.readValue(response.readEntity(String.class), ErrorResponse.class);
+			throw new RuntimeException("Failed : HTTP error code : " + response.getStatus() + " - "+ error.getMessage());
+		}
+		return response;
+	}
+
+	/**
+	 * Get ance journal by id
+	 * 
+	 * @param anceId
+	 * @return
+	 * @throws IOException
+	 */
+	public Response journal(String anceId) throws IOException {
+		this.webTarget = this.client.target(baseURI + pathIR).path("ance/" + anceId);
+
+		Response response = this.webTarget.request(MediaType.APPLICATION_JSON)
+				.header(HeaderScopeEnum.getHeaderTag(), HeaderScopeEnum.ROLE_ADMIN.getHeaderValue()).get();
+		if (response.getStatus() != 200) {
+			ErrorResponse error = mapper.readValue(response.readEntity(String.class), ErrorResponse.class);
+			throw new RuntimeException("Failed : HTTP error code : " + response.getStatus() + " - "+ error.getMessage());
+		}
+		return response;
+	}
+
+	/**
+	 * Get person by id
+	 * 
+	 * @param personId
+	 * @return
+	 * @throws IOException
+	 */
+	public Response personById(String personId) throws IOException {
+		this.webTarget = this.client.target(baseURI + pathRM).path("personsbyid/" + personId);
+
+		Response response = this.webTarget.request(MediaType.APPLICATION_JSON)
+				.header(HeaderScopeEnum.getHeaderTag(), HeaderScopeEnum.ROLE_ADMIN.getHeaderValue()).get();
+		if (response.getStatus() != 200) {
+			ErrorResponse error = mapper.readValue(response.readEntity(String.class), ErrorResponse.class);
+			throw new RuntimeException("Failed : HTTP error code : " + response.getStatus() + " - "+ error.getMessage());
+		}
+		return response;
+	}
+
+	/**
+	 * Get person by cf
+	 * 
+	 * @param personId
+	 * @return
+	 * @throws IOException
+	 */
+	public Response personByCF(String personId) throws IOException {
+		this.webTarget = this.client.target(baseURI + pathRM).path("personsbycf/" + personId);
+
+		Response response = this.webTarget.request(MediaType.APPLICATION_JSON)
+				.header(HeaderScopeEnum.getHeaderTag(), HeaderScopeEnum.ROLE_ADMIN.getHeaderValue()).get();
+		if (response.getStatus() != 200) {
+			ErrorResponse error = mapper.readValue(response.readEntity(String.class), ErrorResponse.class);
+			throw new RuntimeException("Failed : HTTP error code : " + response.getStatus() + " - "+ error.getMessage());
+		}
+		return response;
+	}
+
+	/**
+	 * Get person by cris id
+	 * 
+	 * @param crisId
+	 * @return
+	 * @throws IOException
+	 */
+	public Response personByCris(String crisId) throws IOException {
+		this.webTarget = this.client.target(baseURI + pathRM).path("personsbyrpid/" + crisId);
+
+		Response response = this.webTarget.request(MediaType.APPLICATION_JSON)
+				.header(HeaderScopeEnum.getHeaderTag(), HeaderScopeEnum.ROLE_ADMIN.getHeaderValue()).get();
+		if (response.getStatus() != 200) {
+			ErrorResponse error = mapper.readValue(response.readEntity(String.class), ErrorResponse.class);
+			throw new RuntimeException("Failed : HTTP error code : " + response.getStatus() + " - "+ error.getMessage());
+		}
+		return response;
+	}
+
+	/**
+	 * Get person position by person id
+	 * 
+	 * @param personId
+	 * @return
+	 * @throws IOException
+	 */
+	public Response positionsById(String personId) throws IOException {
+		this.webTarget = this.client.target(baseURI + pathRM).path("personsbyid/" + personId + "/positions");
+
+		Response response = this.webTarget.request(MediaType.APPLICATION_JSON)
+				.header(HeaderScopeEnum.getHeaderTag(), HeaderScopeEnum.ROLE_ADMIN.getHeaderValue()).get();
+		if (response.getStatus() != 200) {
+			ErrorResponse error = mapper.readValue(response.readEntity(String.class), ErrorResponse.class);
+			throw new RuntimeException("Failed : HTTP error code : " + response.getStatus() + " - "+ error.getMessage());
+		}
+		return response;
+	}
+
+	/**
+	 * Get person position by cris id
+	 * 
+	 * @param crisId
+	 * @return
+	 * @throws IOException
+	 */
+	public Response positionsByCris(String crisId) throws IOException {
+		this.webTarget = this.client.target(baseURI + pathRM).path("personsbyrpid/" + crisId + "/positions");
+
+		Response response = this.webTarget.request(MediaType.APPLICATION_JSON)
+				.header(HeaderScopeEnum.getHeaderTag(), HeaderScopeEnum.ROLE_ADMIN.getHeaderValue()).get();
+		if (response.getStatus() != 200) {
+			ErrorResponse error = mapper.readValue(response.readEntity(String.class), ErrorResponse.class);
+			throw new RuntimeException("Failed : HTTP error code : " + response.getStatus() + " - "+ error.getMessage());
+		}
+		return response;
+	}
+
+	/**
+	 * Get current person position by person id
+	 * 
+	 * @param personId
+	 * @return
+	 * @throws IOException
+	 */
+	public Response positioncurrentById(String personId) throws IOException {
+		this.webTarget = this.client.target(baseURI + pathRM).path("personsbyid/" + personId + "/positioncurrent");
+
+		Response response = this.webTarget.request(MediaType.APPLICATION_JSON)
+				.header(HeaderScopeEnum.getHeaderTag(), HeaderScopeEnum.ROLE_ADMIN.getHeaderValue()).get();
+		if (response.getStatus() != 200) {
+			ErrorResponse error = mapper.readValue(response.readEntity(String.class), ErrorResponse.class);
+			throw new RuntimeException("Failed : HTTP error code : " + response.getStatus() + " - "+ error.getMessage());
+		}
+		return response;
+	}
+
+	/**
+	 * Get current person position by cris id
+	 * 
+	 * @param crisId
+	 * @return
+	 * @throws IOException
+	 */
+	public Response positioncurrentByCris(String crisId) throws IOException {
+		this.webTarget = this.client.target(baseURI + pathRM).path("personsbyrpid/" + crisId + "/positioncurrent");
+
+		Response response = this.webTarget.request(MediaType.APPLICATION_JSON)
+				.header(HeaderScopeEnum.getHeaderTag(), HeaderScopeEnum.ROLE_ADMIN.getHeaderValue()).get();
+		if (response.getStatus() != 200) {
+			ErrorResponse error = mapper.readValue(response.readEntity(String.class), ErrorResponse.class);
+			throw new RuntimeException("Failed : HTTP error code : " + response.getStatus() + " - "+ error.getMessage());
+		}
+		return response;
+	}
+
+	/**
+	 * Get person by id (person or cris)
+	 * 
+	 * @param id
+	 * @return
+	 * @throws IOException
+	 */
+	public Response person(String id) throws IOException {
+		this.webTarget = this.client.target(baseURI + pathRM).path("persons/" + id);
+
+		Response response = this.webTarget.request(MediaType.APPLICATION_JSON)
+				.header(HeaderScopeEnum.getHeaderTag(), HeaderScopeEnum.ROLE_ADMIN.getHeaderValue()).get();
+		if (response.getStatus() != 200) {
+			ErrorResponse error = mapper.readValue(response.readEntity(String.class), ErrorResponse.class);
+			throw new RuntimeException("Failed : HTTP error code : " + response.getStatus() + " - "+ error.getMessage());
+		}
+		return response;
+	}
+
+	/**
+	 * Get person position by id (person or cris)
+	 * 
+	 * @param id
+	 * @return
+	 * @throws IOException
+	 */
+	public Response positions(String id) throws IOException {
+		this.webTarget = this.client.target(baseURI + pathRM).path("persons/" + id + "/positions");
+
+		Response response = this.webTarget.request(MediaType.APPLICATION_JSON)
+				.header(HeaderScopeEnum.getHeaderTag(), HeaderScopeEnum.ROLE_ADMIN.getHeaderValue()).get();
+		if (response.getStatus() != 200) {
+			ErrorResponse error = mapper.readValue(response.readEntity(String.class), ErrorResponse.class);
+			throw new RuntimeException("Failed : HTTP error code : " + response.getStatus() + " - "+ error.getMessage());
+		}
+		return response;
+	}
+
+	/**
+	 * Get current person position by id (person or cris)
+	 * 
+	 * @param id
+	 * @return
+	 * @throws IOException
+	 */
+	public Response positioncurrent(String id) throws IOException {
+		this.webTarget = this.client.target(baseURI + pathRM).path("persons/" + id + "/positioncurrent");
+
+		Response response = this.webTarget.request(MediaType.APPLICATION_JSON)
+				.header(HeaderScopeEnum.getHeaderTag(), HeaderScopeEnum.ROLE_ADMIN.getHeaderValue()).get();
+		if (response.getStatus() != 200) {
+			ErrorResponse error = mapper.readValue(response.readEntity(String.class), ErrorResponse.class);
+			throw new RuntimeException("Failed : HTTP error code : " + response.getStatus() + " - "+ error.getMessage());
+		}
+		return response;
+	}
+	
+	/**
+	 * Upload attachment with licence metadata for item
+	 * 
+	 * @param itemId
+	 * @param optionBitStreamDTO
+	 * @param fileName
+	 * @return
+	 * @throws IOException
+	 */
+	public Response uploadStream(Integer itemId, BitstreamOptionsDTO bitstreamOptionsDTO, String fileName)
+			throws IOException {
+		WebTarget webTarget = client.target(baseURI + pathIR).path("streams/items/" + itemId);
+
+		// Compose multipart request (multipart/form-data)
+		// See
+		// http://stackoverflow.com/questions/27609569/file-upload-along-with-other-object-in-jersey-restful-web-service/27614403#27614403
+		// See https://jersey.java.net/documentation/latest/media.html#multipart
+
 		MultiPart multipartEntity = null;
 		try {
-			FileDataBodyPart fileDataBodyPart = new FileDataBodyPart("file",
-		            new File(fileName),
-		            MediaType.APPLICATION_OCTET_STREAM_TYPE);
-		    fileDataBodyPart.setContentDisposition(FormDataContentDisposition.name("file").fileName(fileName).build());
-		   	
-	        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-	        String jsonBitstreamOptionsDTO = ow.writeValueAsString(bitstreamOptionsDTO);
-		    
-		    multipartEntity = new FormDataMultiPart()
-		    .field("bitstreamOptionsDTO", jsonBitstreamOptionsDTO, MediaType.APPLICATION_JSON_TYPE)
-	        .bodyPart(fileDataBodyPart);
-		    	    
-		    Response response = webTarget.request(MediaType.APPLICATION_JSON).header(HeaderScopeEnum.getHeaderTag(), HeaderScopeEnum.ROLE_ADMIN.getHeaderValue())
-		            .post(Entity.entity(multipartEntity, MediaType.MULTIPART_FORM_DATA_TYPE));
-	        
-		    if (response.getStatus() != 201) {
-	            throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
-	        }
-        	
-		    response.getHeaderString("location");
-		    
-		    return response;
+			FileDataBodyPart fileDataBodyPart = new FileDataBodyPart("file", new File(fileName),
+					MediaType.APPLICATION_OCTET_STREAM_TYPE);
+			fileDataBodyPart.setContentDisposition(FormDataContentDisposition.name("file").fileName(fileName).build());
+
+			ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+			String jsonBitstreamOptionsDTO = ow.writeValueAsString(bitstreamOptionsDTO);
+
+			multipartEntity = new FormDataMultiPart()
+					.field("bitstreamOptionsDTO", jsonBitstreamOptionsDTO, MediaType.APPLICATION_JSON_TYPE)
+					.bodyPart(fileDataBodyPart);
+
+			Response response = webTarget.request(MediaType.APPLICATION_JSON)
+					.header(HeaderScopeEnum.getHeaderTag(), HeaderScopeEnum.ROLE_ADMIN.getHeaderValue())
+					.post(Entity.entity(multipartEntity, MediaType.MULTIPART_FORM_DATA_TYPE));
+
+			if (response.getStatus() != 201) {
+				ErrorResponse error = mapper.readValue(response.readEntity(String.class), ErrorResponse.class);
+				throw new RuntimeException("Failed : HTTP error code : " + response.getStatus() + " - "+ error.getMessage());
+			}
+
+			response.getHeaderString("location");
+
+			return response;
 		} finally {
 			if (multipartEntity != null) {
 				multipartEntity.close();
 			}
 		}
 	}
-    
-    /**
-     * Upload attachment with licence metadata for item 
-     * 
-     * @param itemId
-     * @param bitstreamOptionsDTO
-     * @param inputstream
-     * @param fileName
-     * @return
-     * @throws IOException
-     */
-    public Response uploadStream(Integer itemId, BitstreamOptionsDTO bitstreamOptionsDTO, InputStream inputstream, String attachFileName) throws IOException {	    
-		WebTarget webTarget = client.target(baseURI+pathIR).path("streams/items/"+itemId);
-	    
-		//Compose multipart request (multipart/form-data)
-		//See http://stackoverflow.com/questions/27609569/file-upload-along-with-other-object-in-jersey-restful-web-service/27614403#27614403
-		//See https://jersey.java.net/documentation/latest/media.html#multipart
-	    
+
+	/**
+	 * Upload attachment with licence metadata for item
+	 * 
+	 * @param itemId
+	 * @param bitstreamOptionsDTO
+	 * @param inputstream
+	 * @param fileName
+	 * @param headers
+	 * @return
+	 * @throws IOException
+	 */
+	public Response uploadStream(Integer itemId, BitstreamOptionsDTO bitstreamOptionsDTO, InputStream inputstream,
+			String attachFileName) throws IOException {
+		return uploadStream(itemId, bitstreamOptionsDTO, inputstream, attachFileName, null);
+	}
+
+	/**
+	 * Upload attachment with licence metadata for item
+	 * 
+	 * @param itemId
+	 * @param bitstreamOptionsDTO
+	 * @param inputstream
+	 * @param fileName
+	 * @param headers
+	 * @return
+	 * @throws IOException
+	 */
+	public Response uploadStream(Integer itemId, BitstreamOptionsDTO bitstreamOptionsDTO, InputStream inputstream,
+			String attachFileName, MultivaluedMap<String, Object> headers) throws IOException {
+		WebTarget webTarget = client.target(baseURI + pathIR).path("streams/items/" + itemId);
+
+		// Compose multipart request (multipart/form-data)
+		// See
+		// http://stackoverflow.com/questions/27609569/file-upload-along-with-other-object-in-jersey-restful-web-service/27614403#27614403
+		// See https://jersey.java.net/documentation/latest/media.html#multipart
+
 		MultiPart multipartEntity = null;
 		try {
 			StreamDataBodyPart fileDataBodyPart = new StreamDataBodyPart("file", inputstream);
-			
-		    fileDataBodyPart.setContentDisposition(FormDataContentDisposition.name("file").fileName(attachFileName).build());
-		   	
-	        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-	        String jsonBitstreamOptionsDTO = ow.writeValueAsString(bitstreamOptionsDTO);
-		    
-		    multipartEntity = new FormDataMultiPart()
-		    .field("bitstreamOptionsDTO", jsonBitstreamOptionsDTO, MediaType.APPLICATION_JSON_TYPE)
-	        .bodyPart(fileDataBodyPart);
-		    	    
-		    Response response = webTarget.request(MediaType.APPLICATION_JSON).header(HeaderScopeEnum.getHeaderTag(), HeaderScopeEnum.ROLE_ADMIN.getHeaderValue())
-		            .post(Entity.entity(multipartEntity, MediaType.MULTIPART_FORM_DATA_TYPE));
-	        
-		    if (response.getStatus() != 201) {
-	            throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
-	        }
-        	
-		    response.getHeaderString("location");
-		    
-		    return response;
+
+			fileDataBodyPart
+					.setContentDisposition(FormDataContentDisposition.name("file").fileName(attachFileName).build());
+
+			ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+			String jsonBitstreamOptionsDTO = ow.writeValueAsString(bitstreamOptionsDTO);
+
+			multipartEntity = new FormDataMultiPart()
+					.field("bitstreamOptionsDTO", jsonBitstreamOptionsDTO, MediaType.APPLICATION_JSON_TYPE)
+					.bodyPart(fileDataBodyPart);
+
+			if (headers == null) {
+				headers = new MultivaluedHashMap<String, Object>();
+				if (!headers.containsKey(HeaderScopeEnum.getHeaderTag())) {
+					headers.add(HeaderScopeEnum.getHeaderTag(), HeaderScopeEnum.ROLE_ADMIN.getHeaderValue());
+				}
+			}
+
+			Response response = webTarget.request(MediaType.APPLICATION_JSON).headers(headers)
+					.post(Entity.entity(multipartEntity, MediaType.MULTIPART_FORM_DATA_TYPE));
+
+			if (response.getStatus() != 201) {
+				ErrorResponse error = mapper.readValue(response.readEntity(String.class), ErrorResponse.class);
+				throw new RuntimeException("Failed : HTTP error code : " + response.getStatus() + " - "+ error.getMessage());
+			}
+
+			response.getHeaderString("location");
+
+			return response;
 		} finally {
 			if (multipartEntity != null) {
 				multipartEntity.close();
@@ -782,55 +927,80 @@ public class RESTIRClient {
 		}
 	}
 
-    
-    /**
-     * Upload attachment with licence metadata for item
-     * 
-     * @param itemId
-     * @param optionBitStreamDTO
-     * @param fileName
-     * @return
-     * @throws IOException
-     */
-    public Response uploadStream(String handle, BitstreamOptionsDTO bitstreamOptionsDTO, InputStream inputstream, String attachFileName) throws IOException {	    
-		WebTarget webTarget = client.target(baseURI+pathIR).path("streams/items/"+handle);
-	    
-		//Compose multipart request (multipart/form-data)
-		//See http://stackoverflow.com/questions/27609569/file-upload-along-with-other-object-in-jersey-restful-web-service/27614403#27614403
-		//See https://jersey.java.net/documentation/latest/media.html#multipart
-	    
+	/**
+	 * Upload attachment with licence metadata for item
+	 * 
+	 * @param itemId
+	 * @param optionBitStreamDTO
+	 * @param fileName
+	 * @return
+	 * @throws IOException
+	 */
+	public Response uploadStream(String handle, BitstreamOptionsDTO bitstreamOptionsDTO, InputStream inputstream,
+			String attachFileName) throws IOException {
+		return uploadStream(handle, bitstreamOptionsDTO, inputstream, attachFileName, null);
+	}
+
+	/**
+	 * Upload attachment with licence metadata for item
+	 * 
+	 * @param itemId
+	 * @param optionBitStreamDTO
+	 * @param fileName
+	 * @param headers
+	 * @return
+	 * @throws IOException
+	 */
+	public Response uploadStream(String handle, BitstreamOptionsDTO bitstreamOptionsDTO, InputStream inputstream,
+			String attachFileName, MultivaluedMap<String, Object> headers) throws IOException {
+		WebTarget webTarget = client.target(baseURI + pathIR).path("streams/items/" + handle);
+
+		// Compose multipart request (multipart/form-data)
+		// See
+		// http://stackoverflow.com/questions/27609569/file-upload-along-with-other-object-in-jersey-restful-web-service/27614403#27614403
+		// See https://jersey.java.net/documentation/latest/media.html#multipart
+
 		MultiPart multipartEntity = null;
 		try {
 			StreamDataBodyPart fileDataBodyPart = new StreamDataBodyPart("file", inputstream);
-			
-		    fileDataBodyPart.setContentDisposition(FormDataContentDisposition.name("file").fileName(attachFileName).build());
-		   	
-	        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-	        String jsonBitstreamOptionsDTO = ow.writeValueAsString(bitstreamOptionsDTO);
-		    
-		    multipartEntity = new FormDataMultiPart()
-		    .field("bitstreamOptionsDTO", jsonBitstreamOptionsDTO, MediaType.APPLICATION_JSON_TYPE)
-	        .bodyPart(fileDataBodyPart);
-		    	    
-		    Response response = webTarget.request(MediaType.APPLICATION_JSON).header(HeaderScopeEnum.getHeaderTag(), HeaderScopeEnum.ROLE_ADMIN.getHeaderValue())
-		            .post(Entity.entity(multipartEntity, MediaType.MULTIPART_FORM_DATA_TYPE));
-	        
-		    if (response.getStatus() != 201) {
-	            throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
-	        }
-        	
-		    return response;
+
+			fileDataBodyPart
+					.setContentDisposition(FormDataContentDisposition.name("file").fileName(attachFileName).build());
+
+			ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+			String jsonBitstreamOptionsDTO = ow.writeValueAsString(bitstreamOptionsDTO);
+
+			multipartEntity = new FormDataMultiPart()
+					.field("bitstreamOptionsDTO", jsonBitstreamOptionsDTO, MediaType.APPLICATION_JSON_TYPE)
+					.bodyPart(fileDataBodyPart);
+
+			if (headers == null) {
+				headers = new MultivaluedHashMap<String, Object>();
+				if (!headers.containsKey(HeaderScopeEnum.getHeaderTag())) {
+					headers.add(HeaderScopeEnum.getHeaderTag(), HeaderScopeEnum.ROLE_ADMIN.getHeaderValue());
+				}
+			}
+
+			Response response = webTarget.request(MediaType.APPLICATION_JSON).headers(headers)
+					.post(Entity.entity(multipartEntity, MediaType.MULTIPART_FORM_DATA_TYPE));
+
+			if (response.getStatus() != 201) {
+				ErrorResponse error = mapper.readValue(response.readEntity(String.class), ErrorResponse.class);
+				throw new RuntimeException("Failed : HTTP error code : " + response.getStatus() + " - "+ error.getMessage());
+			}
+
+			return response;
 		} finally {
 			if (multipartEntity != null) {
 				multipartEntity.close();
 			}
 		}
 	}
-    
-    /**
-     * Close client connection
-     */
-    public void close() {
-        this.client.close();
-    }
+
+	/**
+	 * Close client connection
+	 */
+	public void close() {
+		this.client.close();
+	}
 }
